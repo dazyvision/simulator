@@ -393,12 +393,6 @@
     to { transform: translateY(-10px) translateX(1px); }
   }
   @media (prefers-reduced-motion: reduce) { .gabber { animation: none; } }
-  #edit-config {
-    margin-top: 24px; padding: 10px 16px;
-    background: transparent; color: var(--grey); border: 1px solid var(--line);
-    font-size: 9px; letter-spacing: 2px;
-  }
-  #edit-config:hover { color: var(--ink); border-color: var(--grey); }
   #fader-block { margin-top: 22px; }
   .fader-kicker { font-size: 9px; letter-spacing: 3px; color: var(--grey2); margin-bottom: 8px; }
   .fader-label {
@@ -447,6 +441,11 @@
   }
   .end-line .who { font-size: 17px; }
   .end-line .x { color: var(--blue); }
+  .end-recap {
+    font-size: 10px; letter-spacing: 1.2px; color: var(--grey);
+    margin: 12px auto 2px; max-width: 340px; line-height: 1.8;
+  }
+  .end-recap b { color: var(--blue); font-size: 12px; }
   .end-line .pfw {
     display: block; font-size: 9.5px; color: var(--blue);
     margin-top: 14px; letter-spacing: 1px;
@@ -789,7 +788,6 @@
     <div class="stage-sub" id="stage-count"></div>
     <div id="guru"></div>
     <div id="floor"></div>
-    <button id="edit-config">↑ EDIT MY CONFIG · THE CROWD UPDATES LIVE</button>
     <div id="event-banner" class="hidden"></div>
     <div id="fader-block" class="hidden">
       <div class="fader-kicker">MASTER OUT</div>
@@ -802,6 +800,7 @@
     <div id="set-end" class="hidden">
       <div class="end-kicker">END OF SET. LIGHTS ON.</div>
       <div class="end-line" id="end-line"></div>
+      <div class="end-recap" id="end-recap"></div>
       <div class="end-actions">
         <a id="drop-link" href="https://ig.me/m/dazy.vision" target="_blank" rel="noopener">LET'S GOOO ↗</a>
         <button id="onemore">ONE MORE TUNE ↻</button>
@@ -831,7 +830,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b69</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b71</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1046,7 +1045,7 @@ function fireBros(withSound) {
     brosIn = true;
     const bn = document.getElementById("event-banner");
     if (bn) {
-      bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Let our style protect us from them and their sweat.</b>';
+      bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Protect us from their sticky bodies.</b>';
       bn.classList.remove("hidden");
       bn.style.cursor = "pointer";
       bn.onclick = () => bn.classList.add("hidden");
@@ -1318,7 +1317,7 @@ function startMusic() {
         if (actx.state !== "running") { actx.resume().catch(() => {}); return; }
         if (nextBeat < actx.currentTime) nextBeat = actx.currentTime + 0.06;
         while (nextBeat < actx.currentTime + 0.25) {
-          scheduleBeat(nextBeat, beatCount++);
+          try { scheduleBeat(nextBeat, beatCount++); } catch (err) {}
           nextBeat += BEAT;
         }
       }, 100);
@@ -2075,8 +2074,8 @@ function renderStage() {
     let html = "";
     const broCols = { h: "#3A2E22", t: "#C9A183", l: "#C9A183", i: "#C9A183", k: "#26261F" };
     if (brosIn) {
-      html += `<div class="gabber" title="tyon's crew">${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
-      html += `<div class="gabber" style="animation-delay:.05s" title="tyon's crew">${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
+      html += `<div class="gabber" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
+      html += `<div class="gabber" style="animation-delay:.05s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
     }
     crowd.forEach((ri, i) => {
       const crv = RAVERS[ri];
@@ -2085,14 +2084,14 @@ function renderStage() {
         ${dancerSVG(backPerRaver[ri][f], { h: crv.hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: crv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
     });
     if (brosIn) {
-      html += `<div class="gabber" style="animation-delay:.09s" title="tyon's crew">${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
-      html += `<div class="gabber" style="animation-delay:.13s" title="tyon's crew">${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
+      html += `<div class="gabber" style="animation-delay:.09s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
+      html += `<div class="gabber" style="animation-delay:.13s" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
     }
     floor.innerHTML = html;
   }
   draw();
   if (!reduced && !beatTimer) {
-    beatTimer = setInterval(() => { beat++; draw(); }, 166);
+    beatTimer = setInterval(() => { beat++; try { draw(); } catch (err) {} }, 166);
   }
 }
 
@@ -2318,6 +2317,11 @@ function endSet() {
     }, 110);
   }
   const nm = (state.stage || "").trim().toUpperCase() || RAVERS[chosenRaver].name;
+  const edP = prixEdition();
+  const earnP = state.prix - edP;
+  document.getElementById("end-recap").innerHTML =
+    state.tirage + " tees · an extraordinary custom design · you earn <b>" +
+    fmt(earnP * state.tirage) + "</b>";
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span><span class="pfw">LET'S BRING THE RAVE TO PARIS FASHION WEEK 2027</span>`;
   setTimeout(() => {
@@ -2325,7 +2329,6 @@ function endSet() {
     document.getElementById("floor").classList.add("hidden");
     document.getElementById("stage-head").classList.add("hidden");
     document.getElementById("stage-count").classList.add("hidden");
-    document.getElementById("edit-config").classList.add("hidden");
     document.getElementById("set-end").classList.remove("hidden");
   }, 1600);
 }
@@ -2377,7 +2380,6 @@ document.getElementById("onemore").onclick = () => {
   document.getElementById("floor").classList.remove("hidden");
   document.getElementById("stage-head").classList.remove("hidden");
   document.getElementById("stage-count").classList.remove("hidden");
-  document.getElementById("edit-config").classList.remove("hidden");
   setEnded = false;
   setFader(1, true);
   document.getElementById("set-end").classList.add("hidden");
@@ -2387,9 +2389,6 @@ document.getElementById("onemore").onclick = () => {
   startMusic();
 };
 
-document.getElementById("edit-config").onclick = () => {
-  document.querySelector(".section").scrollIntoView({ behavior: "smooth", block: "start" });
-};
 document.getElementById("done").onclick = () => {
   roomOpen = true;
   brosAt = beatCount + 5;
@@ -2416,7 +2415,13 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 69");
+window.addEventListener("error", e => {
+  console.warn("[dazy] caught:", e.message, "@", (e.filename || "").split("/").pop() + ":" + e.lineno);
+});
+window.addEventListener("unhandledrejection", e => {
+  console.warn("[dazy] promise:", e.reason && e.reason.message);
+});
+console.log("DAZY simulator · build 71");
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
