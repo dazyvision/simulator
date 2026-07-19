@@ -59,6 +59,10 @@
   }
   #tee-box svg { width: 100%; max-width: 310px; display: block; margin: 0 auto; }
   .under-tee { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; margin-top: 12px; }
+  .preview-note {
+    font-size: 8.5px; letter-spacing: 0.4px; color: #6B675C;
+    margin-top: 2px; text-align: center; max-width: 300px;
+  }
   .numbering {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
     font-weight: 550; font-size: 13px; color: #C9C3B4; letter-spacing: .6px;
@@ -186,7 +190,21 @@
   .stage-sub { font-size: 9px; letter-spacing: 3px; color: #9C9789; margin-bottom: 22px; }
   #guru { display: flex; justify-content: center; margin-bottom: 26px; }
   #fader-block { margin-top: 30px; }
-  .fader-label { font-size: 9px; letter-spacing: 2px; color: #9C9789; margin-bottom: 14px; }
+  .fader-kicker { font-size: 8px; letter-spacing: 3px; color: #9C9789; margin-bottom: 8px; }
+  .fader-label {
+    font-family: "Press Start 2P", ui-monospace, monospace;
+    font-size: 9.5px; line-height: 1.8; letter-spacing: 1px;
+    color: #F2EFE8; margin-bottom: 14px;
+    animation: faderpulse 1.6s ease-in-out infinite;
+  }
+  .fader-arrow { color: #3D63FF; }
+  @keyframes faderpulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fader-label { animation: none; }
+  }
   #fader-wrap {
     position: relative; width: 24px; height: 80px; margin: 0 auto;
     touch-action: none; cursor: grab;
@@ -398,6 +416,7 @@
             <button class="vbtn" id="btn-back">BACK<span class="vdot"></span></button>
           </div>
           <span class="numbering" id="numbering"></span>
+          <span class="preview-note">Deliberately non-realistic · shows the logic, not the piece · prices indicative, non-contractual</span>
         </div>
       </div>
     </div>
@@ -484,11 +503,10 @@
           </div>
         </div>
         <div class="note">
-          The edition price covers everything: design, art direction, production,
+          The DAZY price covers everything: design, art direction, production,
           editorial page, sale. DAZY produces, edits, sells on its own site,
-          pays you out weekly. No upfront needed: pre-order option.
-          Visuals are illustrative, prices indicative, both non-contractual.<br>
-          Numbered run, never reprinted. <a id="deal-link">Read the FAQ →</a>
+          pays you out weekly. No upfront option if needed: pre-order system.
+          <a id="deal-link">Read the FAQ →</a>
         </div>
       </div>
 
@@ -498,12 +516,13 @@
   </div>
 
   <div id="stage">
-    <div class="stage-title">YOUR COMMUNITY IS FREE!</div>
+    <div class="stage-title" id="stage-head">YOUR COMMUNITY IS FREE!</div>
     <div class="stage-sub" id="stage-count"></div>
     <div id="guru"></div>
     <div id="floor"></div>
     <div id="fader-block">
-      <div class="fader-label">MASTER OUT · PULL DOWN · CLOSE LIKE A HEADLINER</div>
+      <div class="fader-kicker">MASTER OUT</div>
+      <div class="fader-label">PULL DOWN · CLOSE LIKE A HEADLINER <span class="fader-arrow">↓</span></div>
       <div id="fader-wrap">
         <div id="fader-track"></div>
         <div id="fader-cap"></div>
@@ -541,7 +560,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b40</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b45</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -616,7 +635,7 @@ const FAQ = [
   ["Promo pieces for me?",
    "As many as you want, billed at DAZY price, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
   ["The fine print?",
-   "A signed edition contract before anything is produced; simulator visuals and prices are illustrative and non-contractual. French law, GDPR-clean customer data, art direction by DAZY inside your validated brief. Ask us for the full document."],
+   "A signed edition contract before anything is produced; simulator visuals are deliberately non-realistic (they show the logic, not the final piece) and prices are indicative, non-contractual. French law, GDPR-clean customer data, art direction by DAZY inside your validated brief. Ask us for the full document."],
 ];
 
 // ============ TEE GEOMETRY (premium) ============
@@ -1297,7 +1316,7 @@ function startGate2() {
     gateTimer = setInterval(() => { gateBeat++; renderGate2(); }, 480);
 }
 // logo pixel du gate 1 · palette échantillonnée du vrai logo
-const PIXPAL = {"D": {"0,0": "#9B9FAD", "0,1": "#9B9FAD", "0,2": "#9B9FAD", "0,3": "#9B9FAD", "1,0": "#9095A2", "1,4": "#9095A2", "2,0": "#868A97", "2,4": "#868A97", "3,0": "#7C7F8D", "3,4": "#7C7F8D", "4,0": "#717582", "4,4": "#717582", "5,0": "#676A77", "5,4": "#676A77", "6,0": "#5D606C", "6,1": "#5D606C", "6,2": "#5D606C", "6,3": "#5D606C"}, "A": {"0,1": "#757885", "0,2": "#757885", "0,3": "#757885", "1,0": "#6E717D", "1,4": "#6E717D", "2,0": "#666975", "2,4": "#666975", "3,0": "#5E616D", "3,1": "#5E616D", "3,2": "#5E616D", "3,3": "#5E616D", "3,4": "#5E616D", "4,0": "#565965", "4,4": "#565965", "5,0": "#4F525D", "5,4": "#4F525D", "6,0": "#474A55", "6,4": "#474A55"}, "Z": {"0,0": "#FFFFFF", "0,1": "#FFAA3C", "0,2": "#78AAFF", "0,3": "#565966", "0,4": "#565966", "1,3": "#525562", "2,2": "#FFF6DC", "3,1": "#4A4D59", "4,0": "#464955", "5,0": "#424551", "6,0": "#3E414D", "6,1": "#3E414D", "6,2": "#3E414D", "6,3": "#EAFFB4", "6,4": "#C6FF6E"}, "Y": {"0,0": "#FFDE96", "0,4": "#FFC062", "1,0": "#FFFDF2", "1,4": "#BFD8FF", "2,1": "#FFFDF2", "2,3": "#FFFDF2", "3,2": "#FFFDF2", "4,2": "#FFFDF2", "5,2": "#FFFDF2", "6,2": "#FFB45C"}};
+const PIXPAL = {"D": {"0,0": "#8D919F", "0,1": "#8D919F", "0,2": "#8D919F", "0,3": "#8D919F", "1,0": "#838795", "1,4": "#838795", "2,0": "#7A7E8B", "2,4": "#7A7E8B", "3,0": "#707481", "3,4": "#707481", "4,0": "#666A77", "4,4": "#666A77", "5,0": "#5D606C", "5,4": "#5D606C", "6,0": "#545763", "6,1": "#545763", "6,2": "#545763", "6,3": "#545763"}, "A": {"0,1": "#696C78", "0,2": "#696C78", "0,3": "#696C78", "1,0": "#626570", "1,4": "#626570", "2,0": "#5B5E69", "2,4": "#5B5E69", "3,0": "#545762", "3,1": "#545762", "3,2": "#545762", "3,3": "#545762", "3,4": "#545762", "4,0": "#4D505B", "4,4": "#4D505B", "5,0": "#464953", "5,4": "#464953", "6,0": "#3F424C", "6,4": "#3F424C"}, "Z": {"0,0": "#FFFFFF", "0,1": "#00E5FF", "0,2": "#8B5CFF", "0,3": "#4E515D", "0,4": "#4E515D", "1,3": "#4A4D59", "2,2": "#EBFAFF", "3,1": "#434651", "4,0": "#40434E", "5,0": "#3C3F4A", "6,0": "#393C46", "6,1": "#393C46", "6,2": "#393C46", "6,3": "#C8FF00", "6,4": "#96FF00"}, "Y": {"0,0": "#B4F0FF", "0,4": "#00E5FF", "1,0": "#FFFDF4", "1,4": "#8B5CFF", "2,1": "#FFFDF4", "2,3": "#FFFDF4", "3,2": "#FFFDF4", "4,2": "#FFFDF4", "5,2": "#FFFDF4", "6,2": "#00D1EB"}};
 const PIXGLYPHS = {
   D: ["11110","10001","10001","10001","10001","10001","11110"],
   A: ["01110","10001","10001","11111","10001","10001","10001"],
@@ -1739,6 +1758,8 @@ function endSet() {
   setTimeout(() => {
     document.getElementById("guru").classList.add("hidden");
     document.getElementById("floor").classList.add("hidden");
+    document.getElementById("stage-head").classList.add("hidden");
+    document.getElementById("stage-count").classList.add("hidden");
     document.getElementById("set-end").classList.remove("hidden");
   }, 1600);
 }
@@ -1781,6 +1802,8 @@ document.getElementById("onemore").onclick = () => {
   if (exitTimer) { clearInterval(exitTimer); exitTimer = null; }
   document.getElementById("guru").classList.remove("hidden");
   document.getElementById("floor").classList.remove("hidden");
+  document.getElementById("stage-head").classList.remove("hidden");
+  document.getElementById("stage-count").classList.remove("hidden");
   setEnded = false;
   setFader(1, true);
   document.getElementById("set-end").classList.add("hidden");
@@ -1801,7 +1824,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 40");
+console.log("DAZY simulator · build 45");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
