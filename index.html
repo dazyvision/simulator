@@ -535,9 +535,26 @@ function syncURL() {
 
 // ============ SOUND: coin ============
 let actx = null;
+// iOS : forcer la session audio en "playback" pour sonner même en mode silencieux
+let iosUnlocked = false;
+function unlockIOSAudio() {
+  if (iosUnlocked) return;
+  iosUnlocked = true;
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+  try {
+    const el = document.createElement("audio");
+    el.setAttribute("playsinline", "");
+    el.loop = true;
+    el.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    el.play().catch(function () {});
+  } catch (e) {}
+}
+document.addEventListener("touchend", unlockIOSAudio, { once: true });
+document.addEventListener("click", unlockIOSAudio, { once: true });
 function coin() {
   if (!soundOn) return;
   try {
+    unlockIOSAudio();
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     const t = actx.currentTime;
     const g = actx.createGain();
@@ -628,6 +645,7 @@ function startMusic() {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduced) return;
   try {
+    unlockIOSAudio();
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === "suspended") actx.resume();
     nextBeat = actx.currentTime + 0.06;
