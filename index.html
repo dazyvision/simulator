@@ -209,13 +209,20 @@
     background: #3D63FF;
   }
   #set-end { padding-top: 8px; }
+  .end-kicker {
+    font-size: 10px; letter-spacing: 3px; color: #9C9789;
+    margin-bottom: 16px;
+  }
   .end-line {
     font-family: "Press Start 2P", ui-monospace, monospace;
-    font-size: 11px; line-height: 1.7; letter-spacing: 1px;
-    color: #F2EFE8; margin: 14px auto 4px; max-width: 320px;
+    line-height: 1.75; color: #F2EFE8; margin: 0 auto 6px; max-width: 340px;
   }
+  .end-line .who { font-size: 17px; }
   .end-line .x { color: #3D63FF; }
-  .end-line .pfw { color: #3D63FF; }
+  .end-line .pfw {
+    display: block; font-size: 9.5px; color: #3D63FF;
+    margin-top: 14px; letter-spacing: 1px;
+  }
   .end-actions {
     display: flex; gap: 10px; justify-content: center; align-items: center;
     flex-wrap: wrap; margin-top: 16px;
@@ -496,14 +503,14 @@
     <div id="guru"></div>
     <div id="floor"></div>
     <div id="fader-block">
-      <div class="fader-label">MASTER OUT · PULL DOWN TO CLOSE THE SET</div>
+      <div class="fader-label">MASTER OUT · PULL DOWN · CLOSE LIKE A HEADLINER</div>
       <div id="fader-wrap">
         <div id="fader-track"></div>
         <div id="fader-cap"></div>
       </div>
     </div>
     <div id="set-end" class="hidden">
-      <div class="stage-title">END OF SET. LIGHTS ON.</div>
+      <div class="end-kicker">END OF SET. LIGHTS ON.</div>
       <div class="end-line" id="end-line"></div>
       <div class="end-actions">
         <a id="drop-link" href="https://instagram.com/dazy.vision" target="_blank" rel="noopener">LET'S GOOO ↗</a>
@@ -534,7 +541,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b38</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b40</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1407,17 +1414,21 @@ function guruFigure(fi, rv, col) {
   }
   // ---- le tee : rasterisation de la géométrie exacte de la preview ----
   const S0 = T + 11;
-  const CN = 12, RN = 15;                    // px natifs par cellule (x, y)
+  const CN = 12, RN = isLong ? 17 : 15;      // px natifs par cellule (x, y)
   const bodyP = parsePoly(G.body);
   const longPs = isLong ? [parsePoly(G.longL), parsePoly(G.longR)] : [];
   for (let cy = S0; cy < GH; cy++) {
     const ny = 52 + (cy - S0 + 0.5) * RN;
-    if (ny > 310) break;
+    if (ny > 320) break;
     for (let cx = 0; cx < GW; cx++) {
       const nx = 150 + (cx - 13) * CN;
       if (inPoly(bodyP, nx, ny) || longPs.some(p => inPoly(p, nx, ny))) g[cy][cx] = "t";
     }
   }
+  // comble les trous d'1 cellule entre manche et torse (couture d'emmanchure)
+  for (let cy = S0; cy < GH; cy++)
+    for (let cx = 1; cx < GW - 1; cx++)
+      if (g[cy][cx] === "." && g[cy][cx - 1] === "t" && g[cy][cx + 1] === "t") g[cy][cx] = "t";
   // repères : colonnes de manches, rangée d'ourlet
   let aL0 = GW, aR1 = 0, hemY = S0;
   for (let cy = S0; cy < GH; cy++)
@@ -1501,22 +1512,24 @@ function guruFigure(fi, rv, col) {
     L${cx + 2.5} ${eyeY + 16.8} Q${cx + 6.5} ${eyeY + 16.5} ${cx + 7.6} ${eyeY + 12.5} L${cx + 8} ${eyeY + 10}"
     stroke="${eye}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
   // ---- prints lisses ----
-  const name = printText();
+  const stageName = state.stage.trim().toUpperCase() || "YOUR NAME";
+  const nickName = state.nick.trim().toUpperCase();
   const mono = "ui-monospace, 'SF Mono', Menlo, monospace";
   const chestY = (S0 + 4.6) * PXG;
   if (state.placements.includes("poitrine")) {
-    const size = Math.max(4.5, Math.min(9.5, (66 / Math.max(name.length, 1)) * 1.1));
+    const label = state.logo === "min" && nickName ? nickName : stageName;
+    const size = Math.max(4, Math.min(9.5, (80 / Math.max(label.length, 1)) * 1.05));
     s += `<text x="${cx}" y="${chestY}" text-anchor="middle" font-family="${mono}" font-weight="700"
-      letter-spacing="0.8" font-size="${size.toFixed(1)}" fill="${col.ink}">${name}</text>`;
+      letter-spacing="0.6" font-size="${size.toFixed(1)}" fill="${col.ink}">${label}</text>`;
   } else if (state.placements.includes("coeur")) {
-    const st = state.stage.trim().toUpperCase() || "YOUR NAME";
-    const nick = state.nick.trim().toUpperCase() || st.split(" ")[0].slice(0, 4);
-    const size = Math.max(4, Math.min(7.5, (28 / Math.max(nick.length, 1)) * 1.6));
+    // nickname s'il existe, sinon le nom de scène entier auto-réduit
+    const label = nickName || stageName;
+    const size = Math.max(3.8, Math.min(7.5, (46 / Math.max(label.length, 1)) * 1.15));
     s += `<text x="${10.2 * PXG}" y="${chestY + 3}" text-anchor="middle" font-family="${mono}" font-weight="700"
-      font-size="${size.toFixed(1)}" fill="${col.ink}">${nick}</text>`;
+      font-size="${size.toFixed(1)}" fill="${col.ink}">${label}</text>`;
   }
   if (state.placements.includes("manche")) {
-    const ini = name.slice(0, 1);
+    const ini = stageName.slice(0, 1);
     s += `<text x="${(aL0 + 1) * PXG}" y="${(S0 + 4.2) * PXG}" text-anchor="middle" font-family="${mono}" font-weight="700"
       font-size="6" fill="${col.ink}">${ini}</text>`;
   }
@@ -1722,8 +1735,10 @@ function endSet() {
   }
   const nm = (state.stage || "").trim().toUpperCase() || RAVERS[chosenRaver].name;
   document.getElementById("end-line").innerHTML =
-    `${nm} <span class="x">×</span> DAZY · <span class="pfw">PARIS FASHION WEEK 2027</span>`;
+    `<span class="who">${nm} <span class="x">×</span> DAZY</span><span class="pfw">LET'S BRING THE RAVE TO PARIS FASHION WEEK 2027</span>`;
   setTimeout(() => {
+    document.getElementById("guru").classList.add("hidden");
+    document.getElementById("floor").classList.add("hidden");
     document.getElementById("set-end").classList.remove("hidden");
   }, 1600);
 }
@@ -1764,6 +1779,8 @@ faderWrap.addEventListener("pointermove", e => {
 faderWrap.addEventListener("pointerup", () => { faderDrag = false; });
 document.getElementById("onemore").onclick = () => {
   if (exitTimer) { clearInterval(exitTimer); exitTimer = null; }
+  document.getElementById("guru").classList.remove("hidden");
+  document.getElementById("floor").classList.remove("hidden");
   setEnded = false;
   setFader(1, true);
   document.getElementById("set-end").classList.add("hidden");
@@ -1784,7 +1801,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 38");
+console.log("DAZY simulator · build 40");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
