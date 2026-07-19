@@ -58,12 +58,23 @@
     border: 1px solid #2A2925; padding: 26px 14px 18px;
   }
   #tee-box svg { width: 100%; max-width: 310px; display: block; margin: 0 auto; }
-  .under-tee { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 12px; }
+  .under-tee { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; margin-top: 12px; }
   .numbering {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
     font-weight: 550; font-size: 13px; color: #C9C3B4; letter-spacing: .6px;
   }
-  .flipbtn { padding: 5px 12px; font-size: 10px; letter-spacing: 2px; }
+  .viewswitch { display: flex; border: 1px solid #45443E; width: 200px; }
+  .vbtn {
+    flex: 1; position: relative; border: none; background: transparent;
+    padding: 9px 0; font-size: 10px; letter-spacing: 2.5px; color: #C9C3B4;
+  }
+  .vbtn.on { background: #F2EFE8; color: #0C0B09; font-weight: 700; }
+  .vdot {
+    display: none; position: absolute; top: 4px; right: 7px;
+    width: 5px; height: 5px; background: #3D63FF;
+  }
+  .vbtn.has .vdot { display: block; }
+  .vbtn.on .vdot { background: #3D63FF; }
 
   .section { margin-bottom: 34px; }
   .eyebrow { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
@@ -172,9 +183,16 @@
     font-size: 15px; line-height: 1.6; margin-bottom: 8px; color: #3D63FF;
   }
   .stage-sub { font-size: 9px; letter-spacing: 3px; color: #9C9789; margin-bottom: 22px; }
+  #guru { display: flex; justify-content: center; margin-bottom: 26px; }
   #floor { display: flex; justify-content: center; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
   .dancer { image-rendering: pixelated; }
   .jump { animation: jump .333s steps(2) infinite; }
+  .jump-big { animation: jumpbig .333s steps(2) infinite; }
+  @keyframes jumpbig { 0% { transform: translateY(0); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0); } }
+  .hero-name {
+    font-family: "Press Start 2P", ui-monospace, monospace;
+    font-size: 8px; color: #3D63FF; letter-spacing: 1px;
+  }
   @keyframes jump { 0% { transform: translateY(0); } 50% { transform: translateY(-7px); } 100% { transform: translateY(0); } }
   #stage.lit { animation: strobe .666s steps(2) infinite; }
   @keyframes strobe { 0% { background: #0C0B09; } 50% { background: #16140E; } 100% { background: #0C0B09; } }
@@ -257,7 +275,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     button { transition: none; }
-    .jump, #stage.lit, .coin-pop.go, .fly-coin { animation: none; }
+    .jump, .jump-big, #stage.lit, .coin-pop.go, .fly-coin { animation: none; }
     .fly-coin { display: none; }
   }
   @media (max-width: 700px) {
@@ -294,8 +312,10 @@
       <div class="preview-panel">
         <div id="tee-box"></div>
         <div class="under-tee">
-          <button class="flipbtn on" id="btn-front">FRONT</button>
-          <button class="flipbtn" id="btn-back">BACK</button>
+          <div class="viewswitch">
+            <button class="vbtn on" id="btn-front">FRONT<span class="vdot"></span></button>
+            <button class="vbtn" id="btn-back">BACK<span class="vdot"></span></button>
+          </div>
           <span class="numbering" id="numbering"></span>
         </div>
       </div>
@@ -356,7 +376,7 @@
       <div class="section">
         <div class="eyebrow"><span class="n">04</span><span class="t">THE EDITION</span></div>
         <div class="field">
-          <div class="label" id="prix-label">Retail price</div>
+          <div class="label" id="prix-label">Public price · what fans pay</div>
           <div class="price-wrap" id="price-wrap">
             <input type="range" id="prix" min="35" max="80" step="1" value="45">
           </div>
@@ -370,12 +390,12 @@
       </div>
 
       <div class="section">
-        <div class="eyebrow"><span class="n">05</span><span class="t">YOUR CUT</span></div>
+        <div class="eyebrow"><span class="n">05</span><span class="t">YOU EARN</span></div>
         <div class="eco-grid">
-          <div><div class="label">Edition price / piece</div><div class="num dim" id="e-edition"></div></div>
-          <div><div class="label">Your cut / piece</div><div class="num dim" id="e-part"></div></div>
+          <div><div class="label">DAZY price / piece · design, production, digital assets</div><div class="num dim" id="e-edition"></div></div>
+          <div><div class="label">You earn / piece · paid out weekly</div><div class="num dim" id="e-part"></div></div>
           <div style="grid-column: 1 / -1;">
-            <div class="label">Your cut / edition</div>
+            <div class="label">You earn / edition</div>
             <div class="coin-wrap">
               <div class="num" id="e-total">€0</div>
               <div class="coin-pop" id="coin-pop">+ ¤</div>
@@ -398,6 +418,7 @@
   <div id="stage">
     <div class="stage-title">YOUR COMMUNITY IS FREE!</div>
     <div class="stage-sub" id="stage-count"></div>
+    <div id="guru"></div>
     <div id="floor"></div>
   </div>
 </div>
@@ -484,11 +505,11 @@ const FAQ = [
   ["Who makes it happen?",
    "DAZY. Design, art direction, production, editorial page, sale. You bring the name and the vision, we build the object and put it in the world."],
   ["What do I pay?",
-   "One number: the edition price per piece. It covers everything above. Two ways to fund the run: upfront, or pre-order on dazyvision.com, zero cash needed."],
+   "One number: the DAZY price per piece. It covers everything above. Two ways to fund the run: upfront, or pre-order on dazyvision.com, zero cash needed."],
   ["Where does it sell?",
    "On dazyvision.com only. One channel, one page, your own room on the site. The page stays online after the run sells out. Forever. That's the archive."],
   ["How do I get paid?",
-   "Weekly. Sales report and payout, every single week. Your cut = retail price minus edition price, on every piece sold. DAZY sells, DAZY transfers."],
+   "Weekly. Sales report and payout, every single week. You earn the public price minus the DAZY price, on every piece sold. DAZY sells, DAZY transfers."],
   ["What if it blows up?",
    "No reprint. Ever. A sold-out run stays sold out, that's what your first buyers own. If demand explodes, we cut a second edition: new form, new numbers, new run."],
   ["Who shoots the campaign?",
@@ -496,7 +517,7 @@ const FAQ = [
   ["What do you design with?",
    "Everything is art-directed and built in-house: Photoshop, Illustrator and InDesign for the pieces and the pages, ComfyUI and Stable Diffusion pipelines for visual research. Tools follow the direction, never the other way around."],
   ["Promo pieces for me?",
-   "As many as you want, billed at edition price, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
+   "As many as you want, billed at DAZY price, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
   ["The fine print?",
    "A signed edition contract before anything is produced. French law, GDPR-clean customer data, art direction by DAZY inside your validated brief. Ask us for the full document."],
 ];
@@ -631,69 +652,147 @@ document.getElementById("snd").onclick = function () {
   else if (roomOpen) startMusic();
 };
 
-// ============ MUSIC: 180 BPM hard dance loop ============
-const BPM = 180, BEAT = 60 / BPM;
-let musicTimer = null, nextBeat = 0, beatCount = 0, dist = null;
+// ============ MUSIC: 180 BPM techno-game, phrases de 4 mesures ============
+const BPM = 180, BEAT = 60 / BPM, S16 = BEAT / 4;
+let musicTimer = null, nextBeat = 0, beatCount = 0, dist = null, comp = null;
 
+function out() {
+  if (!comp) {
+    comp = actx.createDynamicsCompressor();
+    comp.threshold.value = -18; comp.ratio.value = 4;
+    comp.attack.value = 0.004; comp.release.value = 0.16;
+    comp.connect(actx.destination);
+  }
+  return comp;
+}
 function distCurve() {
   if (dist) return dist;
   dist = new Float32Array(256);
-  for (let i = 0; i < 256; i++) {
-    const x = (i / 128) - 1;
-    dist[i] = Math.tanh(x * 4);
-  }
+  for (let i = 0; i < 256; i++) dist[i] = Math.tanh(((i / 128) - 1) * 4);
   return dist;
 }
-function kick(t) {
+function kick(t, hard) {
   const o = actx.createOscillator();
   o.type = "sine";
-  o.frequency.setValueAtTime(170, t);
+  o.frequency.setValueAtTime(hard ? 195 : 170, t);
   o.frequency.exponentialRampToValueAtTime(42, t + 0.11);
-  const sh = actx.createWaveShaper();
-  sh.curve = distCurve();
+  const sh = actx.createWaveShaper(); sh.curve = distCurve();
   const g = actx.createGain();
-  g.gain.setValueAtTime(0.55, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
-  o.connect(sh); sh.connect(g); g.connect(actx.destination);
-  o.start(t); o.stop(t + 0.3);
+  g.gain.setValueAtTime(0.5, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+  o.connect(sh); sh.connect(g); g.connect(out());
+  o.start(t); o.stop(t + 0.28);
 }
-function hat(t, open) {
-  const len = open ? 0.09 : 0.03;
-  const buf = actx.createBuffer(1, actx.sampleRate * len, actx.sampleRate);
+function noiseBuf(len) {
+  const buf = actx.createBuffer(1, Math.max(1, actx.sampleRate * len), actx.sampleRate);
   const d = buf.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-  const src = actx.createBufferSource();
-  src.buffer = buf;
-  const hp = actx.createBiquadFilter();
-  hp.type = "highpass"; hp.frequency.value = 8000;
-  const g = actx.createGain();
-  g.gain.setValueAtTime(open ? 0.09 : 0.05, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t + len);
-  src.connect(hp); hp.connect(g); g.connect(actx.destination);
-  src.start(t);
+  return buf;
 }
-function stab(t, freq) {
-  const o = actx.createOscillator();
-  o.type = "sawtooth";
+function hatC(t, g) {
+  const src = actx.createBufferSource(); src.buffer = noiseBuf(0.03);
+  const hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 8500;
+  const gn = actx.createGain();
+  gn.gain.setValueAtTime(g, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+  src.connect(hp); hp.connect(gn); gn.connect(out()); src.start(t);
+}
+function hatO(t) {
+  const src = actx.createBufferSource(); src.buffer = noiseBuf(0.1);
+  const hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 7500;
+  const gn = actx.createGain();
+  gn.gain.setValueAtTime(0.07, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  src.connect(hp); hp.connect(gn); gn.connect(out()); src.start(t);
+}
+function snare(t, g) {
+  const src = actx.createBufferSource(); src.buffer = noiseBuf(0.12);
+  const bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1900; bp.Q.value = 0.9;
+  const gn = actx.createGain();
+  gn.gain.setValueAtTime(g, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+  src.connect(bp); bp.connect(gn); gn.connect(out()); src.start(t);
+}
+function bass(t, freq, len, g) {
+  const o = actx.createOscillator(); o.type = "sawtooth";
   o.frequency.setValueAtTime(freq, t);
-  const f = actx.createBiquadFilter();
-  f.type = "lowpass";
-  f.frequency.setValueAtTime(2200, t);
-  f.frequency.exponentialRampToValueAtTime(300, t + 0.14);
-  const g = actx.createGain();
-  g.gain.setValueAtTime(0.11, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-  o.connect(f); f.connect(g); g.connect(actx.destination);
-  o.start(t); o.stop(t + 0.16);
+  const f = actx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 6;
+  f.frequency.setValueAtTime(950, t);
+  f.frequency.exponentialRampToValueAtTime(180, t + len);
+  const gn = actx.createGain();
+  gn.gain.setValueAtTime(g, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + len);
+  o.connect(f); f.connect(gn); gn.connect(out());
+  o.start(t); o.stop(t + len + 0.02);
 }
-const STABS = [164.81, 0, 196, 0, 164.81, 0, 146.83, 196];
+function arp(t, freq, g) {
+  const o = actx.createOscillator(); o.type = "square";
+  o.frequency.setValueAtTime(freq, t);
+  const gn = actx.createGain();
+  gn.gain.setValueAtTime(g, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+  o.connect(gn); gn.connect(out());
+  o.start(t); o.stop(t + 0.1);
+  // écho game-boy
+  const o2 = actx.createOscillator(); o2.type = "square";
+  o2.frequency.setValueAtTime(freq, t + 3 * S16);
+  const g2 = actx.createGain();
+  g2.gain.setValueAtTime(g * 0.3, t + 3 * S16);
+  g2.gain.exponentialRampToValueAtTime(0.001, t + 3 * S16 + 0.07);
+  o2.connect(g2); g2.connect(out());
+  o2.start(t + 3 * S16); o2.stop(t + 3 * S16 + 0.08);
+}
+function chordStab(t, freqs) {
+  freqs.forEach((fq, i) => {
+    const o = actx.createOscillator(); o.type = "sawtooth";
+    o.frequency.setValueAtTime(fq * (i === 1 ? 1.004 : 1), t);
+    const f = actx.createBiquadFilter(); f.type = "lowpass";
+    f.frequency.setValueAtTime(2400, t);
+    f.frequency.exponentialRampToValueAtTime(360, t + 0.3);
+    const g = actx.createGain();
+    g.gain.setValueAtTime(0.05, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+    o.connect(f); f.connect(g); g.connect(out());
+    o.start(t); o.stop(t + 0.34);
+  });
+}
+// Em / C : deux phrases qui alternent
+const ARPS = [
+  [329.63, 392.0, 493.88, 587.33],
+  [261.63, 329.63, 392.0, 493.88],
+];
+const ROOTS = [41.2, 32.7];
+const CHORDS = [
+  [164.81, 196.0, 246.94],
+  [130.81, 164.81, 196.0],
+];
 function scheduleBeat(t, n) {
+  const bar = Math.floor(n / 4) % 4;
+  const b = n % 4;
+  const phrase = Math.floor(n / 16) % 2;
+  const fill = bar === 3 && b === 3;
+
   kick(t);
-  hat(t + BEAT / 2, true);
-  hat(t + BEAT / 4, false);
-  hat(t + 3 * BEAT / 4, false);
-  const s = STABS[n % 8];
-  if (s) stab(t + BEAT / 2, s);
+  if (fill) kick(t + BEAT / 2, true);
+
+  if (b === 1 || b === 3) snare(t, 0.14);
+  if (fill) for (let k = 0; k < 4; k++) snare(t + k * S16, 0.05 + k * 0.025);
+
+  hatC(t + S16, 0.035);
+  hatO(t + 2 * S16);
+  hatC(t + 3 * S16, 0.05);
+
+  const root = ROOTS[phrase] * 2;
+  bass(t + 2 * S16, b % 2 ? root * 1.5 : root, 0.13, 0.15);
+  bass(t + 3 * S16, root, 0.08, 0.09);
+
+  const seq = ARPS[phrase];
+  for (let k = 0; k < 4; k++) {
+    if (bar < 2 && k === 1) continue; // respiration sur les 2 premières mesures
+    arp(t + k * S16, seq[(n + k) % 4] * (bar >= 2 ? 2 : 1), k % 2 ? 0.028 : 0.04);
+  }
+
+  if (n % 8 === 0) chordStab(t, CHORDS[phrase]);
 }
 function startMusic() {
   if (musicTimer || !soundOn) return;
@@ -718,13 +817,13 @@ function startMusic() {
     else go();
   } catch (e) {}
 }
+function stopMusic() {
+  if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+}
 // self-heal : tout tap pendant que la salle est ouverte relance la musique si elle est tombée
 document.addEventListener("click", () => {
   if (roomOpen && soundOn && !musicTimer) startMusic();
 });
-function stopMusic() {
-  if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
-}
 
 // ============ PRINT ============
 function printText() {
@@ -735,7 +834,7 @@ function printText() {
 function logoPos(placement, coupe) {
   switch (placement) {
     case "poitrine": return { x: 150, y: 124, base: 16, rotate: 0 };
-    case "coeur": return { x: coupe === "oversize" ? 114 : 116, y: 106, base: 10, rotate: 0 };
+    case "coeur": return { x: coupe === "oversize" ? 114 : 116, y: 132, base: 10, rotate: 0 };
     case "dos": return { x: 150, y: 126, base: 20, rotate: 0 };
     case "manche":
       if (state.sleeves === "long") {
@@ -830,8 +929,12 @@ function renderTee() {
       ${visibles.map(pl => logoSVG(pl, state.coupe, state.technique, col.ink)).join("")}
     </svg>`;
 
-  document.getElementById("btn-front").className = "flipbtn" + (state.side === "front" ? " on" : "");
-  document.getElementById("btn-back").className = "flipbtn" + (state.side === "back" ? " on" : "");
+  const frontHas = state.placements.some(p => PLACEMENTS.find(x => x.id === p).side === "front");
+  const backHas = state.placements.includes("dos");
+  document.getElementById("btn-front").className =
+    "vbtn" + (state.side === "front" ? " on" : "") + (frontHas ? " has" : "");
+  document.getElementById("btn-back").className =
+    "vbtn" + (state.side === "back" ? " on" : "") + (backHas ? " has" : "");
   document.getElementById("numbering").textContent =
     "No. 1 of " + state.tirage;
 }
@@ -887,7 +990,7 @@ function renderEco() {
   ep.className = "num dim" + (part < 0 ? " neg" : "");
   animateTotal(lastTotal, total);
   lastTotal = total;
-  document.getElementById("prix-label").textContent = "Retail price · " + fmt(state.prix);
+  document.getElementById("prix-label").textContent = "Public price · what fans pay · " + fmt(state.prix);
   document.getElementById("tirage-mood").textContent = MOODS[state.tirage];
 }
 
@@ -967,12 +1070,17 @@ function crowdFrames() {
   if (long) {
     if (A[1][1] === "s") A[1][1] = "t";
     if (A[1][8] === "s") A[1][8] = "t";
+    if (A[0][1] === ".") A[0][1] = "t";
+    if (A[0][8] === ".") A[0][8] = "t";
     if (B[4][1] === "s") B[4][1] = "t";
     if (B[4][8] === "s") B[4][8] = "t";
+    if (B[5][1] === ".") B[5][1] = "t";
+    if (B[5][8] === ".") B[5][8] = "t";
   }
   [A, B].forEach(g => {
     if (state.placements.includes("poitrine")) { g[5][4] = "i"; g[5][5] = "i"; }
     else if (state.placements.includes("coeur")) { g[5][5] = "i"; }
+    if (state.placements.includes("manche") && g[4][2] === "t") g[4][2] = "i";
   });
   return [A.map(r => r.join("")), B.map(r => r.join(""))];
 }
@@ -1075,7 +1183,8 @@ function startGate2() {
   if (!reduced && !gateTimer)
     gateTimer = setInterval(() => { gateBeat++; renderGate2(); }, 480);
 }
-// logo pixel du gate 1
+// logo pixel du gate 1 · palette échantillonnée du vrai logo
+const PIXPAL = {"D": {"0,0": "#E9EAEE", "0,1": "#E9EAEE", "0,2": "#E9EAEE", "0,3": "#E9EAEE", "1,0": "#DFE1E5", "1,4": "#DFE1E5", "2,0": "#D6D8DD", "2,4": "#D6D8DD", "3,0": "#CDCFD5", "3,4": "#CDCFD5", "4,0": "#C4C6CD", "4,4": "#C4C6CD", "5,0": "#BBBDC5", "5,4": "#BBBDC5", "6,0": "#B2B5BD", "6,1": "#B2B5BD", "6,2": "#B2B5BD", "6,3": "#B2B5BD"}, "A": {"0,1": "#CED0D6", "0,2": "#CED0D6", "0,3": "#CED0D6", "1,0": "#C4C6CD", "1,4": "#A8AAB0", "2,0": "#BABDC4", "2,4": "#9FA2A8", "3,0": "#B1B3BB", "3,1": "#B1B3BB", "3,2": "#B1B3BB", "3,3": "#B1B3BB", "3,4": "#9899A0", "4,0": "#A7AAB2", "4,4": "#8F9299", "5,0": "#9DA0A9", "5,4": "#878991", "6,0": "#9497A0", "6,4": "#7F8189"}, "Z": {"0,0": "#F4EEDC", "0,1": "#F2B45C", "0,2": "#8FB2F0", "0,3": "#767982", "0,4": "#767982", "1,3": "#72757E", "2,2": "#EFE7D2", "3,1": "#6B6E77", "4,0": "#676A73", "5,0": "#63666F", "6,0": "#60636C", "6,1": "#60636C", "6,2": "#60636C", "6,3": "#C9E87A", "6,4": "#A8D96A"}, "Y": {"0,0": "#F5F1E4", "0,4": "#F2C45C", "1,0": "#F5F1E4", "1,4": "#E39BB0", "2,1": "#F5F1E4", "2,3": "#FFE96B", "3,2": "#F5F1E4", "4,2": "#F5F1E4", "5,2": "#F5F1E4", "6,2": "#F5F1E4"}};
 const PIXGLYPHS = {
   D: ["11110","10001","10001","10001","10001","10001","11110"],
   A: ["01110","10001","10001","11111","10001","10001","10001"],
@@ -1088,11 +1197,12 @@ function renderGateLogo() {
   const W = cols * (cell + gap) - gap, H = 7 * (cell + gap) - gap;
   let rects = "", cur = 0;
   for (const ch of word) {
-    const color = ch === "Z" ? "#3D63FF" : "#F2EFE8";
     PIXGLYPHS[ch].forEach((row, r) => {
       row.split("").forEach((v, c) => {
-        if (v === "1")
+        if (v === "1") {
+          const color = (PIXPAL[ch] && PIXPAL[ch][r + "," + c]) || "#F2EFE8";
           rects += `<rect x="${(cur + c) * (cell + gap)}" y="${r * (cell + gap)}" width="${cell}" height="${cell}" fill="${color}"/>`;
+        }
       });
     });
     cur += 5 + lg;
@@ -1106,11 +1216,12 @@ function renderHeaderLogo() {
   const W = cols * (cell + gap) - gap, H = 7 * (cell + gap) - gap;
   let rects = "", cur = 0;
   for (const ch of word) {
-    const color = ch === "Z" ? "#3D63FF" : "#F2EFE8";
     PIXGLYPHS[ch].forEach((row, r) => {
       row.split("").forEach((v, c) => {
-        if (v === "1")
+        if (v === "1") {
+          const color = (PIXPAL[ch] && PIXPAL[ch][r + "," + c]) || "#F2EFE8";
           rects += `<rect x="${(cur + c) * (cell + gap)}" y="${r * (cell + gap)}" width="${cell}" height="${cell}" fill="${color}"/>`;
+        }
       });
     });
     cur += 5 + lg;
@@ -1132,24 +1243,73 @@ function renderStage() {
 
   const col = COULEURS.find(c => c.id === state.couleur);
   const pieceFrames = crowdFrames();
-  const raverFrames = RAVERS.map(rv => applyRaver(pieceFrames, rv));
+  // le gourou : de face, le design réel sur le torse (nom en texte, pastille manche)
+  const overlayFront = state.placements.includes("poitrine") || state.placements.includes("coeur");
+  const overlaySleeve = state.placements.includes("manche");
+  const guruFrames = applyRaver(pieceFrames, RAVERS[chosenRaver]).map(f => {
+    const g = f.map(r => r.split(""));
+    if (overlayFront) [3, 4, 5, 6].forEach(c => { if (g[5][c] === "i") g[5][c] = "t"; });
+    if (overlaySleeve && g[4][2] === "i") g[4][2] = "t";
+    return g.map(r => r.join(""));
+  });
+  function guruSVG(grid, colors, px) {
+    let svg = dancerSVG(grid, colors, false, px);
+    if (!overlayFront && !overlaySleeve) return svg;
+    const name = printText();
+    let overlay = "";
+    if (overlaySleeve) {
+      overlay += `<text x="${2.5 * px}" y="${4.82 * px}" text-anchor="middle"
+        font-family="'Press Start 2P', ui-monospace, monospace"
+        font-size="${(px * 0.5).toFixed(1)}" fill="${colors.i}">${name.slice(0, 1)}</text>`;
+    }
+    if (state.placements.includes("poitrine")) {
+      const size = Math.max(3.5, Math.min(px * 0.85, (5.4 * px) / Math.max(name.length, 1)));
+      overlay += `<text x="${5 * px}" y="${5.95 * px}" text-anchor="middle"
+        font-family="'Press Start 2P', ui-monospace, monospace"
+        font-size="${size.toFixed(1)}" fill="${colors.i}">${name}</text>`;
+    } else if (state.placements.includes("coeur")) {
+      const stage = state.stage.trim().toUpperCase() || "YOUR NAME";
+      const nick = state.nick.trim().toUpperCase() || stage.split(" ")[0].slice(0, 4);
+      const size = Math.max(3.5, Math.min(px * 0.62, (3.4 * px) / Math.max(nick.length, 1)));
+      overlay += `<text x="${3.7 * px}" y="${5.95 * px}" text-anchor="middle"
+        font-family="'Press Start 2P', ui-monospace, monospace"
+        font-size="${size.toFixed(1)}" fill="${colors.i}">${nick}</text>`;
+    }
+    return svg.replace("</svg>", overlay + "</svg>");
+  }
+  // la foule : de dos, print dos visible, face convertie en arriere de tete
+  function toBack(frames) {
+    return frames.map(f => {
+      const g = f.map(r => r.split(""));
+      [2, 3].forEach(r => { for (let c = 0; c < 10; c++) if (g[r][c] === "s") g[r][c] = "h"; });
+      for (let r = 0; r < 12; r++) for (let c = 0; c < 10; c++) if (g[r][c] === "i") g[r][c] = "t";
+      if (state.placements.includes("dos")) { g[5][4] = "i"; g[5][5] = "i"; }
+      return g.map(r => r.join(""));
+    });
+  }
+  const backPerRaver = RAVERS.map(rv => toBack(applyRaver(pieceFrames, rv)));
   const rv0 = chosenRaver, rv1 = (chosenRaver + 1) % 3, rv2 = (chosenRaver + 2) % 3;
-  const lineup = [rv1, rv2, rv0, rv0, rv2, rv1];
+  const crowd = [rv1, rv2, rv0, rv2, rv1];
   document.getElementById("stage-count").textContent =
     "SAVED: " + RAVERS[chosenRaver].name + " · " +
     state.tirage + " TEES · " + (state.tirage * 2) + " SHOULDERS · 180 BPM";
+  const guruEl = document.getElementById("guru");
   const floor = document.getElementById("floor");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function draw() {
+    const rv = RAVERS[chosenRaver];
+    const gf = reduced ? 0 : beat % 2;
+    guruEl.innerHTML = `<div class="${reduced ? "" : "jump-big"}" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+      ${guruSVG(guruFrames[gf], { h: rv.hair, t: col.top, i: col.ink, k: rv.skirt || "#26261F" }, 14)}
+      <span class="hero-name">${rv.name}</span></div>`;
     let html = "";
-    for (let i = 0; i < 6; i++) {
-      const ri = lineup[i];
-      const rv = RAVERS[ri];
-      const f = reduced ? 0 : (beat + i) % 2;
-      html += `<div class="${reduced ? "" : "jump"}" style="animation-delay:${(i % 3) * 0.11}s">
-        ${dancerSVG(raverFrames[ri][f], { h: rv.hair, t: col.top, i: col.ink, k: rv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
-    }
+    crowd.forEach((ri, i) => {
+      const crv = RAVERS[ri];
+      const f = reduced ? 0 : (beat + i + 1) % 2;
+      html += `<div class="${reduced ? "" : "jump"}" style="animation-delay:${(i % 3) * 0.11 + 0.08}s">
+        ${dancerSVG(backPerRaver[ri][f], { h: crv.hair, t: col.top, i: col.ink, k: crv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
+    });
     floor.innerHTML = html;
   }
   draw();
