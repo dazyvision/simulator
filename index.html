@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { background: #0C0B09 !important; }
+  html, body { background: #0C0B09 !important; overflow-x: hidden; }
   body {
     min-height: 100vh; color: #F2EFE8;
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -229,25 +229,25 @@
   .exit-r { animation: exitr .9s linear forwards; }
   @keyframes exitr {
     0% { transform: translate(0, 0); }
-    12% { transform: translate(14vw, -7px); }
-    24% { transform: translate(28vw, 0); }
-    36% { transform: translate(42vw, -7px); }
-    48% { transform: translate(56vw, 0); }
-    60% { transform: translate(70vw, -7px); }
-    72% { transform: translate(84vw, 0); }
-    86% { transform: translate(100vw, -7px); }
-    100% { transform: translate(120vw, 0); opacity: 0; }
+    12% { transform: translate(8vw, -7px); }
+    24% { transform: translate(16vw, 0); }
+    36% { transform: translate(24vw, -7px); }
+    48% { transform: translate(32vw, 0); }
+    60% { transform: translate(40vw, -7px); }
+    72% { transform: translate(48vw, 0); }
+    86% { transform: translate(58vw, -7px); }
+    100% { transform: translate(70vw, 0); opacity: 0; }
   }
   @keyframes exitl {
     0% { transform: translate(0, 0); }
-    12% { transform: translate(-14vw, -7px); }
-    24% { transform: translate(-28vw, 0); }
-    36% { transform: translate(-42vw, -7px); }
-    48% { transform: translate(-56vw, 0); }
-    60% { transform: translate(-70vw, -7px); }
-    72% { transform: translate(-84vw, 0); }
-    86% { transform: translate(-100vw, -7px); }
-    100% { transform: translate(-120vw, 0); opacity: 0; }
+    12% { transform: translate(-8vw, -7px); }
+    24% { transform: translate(-16vw, 0); }
+    36% { transform: translate(-24vw, -7px); }
+    48% { transform: translate(-32vw, 0); }
+    60% { transform: translate(-40vw, -7px); }
+    72% { transform: translate(-48vw, 0); }
+    86% { transform: translate(-58vw, -7px); }
+    100% { transform: translate(-70vw, 0); opacity: 0; }
   }
   #floor { display: flex; justify-content: center; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
   .dancer { image-rendering: pixelated; }
@@ -525,7 +525,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b16</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b17</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1627,7 +1627,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 16");
+console.log("DAZY simulator · build 17");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
