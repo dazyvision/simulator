@@ -187,30 +187,42 @@
   #fader-block { margin-top: 30px; }
   .fader-label { font-size: 9px; letter-spacing: 2px; color: #9C9789; margin-bottom: 14px; }
   #fader-wrap {
-    position: relative; width: 34px; height: 118px; margin: 0 auto;
+    position: relative; width: 24px; height: 80px; margin: 0 auto;
     touch-action: none; cursor: grab;
   }
   #fader-track {
-    position: absolute; left: 50%; top: 0; bottom: 0; width: 6px;
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
     transform: translateX(-50%);
     background: #16150F; border: 1px solid #33322E;
   }
-  .ftick { position: absolute; width: 7px; height: 1px; background: #45443E; left: 0; }
+  .ftick { position: absolute; width: 5px; height: 1px; background: #45443E; left: 0; }
   .ftick.r { left: auto; right: 0; }
   #fader-cap {
     position: absolute; left: 50%; transform: translateX(-50%);
-    width: 32px; height: 15px;
+    width: 22px; height: 11px;
     background: #F2EFE8; border: 1px solid #0C0B09;
     box-shadow: 0 2px 0 #55534E;
   }
   #fader-cap::after {
-    content: ""; position: absolute; left: 3px; right: 3px; top: 6px; height: 2px;
+    content: ""; position: absolute; left: 2px; right: 2px; top: 4px; height: 2px;
     background: #3D63FF;
   }
   #set-end { padding-top: 8px; }
+  .end-actions {
+    display: flex; gap: 10px; justify-content: center; align-items: center;
+    flex-wrap: wrap; margin-top: 16px;
+  }
+  #drop-link {
+    display: inline-block; padding: 14px 24px;
+    background: #3D63FF; color: #F2EFE8; border: 1px solid #3D63FF;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-weight: 700; letter-spacing: 2px; font-size: 11px;
+    text-decoration: none; text-transform: uppercase;
+  }
+  #drop-link:hover { background: #0C0B09; color: #3D63FF; }
   #onemore {
-    margin-top: 16px; padding: 13px 22px;
-    background: #3D63FF; color: #F2EFE8; border-color: #3D63FF;
+    padding: 13px 22px;
+    background: transparent; color: #C9C3B4; border: 1px solid #3B3933;
     font-weight: 700; letter-spacing: 2px;
   }
   .exit-l { animation: exitl .9s linear forwards; }
@@ -483,8 +495,11 @@
     </div>
     <div id="set-end" class="hidden">
       <div class="stage-title">END OF SET.</div>
-      <div class="stage-sub">LIGHTS ON. LET'S LAUNCH THE DROP.</div>
-      <button id="onemore">ONE MORE TUNE ↻</button>
+      <div class="stage-sub">LIGHTS ON.</div>
+      <div class="end-actions">
+        <a id="drop-link" href="https://instagram.com/dazy.vision" target="_blank" rel="noopener">LET'S LAUNCH THE DROP ↗</a>
+        <button id="onemore">ONE MORE TUNE ↻</button>
+      </div>
     </div>
   </div>
 </div>
@@ -510,7 +525,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b14</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b16</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1582,12 +1597,12 @@ faderWrap.addEventListener("pointerdown", e => {
   faderDrag = true;
   faderWrap.setPointerCapture(e.pointerId);
   const r = faderWrap.getBoundingClientRect();
-  setFader(1 - (e.clientY - r.top - 7) / (r.height - 15));
+  setFader(1 - (e.clientY - r.top - 5) / (r.height - 11));
 });
 faderWrap.addEventListener("pointermove", e => {
   if (!faderDrag) return;
   const r = faderWrap.getBoundingClientRect();
-  setFader(1 - (e.clientY - r.top - 7) / (r.height - 15));
+  setFader(1 - (e.clientY - r.top - 5) / (r.height - 11));
 });
 faderWrap.addEventListener("pointerup", () => { faderDrag = false; });
 document.getElementById("onemore").onclick = () => {
@@ -1612,7 +1627,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 14");
+console.log("DAZY simulator · build 16");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
