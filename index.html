@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>DAZY · Build your edition</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #0C0B09 !important; }
+  body {
+    min-height: 100vh; color: #F2EFE8;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif; }
+  .app { background: #0C0B09; min-height: 100vh; padding: 22px 20px 70px; }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #2A2925; padding-bottom: 14px;
+  }
+  .h-left { display: flex; gap: 14px; align-items: baseline; }
+  .logo { font-size: 15px; font-weight: 700; letter-spacing: 7px; }
+  .sub { font-size: 9px; letter-spacing: 3px; color: #9C9789; }
+  .snd {
+    font-size: 10px; padding: 5px 11px;
+    background: transparent; color: #9C9789; border: 1px solid #2A2925;
+  }
+  .intro {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-weight: 650; font-size: 25px; color: #F2EFE8;
+    letter-spacing: -0.4px; line-height: 1.15;
+    margin: 26px 0 34px;
+  }
+  .intro em { color: #3D63FF; font-style: normal; }
+
+  .cols { display: flex; gap: 52px; flex-wrap: wrap; }
+  .col-preview { flex: 1 1 320px; min-width: 280px; position: sticky; top: 16px; align-self: flex-start; }
+  .col-controls { flex: 1 1 420px; min-width: 290px; }
+
+  .preview-panel {
+    background: radial-gradient(circle at 50% 26%, #17150F 0%, #0C0B09 74%);
+    border: 1px solid #2A2925; padding: 26px 14px 18px;
+  }
+  #tee-box svg { width: 100%; max-width: 310px; display: block; margin: 0 auto; }
+  .under-tee { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 12px; }
+  .numbering {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-weight: 550; font-size: 13px; color: #C9C3B4; letter-spacing: .6px;
+  }
+  .flipbtn { padding: 5px 12px; font-size: 10px; letter-spacing: 2px; }
+
+  .section { margin-bottom: 34px; }
+  .eyebrow { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .eyebrow .n { font-size: 9px; color: #6B675C; letter-spacing: 1px; }
+  .eyebrow .t { font-size: 10px; letter-spacing: 4px; font-weight: 700; }
+  .eyebrow::after { content: ""; flex: 1; height: 1px; background: #221F1A; }
+  .label {
+    font-size: 8px; letter-spacing: 3px; color: #9C9789;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .field { margin-bottom: 17px; }
+  .field:last-child { margin-bottom: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .names { display: flex; gap: 10px; flex-wrap: wrap; }
+  .names .field { flex: 1 1 170px; margin-bottom: 0; }
+  input[type=text] {
+    width: 100%; background: #121110; color: #F2EFE8;
+    border: 1px solid #3B3933; border-radius: 0;
+    padding: 11px 13px; font-family: inherit; font-size: 13px;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  input[type=text]::placeholder { color: #6B675C; }
+  input[type=text]:focus { outline: none; border-color: #F2EFE8; }
+
+  button {
+    padding: 9px 14px; font-size: 10px; letter-spacing: 2px; cursor: pointer;
+    text-transform: uppercase;
+    background: transparent; color: #C9C3B4;
+    border: 1px solid #3B3933; border-radius: 0;
+    font-family: inherit; transition: border-color .15s, color .15s;
+  }
+  button:hover { border-color: #9C9789; color: #F2EFE8; }
+  button.on { background: #F2EFE8; color: #0C0B09; border-color: #F2EFE8; font-weight: 700; }
+  button:focus-visible { outline: 1px solid #F2EFE8; outline-offset: 2px; }
+  button .hint { display: block; font-size: 8px; letter-spacing: .5px; opacity: .55; margin-top: 3px; font-weight: 400; text-transform: none; }
+
+  /* swatches couleur */
+  .swbtn {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    background: transparent; border: none; padding: 4px 8px;
+  }
+  .swbtn:hover { border: none; }
+  .sw { width: 30px; height: 30px; border: 1px solid #3B3933; }
+  .swbtn.on { background: transparent; color: #F2EFE8; font-weight: 400; }
+  .swbtn.on .sw { outline: 1px solid #F2EFE8; outline-offset: 3px; }
+  .swl { font-size: 9px; letter-spacing: 2px; color: #C9C3B4; }
+  .swbtn.on .swl { color: #F2EFE8; }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%;
+    height: 1px; background: #3B3933; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; background: #F2EFE8; cursor: pointer; border-radius: 0;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px; background: #F2EFE8; cursor: pointer; border: none; border-radius: 0;
+  }
+  .range-ends { display: flex; justify-content: space-between; font-size: 9px; color: #6B675C; margin-top: 8px; letter-spacing: 1px; }
+
+  .eco-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .num { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+  .num.dim { font-size: 17px; color: #9C9789; }
+  .num.neg { color: #C4573F; }
+  .coin-wrap { position: relative; display: inline-block; }
+  #e-total { color: #3D63FF; font-size: 34px; }
+  #e-total.neg { color: #C4573F; }
+  .coin-pop {
+    position: absolute; right: -24px; top: -6px;
+    font-size: 12px; color: #3D63FF; opacity: 0; pointer-events: none;
+  }
+  .coin-pop.go { animation: pop .55s steps(4) forwards; }
+  @keyframes pop {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-16px); }
+  }
+  .note { margin-top: 16px; font-size: 10px; color: #9C9789; letter-spacing: .4px; line-height: 1.8; }
+  .note a { color: #3D63FF; text-decoration: none; cursor: pointer; }
+
+  .price-wrap { position: relative; padding-top: 8px; }
+  .fly-coin {
+    position: absolute; bottom: 14px; font-size: 11px; color: #3D63FF;
+    pointer-events: none; user-select: none;
+    animation: fly .7s steps(6) forwards;
+  }
+  @keyframes fly {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-34px) scale(.8); }
+  }
+
+  #done {
+    width: 100%; padding: 16px; margin-top: 2px;
+    background: #F2EFE8; color: #0C0B09; border-color: #F2EFE8;
+    font-weight: 700; letter-spacing: 4px; font-size: 11px;
+  }
+  #done:disabled { opacity: .3; cursor: not-allowed; }
+
+  #stage {
+    margin-top: 44px; border: 1px solid #2A2925; padding: 30px 18px 30px;
+    text-align: center; display: none;
+  }
+  #stage.open { display: block; }
+  .stage-title {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-size: 26px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 5px;
+  }
+  .stage-sub { font-size: 9px; letter-spacing: 3px; color: #9C9789; margin-bottom: 22px; }
+  #floor { display: flex; justify-content: center; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .dancer { image-rendering: pixelated; }
+  .jump { animation: jump .333s steps(2) infinite; }
+  @keyframes jump { 0% { transform: translateY(0); } 50% { transform: translateY(-7px); } 100% { transform: translateY(0); } }
+  #stage.lit { animation: strobe .666s steps(2) infinite; }
+  @keyframes strobe { 0% { background: #0C0B09; } 50% { background: #16140E; } 100% { background: #0C0B09; } }
+
+  #faq-fab {
+    position: fixed; right: 18px; bottom: 18px; z-index: 90;
+    font-size: 11px; letter-spacing: 3px; padding: 13px 22px; font-weight: 700;
+    background: #3D63FF; color: #F2EFE8; border: 1px solid #3D63FF;
+    box-shadow: 0 0 0 3px #0C0B09, 0 0 0 4px #3D63FF;
+  }
+  #faq-fab:hover { background: #0C0B09; color: #3D63FF; }
+
+  #deal {
+    position: fixed; inset: 0; z-index: 100; display: none;
+    background: rgba(12, 11, 9, .97); overflow-y: auto;
+  }
+  #deal.open { display: block; }
+  .deal-inner { max-width: 640px; margin: 0 auto; padding: 30px 20px 80px; }
+  .deal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #3D63FF; padding-bottom: 14px; margin-bottom: 8px;
+  }
+  .deal-head .t { font-size: 13px; letter-spacing: 6px; font-weight: 700; color: #3D63FF; }
+  .deal-head .close {
+    background: transparent; border: 1px solid #2A2925; color: #F2EFE8;
+    padding: 6px 13px; font-size: 11px;
+  }
+  .deal-sub {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-weight: 550; font-size: 15px; color: #C9C3B4; margin-bottom: 24px; padding-top: 10px;
+  }
+  .qa { border-bottom: 1px solid #221F1A; }
+  .qa-q {
+    width: 100%; text-align: left; display: flex; gap: 12px; align-items: baseline;
+    background: transparent; border: none; padding: 16px 0;
+    font-size: 12px; letter-spacing: 1px; font-weight: 700; color: #F2EFE8;
+    text-transform: none;
+  }
+  .qa-q:hover { border: none; color: #3D63FF; }
+  .qa-q .qn { font-size: 9px; color: #6B675C; min-width: 20px; }
+  .qa-q .plus { margin-left: auto; color: #3D63FF; font-weight: 400; }
+  .qa-a {
+    display: none; padding: 0 0 18px 32px;
+    font-size: 11px; line-height: 1.85; color: #9C9789; letter-spacing: .3px;
+  }
+  .qa.open .qa-a { display: block; }
+  .qa.open .qa-q { color: #3D63FF; }
+
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+    .jump, #stage.lit, .coin-pop.go, .fly-coin { animation: none; }
+    .fly-coin { display: none; }
+  }
+  @media (max-width: 700px) {
+    .cols { display: block; }
+    .col-preview {
+      position: sticky; top: 0; z-index: 20;
+      background: #0C0B09; margin: 0 -20px 24px; padding: 6px 20px 8px;
+      border-bottom: 1px solid #2A2925;
+    }
+    .preview-panel { padding: 12px 10px 10px; }
+    #tee-box svg { max-width: 150px; }
+    .under-tee { margin-top: 6px; }
+    .numbering { font-size: 12px; }
+    .sub { display: none; }
+    .intro { font-size: 19px; margin: 20px 0 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<div class="wrap">
+  <header>
+    <div class="h-left">
+      <div class="logo">DAZY</div>
+      <div class="sub">BUILD YOUR EDITION</div>
+    </div>
+    <button class="snd" id="snd" title="Sound">♪ on</button>
+  </header>
+
+  <p class="intro">One piece. One numbered run. <em>Never again.</em></p>
+
+  <div class="cols">
+    <div class="col-preview">
+      <div class="preview-panel">
+        <div id="tee-box"></div>
+        <div class="under-tee">
+          <button class="flipbtn on" id="btn-front">FRONT</button>
+          <button class="flipbtn" id="btn-back">BACK</button>
+          <span class="numbering" id="numbering"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-controls">
+
+      <div class="section">
+        <div class="eyebrow"><span class="n">01</span><span class="t">YOUR NAME</span></div>
+        <div class="names">
+          <div class="field">
+            <div class="label">Stage name</div>
+            <input type="text" id="in-stage" placeholder="YOUR STAGE NAME" maxlength="18" autocomplete="off">
+          </div>
+          <div class="field">
+            <div class="label">Nickname · short</div>
+            <input type="text" id="in-nick" placeholder="NICK" maxlength="8" autocomplete="off">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="n">02</span><span class="t">THE TEE</span></div>
+        <div class="field">
+          <div class="label">Fabric</div>
+          <div class="row" id="g-coton"></div>
+        </div>
+        <div class="field">
+          <div class="label">Cut</div>
+          <div class="row" id="g-coupe"></div>
+        </div>
+        <div class="field">
+          <div class="label">Sleeves</div>
+          <div class="row" id="g-sleeves"></div>
+        </div>
+        <div class="field">
+          <div class="label">Color</div>
+          <div class="row" id="g-couleur"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="n">03</span><span class="t">THE PRINT</span></div>
+        <div class="field">
+          <div class="label">Logo</div>
+          <div class="row" id="g-logo"></div>
+        </div>
+        <div class="field">
+          <div class="label">Placement · up to 3</div>
+          <div class="row" id="g-placement"></div>
+        </div>
+        <div class="field">
+          <div class="label">Technique</div>
+          <div class="row" id="g-technique"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="n">04</span><span class="t">THE EDITION</span></div>
+        <div class="field">
+          <div class="label" id="prix-label">Retail price</div>
+          <div class="price-wrap" id="price-wrap">
+            <input type="range" id="prix" min="35" max="80" step="1" value="45">
+          </div>
+          <div class="range-ends"><span>€35</span><span>€80</span></div>
+        </div>
+        <div class="field">
+          <div class="label">Run · numbered, never reprinted</div>
+          <div class="row" id="g-tirage"></div>
+          <div class="range-ends"><span id="tirage-mood"></span></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow"><span class="n">05</span><span class="t">YOUR CUT</span></div>
+        <div class="eco-grid">
+          <div><div class="label">Edition price / piece</div><div class="num dim" id="e-edition"></div></div>
+          <div><div class="label">Your cut / piece</div><div class="num dim" id="e-part"></div></div>
+          <div style="grid-column: 1 / -1;">
+            <div class="label">Your cut / edition</div>
+            <div class="coin-wrap">
+              <div class="num" id="e-total">€0</div>
+              <div class="coin-pop" id="coin-pop">+ ¤</div>
+            </div>
+          </div>
+        </div>
+        <div class="note">
+          The edition price covers everything: design, art direction, production,
+          editorial page, sale. DAZY produces, edits, sells on its own site,
+          pays you out weekly. No upfront needed: pre-order option.<br>
+          Numbered run, never reprinted. <a id="deal-link">Read the FAQ →</a>
+        </div>
+      </div>
+
+      <button id="done" disabled>I'M DONE WITH MY CONFIG</button>
+
+    </div>
+  </div>
+
+  <div id="stage">
+    <div class="stage-title">The room is yours.</div>
+    <div class="stage-sub" id="stage-count"></div>
+    <div id="floor"></div>
+  </div>
+</div>
+</div>
+
+<button id="faq-fab">FAQ</button>
+
+<div id="deal">
+  <div class="deal-inner">
+    <div class="deal-head">
+      <span class="t">FAQ</span>
+      <button class="close" id="deal-close">✕ CLOSE</button>
+    </div>
+    <div class="deal-sub">The contract, in plain words. Tap a question.</div>
+    <div id="qa-list"></div>
+  </div>
+</div>
+
+<script>
+// ============ DATA ============
+const COTONS = [
+  { id: "180", label: "180 gsm", stroke: 1, grain: 0.05 },
+  { id: "220", label: "220 gsm", stroke: 1.25, grain: 0.075 },
+  { id: "250", label: "250 gsm", stroke: 1.55, grain: 0.11 },
+];
+const COUPES = [
+  { id: "regular", label: "Regular" },
+  { id: "boxy", label: "Boxy" },
+  { id: "oversize", label: "Oversize" },
+];
+const SLEEVES = [
+  { id: "short", label: "Short" },
+  { id: "long", label: "Long" },
+];
+const COULEURS = [
+  { id: "noir", label: "Black", top: "#201F1C", bot: "#131311", line: "#413F39",
+    ink: "#F2EFE8", grainW: true, foldD: "rgba(0,0,0,.3)" },
+  { id: "blanc", label: "White", top: "#F8F6EF", bot: "#E2DFD2", line: "#B0AB9B",
+    ink: "#14130F", grainW: false, foldD: "rgba(58,53,38,.16)" },
+  { id: "ecru", label: "Ecru", top: "#E5DECB", bot: "#CCC2AA", line: "#9E947B",
+    ink: "#221C10", grainW: false, foldD: "rgba(66,56,32,.18)" },
+];
+const LOGOS = [
+  { id: "min", label: "Minimal", hint: "nickname" },
+  { id: "max", label: "Maximal", hint: "full stage name" },
+];
+const PLACEMENTS = [
+  { id: "poitrine", label: "Chest", side: "front", small: false },
+  { id: "coeur", label: "Heart", side: "front", small: true },
+  { id: "dos", label: "Back", side: "back", small: false },
+  { id: "manche", label: "Sleeve", side: "front", small: true },
+];
+const TECHNIQUES = [
+  { id: "serigraphie", label: "Screen print" },
+  { id: "dtf", label: "DTF" },
+  { id: "broderie", label: "Embroidery" },
+];
+const TIRAGES = [50, 100, 150];
+const MOODS = { 50: "50 · tight run", 100: "100 · open run", 150: "150 · wide run" };
+
+// internal grid: never itemized on screen
+const ED_COTON = { "180": 13, "220": 15, "250": 18 };
+const ED_SLEEVE = { short: 0, long: 2.5 };
+const ED_MARK = {
+  serigraphie: { small: 1.5, big: 2.5 },
+  dtf: { small: 2.5, big: 3 },
+  broderie: { small: 3, big: 5.5 },
+};
+const ED_TIRAGE = { 50: 2, 100: 0, 150: -1 };
+
+const FAQ = [
+  ["Who makes it happen?",
+   "DAZY. Design, art direction, production, editorial page, sale. You bring the name and the vision, we build the object and put it in the world."],
+  ["What do I pay?",
+   "One number: the edition price per piece. It covers everything above. Two ways to fund the run: upfront, or pre-order on dazyvision.com, zero cash needed."],
+  ["Where does it sell?",
+   "On dazyvision.com only. One channel, one page, your own room on the site. The page stays online after the run sells out. Forever. That's the archive."],
+  ["How do I get paid?",
+   "Weekly. Sales report and payout, every single week. Your cut = retail price minus edition price, on every piece sold. DAZY sells, DAZY transfers."],
+  ["What if it blows up?",
+   "No reprint. Ever. A sold-out run stays sold out, that's what your first buyers own. If demand explodes, we cut a second edition: new form, new numbers, new run."],
+  ["Who shoots the campaign?",
+   "Packshots, flat shots and the narrative around the piece: included. Worn shots and your own shooting: yours to run, in sync with us for image continuity, or mandate us to book the photographer."],
+  ["Promo pieces for me?",
+   "As many as you want, billed at edition price, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
+  ["The fine print?",
+   "A signed edition contract before anything is produced. French law, GDPR-clean customer data, art direction by DAZY inside your validated brief. Ask us for the full document."],
+];
+
+// ============ TEE GEOMETRY (premium) ============
+const CUTS = {
+  regular: {
+    body: "M112 50 C100 52 88 56 78 60 C64 66 50 72 40 78 C36 96 32 114 30 132 L68 144 C71 134 74 125 76 116 C77 170 78 224 80 278 C103 281 127 282 150 282 C173 282 197 281 220 278 C222 224 223 170 224 116 C226 125 229 134 232 144 L270 132 C268 114 264 96 260 78 C250 72 236 66 222 60 C212 56 200 52 188 50 C176 62 124 62 112 50 Z",
+    collarIn: "M114 52 Q150 70 186 52",
+    backNeck: "M120 48 Q150 41 180 48",
+    seams: ["M76 116 C80 92 84 72 90 57", "M224 116 C220 92 216 72 210 57"],
+    folds: ["M98 154 C94 200 94 240 98 270", "M202 154 C206 200 206 240 202 270", "M150 94 C147 140 151 190 149 232"],
+    hemStitch: "M84 274 C106 277 194 277 216 274",
+    shadow: { cy: 294, rx: 116 },
+    longL: "M30 132 C24 176 21 214 22 246 L58 252 C62 216 65 180 68 144 Z",
+    longR: "M270 132 C276 176 279 214 278 246 L242 252 C238 216 235 180 232 144 Z",
+    cuffL: "M23 240 L57 246", cuffR: "M277 240 L243 246",
+  },
+  boxy: {
+    body: "M108 50 C94 52 82 56 72 60 C58 66 44 72 34 78 C30 96 26 116 22 136 L62 150 C65 140 68 130 70 120 C70 170 70 220 70 264 C96 267 123 268 150 268 C177 268 204 267 230 264 C230 220 230 170 230 120 C232 130 235 140 238 150 L278 136 C274 116 270 96 266 78 C256 72 242 66 228 60 C218 56 206 52 192 50 C178 63 122 63 108 50 Z",
+    collarIn: "M110 52 Q150 72 190 52",
+    backNeck: "M116 48 Q150 40 184 48",
+    seams: ["M70 120 C74 96 79 74 86 56", "M230 120 C226 96 221 74 214 56"],
+    folds: ["M96 158 C92 200 92 236 96 260", "M204 158 C208 200 208 236 204 260", "M150 96 C147 140 151 184 149 222"],
+    hemStitch: "M76 260 C100 263 200 263 224 260",
+    shadow: { cy: 280, rx: 126 },
+    longL: "M22 136 C16 180 13 218 14 250 L52 256 C56 220 59 184 62 150 Z",
+    longR: "M278 136 C284 180 287 218 286 250 L248 256 C244 220 241 184 238 150 Z",
+    cuffL: "M15 244 L51 250", cuffR: "M285 244 L249 250",
+  },
+  oversize: {
+    body: "M104 54 C88 57 74 62 64 66 C48 73 34 80 24 86 C19 108 15 130 12 150 L56 166 C59 154 62 143 64 132 C63 188 63 244 64 298 C92 301 121 302 150 302 C179 302 208 301 236 298 C237 244 237 188 236 132 C238 143 241 154 244 166 L288 150 C285 130 281 108 276 86 C266 80 252 73 236 66 C226 62 212 57 196 54 C180 68 120 68 104 54 Z",
+    collarIn: "M106 56 Q150 76 194 56",
+    backNeck: "M112 52 Q150 43 188 52",
+    seams: ["M64 132 C70 104 76 80 84 60", "M236 132 C230 104 224 80 216 60"],
+    folds: ["M92 172 C88 216 88 256 92 292", "M208 172 C212 216 212 256 208 292", "M150 100 C146 150 152 204 149 252"],
+    hemStitch: "M70 294 C96 297 204 297 230 294",
+    shadow: { cy: 314, rx: 138 },
+    longL: "M12 150 C7 194 5 232 6 262 L48 268 C52 232 54 198 56 166 Z",
+    longR: "M288 150 C293 194 295 232 294 262 L252 268 C248 232 246 198 244 166 Z",
+    cuffL: "M7 256 L47 262", cuffR: "M293 256 L253 262",
+  },
+};
+
+// ============ STATE ============
+let state = {
+  stage: "", nick: "",
+  coton: "220", coupe: "boxy", sleeves: "short", couleur: "noir",
+  logo: "max", technique: "serigraphie", placements: ["poitrine"],
+  prix: 45, tirage: 100, side: "front",
+};
+let roomOpen = false;
+let soundOn = true;
+let lastTotal = null;
+
+(function () {
+  const q = new URLSearchParams(location.search);
+  const pick = (key, list, cur) => {
+    const v = q.get(key);
+    return v && list.some(x => (x.id || x) == v) ? v : cur;
+  };
+  state.coton = pick("c", COTONS, state.coton);
+  state.coupe = pick("k", COUPES, state.coupe);
+  state.sleeves = pick("sl", SLEEVES, state.sleeves);
+  state.couleur = pick("col", COULEURS, state.couleur);
+  state.logo = pick("l", LOGOS, state.logo);
+  state.technique = pick("t", TECHNIQUES, state.technique);
+  const pr = parseInt(q.get("x")); if (pr >= 35 && pr <= 80) state.prix = pr;
+  const ti = parseInt(q.get("n")); if (TIRAGES.includes(ti)) state.tirage = ti;
+  const pl = (q.get("p") || "").split(",").filter(id => PLACEMENTS.some(x => x.id === id));
+  if (pl.length >= 1 && pl.length <= 3) state.placements = pl;
+  state.stage = (q.get("a") || "").slice(0, 18);
+  state.nick = (q.get("s") || "").slice(0, 8);
+  if (q.get("go") === "1" && state.stage) roomOpen = true;
+})();
+
+function params() {
+  return new URLSearchParams({
+    a: state.stage, s: state.nick,
+    c: state.coton, k: state.coupe, sl: state.sleeves, col: state.couleur, l: state.logo,
+    t: state.technique, p: state.placements.join(","),
+    x: state.prix, n: state.tirage, go: roomOpen ? "1" : "0",
+  });
+}
+function syncURL() {
+  try {
+    if (location.protocol !== "http:" && location.protocol !== "https:") return;
+    history.replaceState(null, "", "?" + params().toString());
+  } catch (e) {}
+}
+
+// ============ SOUND: coin ============
+let actx = null;
+function coin() {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    const g = actx.createGain();
+    g.gain.setValueAtTime(0.045, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    g.connect(actx.destination);
+    const o = actx.createOscillator();
+    o.type = "square";
+    o.frequency.setValueAtTime(988, t);
+    o.frequency.setValueAtTime(1319, t + 0.08);
+    o.connect(g);
+    o.start(t); o.stop(t + 0.22);
+  } catch (e) {}
+}
+document.getElementById("snd").onclick = function () {
+  soundOn = !soundOn;
+  this.textContent = soundOn ? "♪ on" : "♪ off";
+  if (!soundOn) stopMusic();
+  else if (roomOpen) startMusic();
+};
+
+// ============ MUSIC: 180 BPM hard dance loop ============
+const BPM = 180, BEAT = 60 / BPM;
+let musicTimer = null, nextBeat = 0, beatCount = 0, dist = null;
+
+function distCurve() {
+  if (dist) return dist;
+  dist = new Float32Array(256);
+  for (let i = 0; i < 256; i++) {
+    const x = (i / 128) - 1;
+    dist[i] = Math.tanh(x * 4);
+  }
+  return dist;
+}
+function kick(t) {
+  const o = actx.createOscillator();
+  o.type = "sine";
+  o.frequency.setValueAtTime(170, t);
+  o.frequency.exponentialRampToValueAtTime(42, t + 0.11);
+  const sh = actx.createWaveShaper();
+  sh.curve = distCurve();
+  const g = actx.createGain();
+  g.gain.setValueAtTime(0.55, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+  o.connect(sh); sh.connect(g); g.connect(actx.destination);
+  o.start(t); o.stop(t + 0.3);
+}
+function hat(t, open) {
+  const len = open ? 0.09 : 0.03;
+  const buf = actx.createBuffer(1, actx.sampleRate * len, actx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = actx.createBufferSource();
+  src.buffer = buf;
+  const hp = actx.createBiquadFilter();
+  hp.type = "highpass"; hp.frequency.value = 8000;
+  const g = actx.createGain();
+  g.gain.setValueAtTime(open ? 0.09 : 0.05, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + len);
+  src.connect(hp); hp.connect(g); g.connect(actx.destination);
+  src.start(t);
+}
+function stab(t, freq) {
+  const o = actx.createOscillator();
+  o.type = "sawtooth";
+  o.frequency.setValueAtTime(freq, t);
+  const f = actx.createBiquadFilter();
+  f.type = "lowpass";
+  f.frequency.setValueAtTime(2200, t);
+  f.frequency.exponentialRampToValueAtTime(300, t + 0.14);
+  const g = actx.createGain();
+  g.gain.setValueAtTime(0.11, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+  o.connect(f); f.connect(g); g.connect(actx.destination);
+  o.start(t); o.stop(t + 0.16);
+}
+const STABS = [164.81, 0, 196, 0, 164.81, 0, 146.83, 196];
+function scheduleBeat(t, n) {
+  kick(t);
+  hat(t + BEAT / 2, true);
+  hat(t + BEAT / 4, false);
+  hat(t + 3 * BEAT / 4, false);
+  const s = STABS[n % 8];
+  if (s) stab(t + BEAT / 2, s);
+}
+function startMusic() {
+  if (musicTimer || !soundOn) return;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    nextBeat = actx.currentTime + 0.06;
+    musicTimer = setInterval(() => {
+      while (nextBeat < actx.currentTime + 0.25) {
+        scheduleBeat(nextBeat, beatCount++);
+        nextBeat += BEAT;
+      }
+    }, 100);
+  } catch (e) {}
+}
+function stopMusic() {
+  if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+}
+
+// ============ PRINT ============
+function printText() {
+  const stage = state.stage.trim().toUpperCase() || "YOUR NAME";
+  const nick = state.nick.trim().toUpperCase() || stage.split(" ")[0].slice(0, 4);
+  return state.logo === "min" ? nick : stage;
+}
+function logoPos(placement, coupe) {
+  switch (placement) {
+    case "poitrine": return { x: 150, y: 124, base: 16, rotate: 0 };
+    case "coeur": return { x: coupe === "oversize" ? 114 : 116, y: 106, base: 10, rotate: 0 };
+    case "dos": return { x: 150, y: 126, base: 20, rotate: 0 };
+    case "manche":
+      if (state.sleeves === "long") {
+        if (coupe === "oversize") return { x: 30, y: 208, base: 10, rotate: 94 };
+        if (coupe === "boxy") return { x: 37, y: 196, base: 10, rotate: 94 };
+        return { x: 44, y: 190, base: 10, rotate: 93 };
+      }
+      if (coupe === "oversize") return { x: 37, y: 126, base: 9.5, rotate: 20 };
+      if (coupe === "boxy") return { x: 45, y: 116, base: 9.5, rotate: 19 };
+      return { x: 53, y: 112, base: 9.5, rotate: 17 };
+  }
+}
+function logoSVG(placement, coupe, technique, ink) {
+  const p = PLACEMENTS.find(x => x.id === placement);
+  const pos = logoPos(placement, coupe);
+  let text = printText();
+  if (p.small && state.logo === "max") text = text.split(" ")[0];
+  const size = text.length > 9 ? Math.max(8.5, pos.base * 9 / text.length) : pos.base;
+  const base = `x="${pos.x}" y="${pos.y}" font-size="${size.toFixed(1)}"
+    font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-weight="700"
+    letter-spacing="${p.small ? 0.5 : 1.6}" text-anchor="middle"
+    transform="rotate(${pos.rotate} ${pos.x} ${pos.y})"`;
+  if (technique === "broderie")
+    return `<text ${base} fill="none" stroke="${ink}" stroke-width="0.85" stroke-dasharray="1.5 1.2">${text}</text>`;
+  if (technique === "dtf")
+    return `<text ${base.replace(`rotate(${pos.rotate} ${pos.x} ${pos.y})`, `rotate(${pos.rotate} ${pos.x} ${pos.y}) translate(0.7,0.7)`)} fill="${ink}" opacity="0.22">${text}</text>
+            <text ${base} fill="${ink}">${text}</text>`;
+  return `<text ${base} fill="${ink}" opacity="0.93">${text}</text>`;
+}
+
+// ============ PREMIUM TEE RENDER ============
+function renderTee() {
+  const col = COULEURS.find(c => c.id === state.couleur);
+  const cot = COTONS.find(c => c.id === state.coton);
+  const G = CUTS[state.coupe];
+  const isLong = state.sleeves === "long";
+  const grainA = col.grainW ? Math.max(0.035, cot.grain - 0.02) : cot.grain;
+  const gc = col.grainW ? 1 : 0;
+  const visibles = state.placements.filter(
+    pl => PLACEMENTS.find(x => x.id === pl).side === state.side
+  );
+  const sleevePaths = isLong
+    ? `<path d="${G.longL}" fill="url(#shade)" stroke="${col.line}" stroke-width="${cot.stroke}" stroke-linejoin="round"/>
+       <path d="${G.longR}" fill="url(#shade)" stroke="${col.line}" stroke-width="${cot.stroke}" stroke-linejoin="round"/>`
+    : "";
+  const cuffs = isLong
+    ? `<path d="${G.cuffL}" stroke="${col.line}" stroke-width="0.7" opacity=".6" fill="none"/>
+       <path d="${G.cuffR}" stroke="${col.line}" stroke-width="0.7" opacity=".6" fill="none"/>`
+    : "";
+  const clipPaths = `<path d="${G.body}"/>` + (isLong ? `<path d="${G.longL}"/><path d="${G.longR}"/>` : "");
+
+  document.getElementById("tee-box").innerHTML = `
+    <svg viewBox="0 0 300 330">
+      <defs>
+        <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${col.top}"/>
+          <stop offset="1" stop-color="${col.bot}"/>
+        </linearGradient>
+        <filter id="softblur"><feGaussianBlur stdDeviation="3.6"/></filter>
+        <filter id="shadowblur"><feGaussianBlur stdDeviation="6"/></filter>
+        <filter id="grainF" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="n"/>
+          <feColorMatrix in="n" type="matrix"
+            values="0 0 0 0 ${gc}  0 0 0 0 ${gc}  0 0 0 0 ${gc}  0 0 0 ${grainA} 0"/>
+        </filter>
+        <clipPath id="teeclip">${clipPaths}</clipPath>
+      </defs>
+
+      <ellipse cx="150" cy="${G.shadow.cy}" rx="${G.shadow.rx}" ry="9"
+        fill="#000" opacity=".4" filter="url(#shadowblur)"/>
+
+      ${sleevePaths}
+      <path d="${G.body}" fill="url(#shade)" stroke="${col.line}"
+        stroke-width="${cot.stroke}" stroke-linejoin="round"/>
+
+      <g clip-path="url(#teeclip)">
+        <rect x="0" y="0" width="300" height="330" filter="url(#grainF)"/>
+        ${G.folds.map(d =>
+          `<path d="${d}" fill="none" stroke="${col.foldD}" stroke-width="6"
+             stroke-linecap="round" filter="url(#softblur)"/>`).join("")}
+        <path d="${G.collarIn}" fill="none" stroke="${col.foldD}" stroke-width="5"
+          filter="url(#softblur)" opacity=".8"/>
+      </g>
+
+      ${G.seams.map(d =>
+        `<path d="${d}" fill="none" stroke="${col.line}" stroke-width="0.7" opacity=".55"/>`).join("")}
+      <path d="${G.collarIn}" fill="none" stroke="${col.line}" stroke-width="${cot.stroke}"/>
+      <path d="${G.backNeck}" fill="none" stroke="${col.line}" stroke-width="0.7" opacity=".5"/>
+      <path d="${G.hemStitch}" fill="none" stroke="${col.line}" stroke-width="0.7" opacity=".55"/>
+      ${cuffs}
+
+      ${visibles.map(pl => logoSVG(pl, state.coupe, state.technique, col.ink)).join("")}
+    </svg>`;
+
+  document.getElementById("btn-front").className = "flipbtn" + (state.side === "front" ? " on" : "");
+  document.getElementById("btn-back").className = "flipbtn" + (state.side === "back" ? " on" : "");
+  document.getElementById("numbering").textContent =
+    "No. 1 of " + state.tirage;
+}
+
+// ============ ECONOMY ============
+const fmt = n => (n < 0 ? "− " : "") + "€" + Math.abs(n).toFixed(Math.abs(n) % 1 === 0 ? 0 : 2);
+
+function prixEdition() {
+  let p = ED_COTON[state.coton] + ED_SLEEVE[state.sleeves] + ED_TIRAGE[state.tirage];
+  state.placements.forEach(pl => {
+    const small = PLACEMENTS.find(x => x.id === pl).small;
+    p += ED_MARK[state.technique][small ? "small" : "big"];
+  });
+  return Math.round(p * 2) / 2;
+}
+
+let animFrame = null;
+function animateTotal(from, to) {
+  if (animFrame) cancelAnimationFrame(animFrame);
+  const el = document.getElementById("e-total");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced || from === null) {
+    el.textContent = fmt(to);
+    el.className = "num" + (to < 0 ? " neg" : "");
+    return;
+  }
+  const start = performance.now(), dur = 480;
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = fmt(Math.round(from + (to - from) * eased));
+    el.className = "num" + (to < 0 ? " neg" : "");
+    if (t < 1) animFrame = requestAnimationFrame(step);
+    else el.textContent = fmt(to);
+  }
+  animFrame = requestAnimationFrame(step);
+  if (to > from) {
+    coin();
+    const pop = document.getElementById("coin-pop");
+    pop.classList.remove("go");
+    void pop.offsetWidth;
+    pop.classList.add("go");
+  }
+}
+
+function renderEco() {
+  const ed = prixEdition();
+  const part = state.prix - ed;
+  const total = part * state.tirage;
+  document.getElementById("e-edition").textContent = fmt(ed);
+  const ep = document.getElementById("e-part");
+  ep.textContent = fmt(part);
+  ep.className = "num dim" + (part < 0 ? " neg" : "");
+  animateTotal(lastTotal, total);
+  lastTotal = total;
+  document.getElementById("prix-label").textContent = "Retail price · " + fmt(state.prix);
+  document.getElementById("tirage-mood").textContent = MOODS[state.tirage];
+}
+
+// pièces qui s'envolent sur le slider
+let lastCoinAt = 0;
+function sliderCoins() {
+  const now = performance.now();
+  if (now - lastCoinAt < 90) return;
+  lastCoinAt = now;
+  coin();
+  const wrap = document.getElementById("price-wrap");
+  const slider = document.getElementById("prix");
+  const ratio = (state.prix - 35) / (80 - 35);
+  const x = ratio * (slider.offsetWidth - 16) + 8;
+  for (let i = 0; i < 2; i++) {
+    const c = document.createElement("span");
+    c.className = "fly-coin";
+    c.textContent = "¤";
+    c.style.left = (x + (Math.random() * 18 - 9)) + "px";
+    wrap.appendChild(c);
+    setTimeout(() => c.remove(), 750);
+  }
+}
+
+// ============ THE ROOM: pixel crowd (le clin d'œil) ============
+const D_W = 10, D_H = 12, PX = 5;
+const FRAME_A = [
+  "s........s",
+  ".s.hhhh.s.",
+  "..shhhhs..",
+  "...ssss...",
+  "...tttt...",
+  "..t.ii.t..",
+  "...tttt...",
+  "...tttt...",
+  "...pppp...",
+  "...p..p...",
+  "...p..p...",
+  "..bb..bb..",
+];
+const FRAME_B = [
+  "..........",
+  "...hhhh...",
+  "...hhhh...",
+  "..s.ss.s..",
+  ".s.tttt.s.",
+  "s..tiit..s",
+  "...tttt...",
+  "...tttt...",
+  "...pppp...",
+  "...p..pp..",
+  "...p....pp",
+  "..bb....bb",
+];
+const HAIRS = ["#1A1A18", "#6B4A2A", "#C9A54A", "#8A2C1E", "#3F6B3A", "#2C3F6B"];
+
+function dancerSVG(frame, hair, teeFill, teeInk, flip) {
+  const grid = frame === 0 ? FRAME_A : FRAME_B;
+  const map = { h: hair, s: "#C9A183", t: teeFill, i: teeInk, p: "#26261F", b: "#0C0B09" };
+  let rects = "";
+  for (let y = 0; y < D_H; y++)
+    for (let x = 0; x < D_W; x++) {
+      const c = grid[y][x];
+      if (c !== ".") {
+        const gx = flip ? D_W - 1 - x : x;
+        rects += `<rect x="${gx * PX}" y="${y * PX}" width="${PX}" height="${PX}" fill="${map[c]}"/>`;
+      }
+    }
+  return `<svg class="dancer" width="${D_W * PX}" height="${D_H * PX}" viewBox="0 0 ${D_W * PX} ${D_H * PX}">${rects}</svg>`;
+}
+
+let beatTimer = null, beat = 0;
+function renderStage() {
+  const stage = document.getElementById("stage");
+  stage.className = roomOpen ? "open lit" : "";
+  if (!roomOpen) { if (beatTimer) { clearInterval(beatTimer); beatTimer = null; } return; }
+
+  const col = COULEURS.find(c => c.id === state.couleur);
+  document.getElementById("stage-count").textContent =
+    state.tirage + " TEES · " + (state.tirage * 2) + " SHOULDERS · 180 BPM";
+  const floor = document.getElementById("floor");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function draw() {
+    let html = "";
+    for (let i = 0; i < 6; i++) {
+      const f = reduced ? 0 : (beat + i) % 2;
+      html += `<div class="${reduced ? "" : "jump"}" style="animation-delay:${(i % 3) * 0.11}s">
+        ${dancerSVG(f, HAIRS[i], col.bot, col.ink, i % 2 === 1)}</div>`;
+    }
+    floor.innerHTML = html;
+  }
+  draw();
+  if (!reduced && !beatTimer) {
+    beatTimer = setInterval(() => { beat++; draw(); }, 166);
+  }
+}
+
+// ============ FAQ ============
+function renderFAQ() {
+  const list = document.getElementById("qa-list");
+  list.innerHTML = "";
+  FAQ.forEach(([q, a], i) => {
+    const item = document.createElement("div");
+    item.className = "qa";
+    item.innerHTML = `
+      <button class="qa-q">
+        <span class="qn">${String(i + 1).padStart(2, "0")}</span>
+        <span>${q}</span>
+        <span class="plus">+</span>
+      </button>
+      <div class="qa-a">${a}</div>`;
+    item.querySelector(".qa-q").onclick = () => {
+      const wasOpen = item.classList.contains("open");
+      list.querySelectorAll(".qa").forEach(x => x.classList.remove("open"));
+      list.querySelectorAll(".plus").forEach(x => x.textContent = "+");
+      if (!wasOpen) {
+        item.classList.add("open");
+        item.querySelector(".plus").textContent = "−";
+        coin();
+      }
+    };
+    list.appendChild(item);
+  });
+}
+function openDeal() {
+  document.getElementById("deal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeDeal() {
+  document.getElementById("deal").classList.remove("open");
+  document.body.style.overflow = "";
+}
+document.getElementById("faq-fab").onclick = openDeal;
+document.getElementById("deal-link").onclick = openDeal;
+document.getElementById("deal-close").onclick = closeDeal;
+document.getElementById("deal").addEventListener("click", e => {
+  if (e.target.id === "deal") closeDeal();
+});
+
+// ============ GLOBAL RENDER ============
+function renderGroup(elId, items, isOn, onClick) {
+  const el = document.getElementById(elId);
+  el.innerHTML = "";
+  items.forEach(item => {
+    const id = item.id !== undefined ? item.id : item;
+    const label = item.label !== undefined ? item.label : item;
+    const b = document.createElement("button");
+    if (elId === "g-couleur") {
+      b.className = "swbtn" + (isOn(id) ? " on" : "");
+      b.innerHTML = `<span class="sw" style="background: radial-gradient(circle at 32% 28%, ${item.top}, ${item.bot})"></span>
+                     <span class="swl">${label}</span>`;
+    } else {
+      b.innerHTML = label + (item.hint ? `<span class="hint">${item.hint}</span>` : "");
+      b.className = isOn(id) ? "on" : "";
+    }
+    b.onclick = () => { onClick(id); render(); };
+    el.appendChild(b);
+  });
+}
+
+function render() {
+  renderGroup("g-coton", COTONS, id => state.coton === id, id => state.coton = id);
+  renderGroup("g-coupe", COUPES, id => state.coupe === id, id => state.coupe = id);
+  renderGroup("g-sleeves", SLEEVES, id => state.sleeves === id, id => state.sleeves = id);
+  renderGroup("g-couleur", COULEURS, id => state.couleur === id, id => state.couleur = id);
+  renderGroup("g-logo", LOGOS, id => state.logo === id, id => state.logo = id);
+  renderGroup("g-technique", TECHNIQUES, id => state.technique === id, id => state.technique = id);
+  renderGroup("g-tirage", TIRAGES, id => state.tirage === id, id => state.tirage = id);
+  renderGroup("g-placement", PLACEMENTS, id => state.placements.includes(id), id => {
+    if (state.placements.includes(id)) {
+      if (state.placements.length > 1) state.placements = state.placements.filter(p => p !== id);
+    } else if (state.placements.length < 3) {
+      state.placements.push(id);
+      state.side = PLACEMENTS.find(x => x.id === id).side;
+    }
+  });
+  document.getElementById("done").disabled = !state.stage.trim();
+  renderTee();
+  renderEco();
+  renderStage();
+  syncURL();
+}
+
+document.getElementById("in-stage").addEventListener("input", e => {
+  state.stage = e.target.value; render();
+});
+document.getElementById("in-nick").addEventListener("input", e => {
+  state.nick = e.target.value; render();
+});
+document.getElementById("prix").addEventListener("input", e => {
+  state.prix = Number(e.target.value); renderEco(); syncURL(); sliderCoins();
+});
+document.getElementById("btn-front").onclick = () => { state.side = "front"; renderTee(); };
+document.getElementById("btn-back").onclick = () => { state.side = "back"; renderTee(); };
+
+document.getElementById("done").onclick = () => {
+  roomOpen = true;
+  renderStage();
+  startMusic();
+  syncURL();
+  document.getElementById("stage").scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+document.getElementById("in-stage").value = state.stage;
+document.getElementById("in-nick").value = state.nick;
+document.getElementById("prix").value = state.prix;
+renderFAQ();
+render();
+</script>
+</body>
+</html>
