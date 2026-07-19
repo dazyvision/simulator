@@ -54,17 +54,18 @@
   .col-controls { flex: 1 1 420px; min-width: 290px; }
 
   .preview-panel {
+    border: 1px solid #221F1A; background: #100F0C;
     background: radial-gradient(circle at 50% 26%, #17150F 0%, #0C0B09 74%);
     border: 1px solid #2A2925; padding: 26px 14px 18px;
   }
   #tee-box svg { width: 100%; max-width: 310px; display: block; margin: 0 auto; }
   .under-tee { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; margin-top: 12px; }
   .motto {
-    font-size: 11px; font-weight: 700; color: #3D63FF;
+    font-size: 11px; color: #3D63FF;
     margin-top: 10px; letter-spacing: 0.3px;
   }
   .preview-note {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #3D63FF;
+    font-size: 10px; letter-spacing: 0.5px; color: #3D63FF;
     margin-top: 3px; text-align: center; max-width: 320px; line-height: 1.6;
   }
   .numbering {
@@ -84,18 +85,25 @@
   .vbtn.has .vdot { display: block; }
   .vbtn.on .vdot { background: #3D63FF; }
 
-  .section { margin-bottom: 34px; }
-  .eyebrow { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
-  .eyebrow .n { font-size: 9px; color: #6B675C; letter-spacing: 1px; }
-  .eyebrow .t { font-size: 10px; letter-spacing: 4px; font-weight: 700; }
-  .eyebrow::after { content: ""; flex: 1; height: 1px; background: #221F1A; }
-  .label {
-    font-size: 8px; letter-spacing: 3px; color: #9C9789;
-    text-transform: uppercase; margin-bottom: 8px;
+  .section {
+    background: #100F0C; border: 1px solid #221F1A;
+    padding: 22px 18px; margin-bottom: 16px;
   }
-  .field { margin-bottom: 17px; }
+  .eyebrow { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+  .eyebrow .n {
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    color: #F2EFE8; background: #3D63FF; padding: 4px 7px;
+  }
+  .eyebrow .t { font-size: 11px; letter-spacing: 4px; font-weight: 700; color: #F2EFE8; line-height: 1.4; }
+  @media (max-width: 520px) { .eyebrow .t { letter-spacing: 2px; font-size: 10px; } }
+  .eyebrow::after { content: ""; flex: 1; height: 1px; background: #2A2823; }
+  .label {
+    font-size: 8.5px; letter-spacing: 3px; color: #9C9789;
+    text-transform: uppercase; margin-bottom: 9px;
+  }
+  .field { margin-bottom: 21px; }
   .field:last-child { margin-bottom: 0; }
-  .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
   .names { display: flex; gap: 10px; flex-wrap: wrap; }
   .names .field { flex: 1 1 170px; margin-bottom: 0; }
   input[type=text] {
@@ -104,11 +112,12 @@
     padding: 11px 13px; font-family: inherit; font-size: 13px;
     letter-spacing: 2px; text-transform: uppercase;
   }
-  input[type=text]::placeholder { color: #6B675C; }
-  input[type=text]:focus { outline: none; border-color: #F2EFE8; }
+  input[type=text]::placeholder { color: #6B675C; letter-spacing: 1px; font-size: 12px; }
+  input[type=text]:focus { outline: none; border-color: #3D63FF; }
 
   button {
-    padding: 9px 14px; font-size: 10px; letter-spacing: 2px; cursor: pointer;
+    padding: 12px 16px; font-size: 10.5px; letter-spacing: 2px; cursor: pointer;
+    min-height: 42px;
     text-transform: uppercase;
     background: transparent; color: #C9C3B4;
     border: 1px solid #3B3933; border-radius: 0;
@@ -149,7 +158,10 @@
   .num.dim { font-size: 17px; color: #9C9789; }
   .num.neg { color: #C4573F; }
   .coin-wrap { position: relative; display: inline-block; }
-  #e-total { color: #3D63FF; font-size: 34px; }
+  .section div:has(> #e-total) {
+    border-top: 1px solid #2A2823; margin-top: 14px; padding-top: 14px;
+  }
+  #e-total { color: #3D63FF; font-size: 36px; }
   #e-total.neg { color: #C4573F; }
   .coin-pop {
     position: absolute; right: -24px; top: -6px;
@@ -175,7 +187,7 @@
   }
 
   #done {
-    width: 100%; padding: 16px; margin-top: 2px;
+    width: 100%; padding: 18px; margin-top: 6px;
     background: #F2EFE8; color: #0C0B09; border-color: #F2EFE8;
     font-weight: 700; letter-spacing: 4px; font-size: 11px;
   }
@@ -388,7 +400,8 @@
       background: #0C0B09; margin: 0 -20px 24px; padding: 6px 20px 8px;
       border-bottom: 1px solid #2A2925;
     }
-    .preview-panel { padding: 12px 10px 10px; }
+    .preview-panel {
+    border: 1px solid #221F1A; background: #100F0C; padding: 12px 10px 10px; }
     #tee-box svg { max-width: 150px; }
     .under-tee { margin-top: 6px; }
     .numbering { font-size: 12px; }
@@ -428,11 +441,11 @@
     <div class="col-controls">
 
       <div class="section">
-        <div class="eyebrow"><span class="n">01</span><span class="t">YOUR NAME</span></div>
+        <div class="eyebrow"><span class="n">01</span><span class="t">LET'S TRY WITH YOUR NAME</span></div>
         <div class="names">
           <div class="field">
             <div class="label">Stage name</div>
-            <input type="text" id="in-stage" placeholder="YOUR STAGE NAME" maxlength="18" autocomplete="off">
+            <input type="text" id="in-stage" placeholder="TYPE IT HERE" maxlength="18" autocomplete="off">
           </div>
           <div class="field">
             <div class="label">Nickname · short</div>
@@ -565,7 +578,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b48</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b52</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -958,7 +971,7 @@ document.addEventListener("click", () => {
 
 // ============ PRINT ============
 function printText() {
-  const stage = state.stage.trim().toUpperCase() || "YOUR NAME";
+  const stage = state.stage.trim().toUpperCase() || "LET'S TRY WITH YOUR NAME";
   const nick = state.nick.trim().toUpperCase() || stage.split(" ")[0].slice(0, 4);
   return state.logo === "min" ? nick : stage;
 }
@@ -978,22 +991,50 @@ function logoPos(placement, coupe) {
       return { x: 53, y: 112, base: 9.5, rotate: 17 };
   }
 }
+function splitTwoLines(text) {
+  // coupe au séparateur le plus proche du centre, sinon au milieu du mot
+  const mid = text.length / 2;
+  const findCut = seps => {
+    let cut = -1, bestD = 1e9;
+    for (let i = 1; i < text.length - 1; i++)
+      if (seps.includes(text[i])) {
+        const d = Math.abs(i - mid);
+        if (d < bestD) { bestD = d; cut = i; }
+      }
+    return cut;
+  };
+  let cut = findCut(" ");
+  if (cut < 0) cut = findCut("-_.");
+  if (cut > 0) return [text.slice(0, cut), text.slice(cut + 1)];
+  const m = Math.ceil(mid);
+  return [text.slice(0, m), text.slice(m)];
+}
 function logoSVG(placement, coupe, technique, ink) {
   const p = PLACEMENTS.find(x => x.id === placement);
   const pos = logoPos(placement, coupe);
   let text = printText();
   if (p.small && state.logo === "max") text = text.split(" ")[0];
-  const size = text.length > 9 ? Math.max(8.5, pos.base * 9 / text.length) : pos.base;
-  const base = `x="${pos.x}" y="${pos.y}" font-size="${size.toFixed(1)}"
-    font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-weight="700"
-    letter-spacing="${p.small ? 0.5 : 1.6}" text-anchor="middle"
-    transform="rotate(${pos.rotate} ${pos.x} ${pos.y})"`;
+  // deux lignes plutôt qu'une réduction excessive
+  let lines = [text];
+  let fitLen = text.length;
+  if (!p.small && text.length > 11) {
+    lines = splitTwoLines(text);
+    fitLen = Math.max(lines[0].length, lines[1].length);
+  }
+  const size = fitLen > 9 ? Math.max(9.5, pos.base * 9 / fitLen) : pos.base;
+  const lh = size * 1.25;
+  const y0 = lines.length === 2 ? pos.y - lh / 2 : pos.y;
+  const mk = (extraTransform, fill, extra) => lines.map((ln, i) =>
+    `<text x="${pos.x}" y="${(y0 + i * lh).toFixed(1)}" font-size="${size.toFixed(1)}"
+      font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-weight="700"
+      letter-spacing="${p.small ? 0.5 : 1.6}" text-anchor="middle"
+      transform="rotate(${pos.rotate} ${pos.x} ${pos.y})${extraTransform}"
+      ${fill} ${extra || ""}>${ln}</text>`).join("");
   if (technique === "broderie")
-    return `<text ${base} fill="none" stroke="${ink}" stroke-width="0.85" stroke-dasharray="1.5 1.2">${text}</text>`;
+    return mk("", `fill="none" stroke="${ink}"`, `stroke-width="0.85" stroke-dasharray="1.5 1.2"`);
   if (technique === "dtf")
-    return `<text ${base.replace(`rotate(${pos.rotate} ${pos.x} ${pos.y})`, `rotate(${pos.rotate} ${pos.x} ${pos.y}) translate(0.7,0.7)`)} fill="${ink}" opacity="0.22">${text}</text>
-            <text ${base} fill="${ink}">${text}</text>`;
-  return `<text ${base} fill="${ink}" opacity="0.93">${text}</text>`;
+    return mk(" translate(0.7,0.7)", `fill="${ink}"`, `opacity="0.22"`) + mk("", `fill="${ink}"`);
+  return mk("", `fill="${ink}"`, `opacity="0.93"`);
 }
 
 // ============ PREMIUM TEE RENDER ============
@@ -1536,15 +1577,22 @@ function guruFigure(fi, rv, col) {
     L${cx + 2.5} ${eyeY + 16.8} Q${cx + 6.5} ${eyeY + 16.5} ${cx + 7.6} ${eyeY + 12.5} L${cx + 8} ${eyeY + 10}"
     stroke="${eye}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
   // ---- prints lisses ----
-  const stageName = state.stage.trim().toUpperCase() || "YOUR NAME";
+  const stageName = state.stage.trim().toUpperCase() || "LET'S TRY WITH YOUR NAME";
   const nickName = state.nick.trim().toUpperCase();
   const mono = "ui-monospace, 'SF Mono', Menlo, monospace";
   const chestY = (S0 + 4.6) * PXG;
   if (state.placements.includes("poitrine")) {
     const label = state.logo === "min" && nickName ? nickName : stageName;
-    const size = Math.max(4, Math.min(9.5, (80 / Math.max(label.length, 1)) * 1.05));
-    s += `<text x="${cx}" y="${chestY}" text-anchor="middle" font-family="${mono}" font-weight="700"
-      letter-spacing="0.6" font-size="${size.toFixed(1)}" fill="${col.ink}">${label}</text>`;
+    let lines = [label];
+    if (label.length > 11) lines = splitTwoLines(label);
+    const fitLen = Math.max(...lines.map(l => l.length), 1);
+    const size = Math.max(5.5, Math.min(9.5, (80 / fitLen) * 1.05));
+    const lh = size * 1.3;
+    const y0 = lines.length === 2 ? chestY - lh / 2 : chestY;
+    lines.forEach((ln, i) => {
+      s += `<text x="${cx}" y="${(y0 + i * lh).toFixed(1)}" text-anchor="middle" font-family="${mono}" font-weight="700"
+        letter-spacing="0.6" font-size="${size.toFixed(1)}" fill="${col.ink}">${ln}</text>`;
+    });
   } else if (state.placements.includes("coeur")) {
     // nickname s'il existe, sinon le nom de scène entier auto-réduit
     const label = nickName || stageName;
@@ -1829,7 +1877,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 48");
+console.log("DAZY simulator · build 52");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
