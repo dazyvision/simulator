@@ -7,17 +7,17 @@
 <title>DAZY · Build your edition</title>
 <meta name="robots" content="noindex, nofollow">
 <meta property="og:title" content="DAZY · Build your edition">
-<meta property="og:description" content="A fashion artifact for your community.">
+<meta property="og:description" content="Create your fashion artifact. Save a raver. Style your community.">
 <meta property="og:image" content="https://dazyvision.github.io/simulator/ogimage.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://dazyvision.github.io/simulator/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="DAZY · Build your edition">
-<meta name="twitter:description" content="A fashion artifact for your community.">
+<meta name="twitter:description" content="Create your fashion artifact. Save a raver. Style your community.">
 <meta name="twitter:image" content="https://dazyvision.github.io/simulator/ogimage.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { background: #0C0B09 !important; }
@@ -42,10 +42,10 @@
     background: transparent; color: #9C9789; border: 1px solid #2A2925;
   }
   .intro {
-    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
-    font-weight: 650; font-size: 25px; color: #F2EFE8;
-    letter-spacing: -0.4px; line-height: 1.15;
-    margin: 26px 0 34px;
+    font-family: "Press Start 2P", ui-monospace, monospace;
+    font-size: 12px; color: #F2EFE8;
+    line-height: 2.1; text-transform: uppercase;
+    margin: 26px 0 34px; max-width: 620px;
   }
   .intro em { color: #3D63FF; font-style: normal; }
 
@@ -168,8 +168,8 @@
   }
   #stage.open { display: block; }
   .stage-title {
-    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
-    font-size: 26px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 5px;
+    font-family: "Press Start 2P", ui-monospace, monospace;
+    font-size: 15px; line-height: 1.6; margin-bottom: 8px; color: #3D63FF;
   }
   .stage-sub { font-size: 9px; letter-spacing: 3px; color: #9C9789; margin-bottom: 22px; }
   #floor { display: flex; justify-content: center; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
@@ -223,6 +223,38 @@
   .qa.open .qa-a { display: block; }
   .qa.open .qa-q { color: #3D63FF; }
 
+  /* gates : ENTER + SAVE A RAVER */
+  .gate {
+    position: fixed; inset: 0; z-index: 200;
+    background: #0C0B09; color: #F2EFE8;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 30px; padding: 24px; text-align: center;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .gate.hidden { display: none; }
+  .gate-title {
+    font-family: "Press Start 2P", ui-monospace, monospace;
+    font-size: 15px; line-height: 1.6;
+  }
+  .gate-sub {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-weight: 550; font-size: 16px; color: #9C9789; max-width: 420px; line-height: 1.5;
+  }
+  .gate-btn {
+    padding: 16px 30px; background: #F2EFE8; color: #0C0B09;
+    border: 1px solid #F2EFE8; font-weight: 700; letter-spacing: 4px; font-size: 12px;
+  }
+  .gate-hint { font-size: 9px; letter-spacing: 2px; color: #6B675C; }
+  #raver-row { display: flex; gap: 26px; justify-content: center; flex-wrap: wrap; }
+  .raver-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    background: transparent; border: 1px solid #33322E; padding: 16px 14px 12px;
+  }
+  .raver-btn:hover { border-color: #3D63FF; }
+  .raver-name { font-size: 11px; letter-spacing: 3px; font-weight: 700; }
+  .raver-tag { font-size: 8px; letter-spacing: 1px; color: #6B675C; }
+  .raver-btn .dancer { image-rendering: pixelated; }
+
   @media (prefers-reduced-motion: reduce) {
     button { transition: none; }
     .jump, #stage.lit, .coin-pop.go, .fly-coin { animation: none; }
@@ -249,13 +281,13 @@
 <div class="wrap">
   <header>
     <div class="h-left">
-      <div class="logo">DAZY</div>
+      <div class="logo" id="header-logo" aria-label="DAZY"></div>
       <div class="sub">BUILD YOUR EDITION</div>
     </div>
     <button class="snd" id="snd" title="Sound">♪ on</button>
   </header>
 
-  <p class="intro">A fashion artifact <em>for your community.</em></p>
+  <p class="intro" id="intro">Create your fashion artifact <em>and style your community.</em></p>
 
   <div class="cols">
     <div class="col-preview">
@@ -364,11 +396,23 @@
   </div>
 
   <div id="stage">
-    <div class="stage-title">The room is yours.</div>
+    <div class="stage-title">YOUR COMMUNITY IS FREE!</div>
     <div class="stage-sub" id="stage-count"></div>
     <div id="floor"></div>
   </div>
 </div>
+</div>
+
+<div class="gate" id="gate1">
+  <div id="gate-logo"></div>
+  <button class="gate-btn" id="enter-btn">ENTER THE SIMULATION</button>
+  <div class="gate-hint">SOUND ON</div>
+</div>
+
+<div class="gate hidden" id="gate2">
+  <div class="gate-title">SAVE A RAVER</div>
+  <div class="gate-sub">They've been stuck in AFROJACK tour merch since 2019. Choose who you save.</div>
+  <div id="raver-row"></div>
 </div>
 
 <button id="faq-fab">FAQ</button>
@@ -449,6 +493,8 @@ const FAQ = [
    "No reprint. Ever. A sold-out run stays sold out, that's what your first buyers own. If demand explodes, we cut a second edition: new form, new numbers, new run."],
   ["Who shoots the campaign?",
    "Packshots, flat shots and the narrative around the piece: included. Worn shots and your own shooting: yours to run, in sync with us for image continuity, or mandate us to book the photographer."],
+  ["What do you design with?",
+   "Everything is art-directed and built in-house: Photoshop, Illustrator and InDesign for the pieces and the pages, ComfyUI and Stable Diffusion pipelines for visual research. Tools follow the direction, never the other way around."],
   ["Promo pieces for me?",
    "As many as you want, billed at edition price, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
   ["The fine print?",
@@ -656,16 +702,26 @@ function startMusic() {
   try {
     unlockIOSAudio();
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-    if (actx.state === "suspended") actx.resume();
-    nextBeat = actx.currentTime + 0.06;
-    musicTimer = setInterval(() => {
-      while (nextBeat < actx.currentTime + 0.25) {
-        scheduleBeat(nextBeat, beatCount++);
-        nextBeat += BEAT;
-      }
-    }, 100);
+    const go = () => {
+      if (musicTimer) return;
+      nextBeat = actx.currentTime + 0.06;
+      musicTimer = setInterval(() => {
+        if (actx.state !== "running") { actx.resume().catch(() => {}); return; }
+        if (nextBeat < actx.currentTime) nextBeat = actx.currentTime + 0.06;
+        while (nextBeat < actx.currentTime + 0.25) {
+          scheduleBeat(nextBeat, beatCount++);
+          nextBeat += BEAT;
+        }
+      }, 100);
+    };
+    if (actx.state !== "running") actx.resume().then(go).catch(go);
+    else go();
   } catch (e) {}
 }
+// self-heal : tout tap pendant que la salle est ouverte relance la musique si elle est tombée
+document.addEventListener("click", () => {
+  if (roomOpen && soundOn && !musicTimer) startMusic();
+});
 function stopMusic() {
   if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
 }
@@ -863,8 +919,8 @@ const FRAME_A = [
   ".s.hhhh.s.",
   "..shhhhs..",
   "...ssss...",
-  "...tttt...",
-  "..t.ii.t..",
+  "..tttttt..",
+  "..ttiitt..",
   "...tttt...",
   "...tttt...",
   "...pppp...",
@@ -877,8 +933,8 @@ const FRAME_B = [
   "...hhhh...",
   "...hhhh...",
   "..s.ss.s..",
-  ".s.tttt.s.",
-  "s..tiit..s",
+  ".stttttts.",
+  "s.ttiitt.s",
   "...tttt...",
   "...tttt...",
   "...pppp...",
@@ -886,22 +942,187 @@ const FRAME_B = [
   "...p....pp",
   "..bb....bb",
 ];
-const HAIRS = ["#1A1A18", "#6B4A2A", "#C9A54A", "#8A2C1E", "#3F6B3A", "#2C3F6B"];
+// la foule porte la pièce configurée : coupe, manches, print
+function crowdFrames() {
+  const mk = base => base.map(r => r.split(""));
+  const A = mk(FRAME_A), B = mk(FRAME_B);
+  const wide = state.coupe !== "regular";
+  const overs = state.coupe === "oversize";
+  const long = state.sleeves === "long";
+  const torsoRows = [4, 5, 6, 7];
+  [A, B].forEach(g => {
+    if (wide) torsoRows.forEach(r => {
+      if (g[r][2] === ".") g[r][2] = "t";
+      if (g[r][7] === ".") g[r][7] = "t";
+    });
+    if (overs) {
+      for (let c = 3; c <= 6; c++) if (g[8][c] === "p") g[8][c] = "t";
+      if (g[8][2] === ".") g[8][2] = "t";
+      if (g[8][7] === ".") g[8][7] = "t";
+    }
+    for (let r = 0; r < 12; r++)
+      for (let c = 0; c < 10; c++)
+        if (g[r][c] === "i") g[r][c] = "t";
+  });
+  if (long) {
+    if (A[1][1] === "s") A[1][1] = "t";
+    if (A[1][8] === "s") A[1][8] = "t";
+    if (B[4][1] === "s") B[4][1] = "t";
+    if (B[4][8] === "s") B[4][8] = "t";
+  }
+  [A, B].forEach(g => {
+    if (state.placements.includes("poitrine")) { g[5][4] = "i"; g[5][5] = "i"; }
+    else if (state.placements.includes("coeur")) { g[5][5] = "i"; }
+  });
+  return [A.map(r => r.join("")), B.map(r => r.join(""))];
+}
 
-function dancerSVG(frame, hair, teeFill, teeInk, flip) {
-  const grid = frame === 0 ? FRAME_A : FRAME_B;
-  const map = { h: hair, s: "#C9A183", t: teeFill, i: teeInk, p: "#26261F", b: "#0C0B09" };
+function dancerSVG(grid, colors, flip, px) {
+  px = px || PX;
+  const map = Object.assign(
+    { s: "#C9A183", p: "#26261F", b: "#232220", e: "#E8C15A", j: "#3AE12B" },
+    colors);
   let rects = "";
   for (let y = 0; y < D_H; y++)
     for (let x = 0; x < D_W; x++) {
       const c = grid[y][x];
       if (c !== ".") {
         const gx = flip ? D_W - 1 - x : x;
-        rects += `<rect x="${gx * PX}" y="${y * PX}" width="${PX}" height="${PX}" fill="${map[c]}"/>`;
+        rects += `<rect x="${gx * px}" y="${y * px}" width="${px}" height="${px}" fill="${map[c]}"/>`;
       }
     }
-  return `<svg class="dancer" width="${D_W * PX}" height="${D_H * PX}" viewBox="0 0 ${D_W * PX} ${D_H * PX}">${rects}</svg>`;
+  return `<svg class="dancer" width="${D_W * px}" height="${D_H * px}" viewBox="0 0 ${D_W * px} ${D_H * px}">${rects}</svg>`;
 }
+
+// ============ RAVERS : trois personnages, features appliquées sur les frames ============
+const RAVERS = [
+  { name: "ALIX", hair: "#F5A3C7", skirt: "#3D63FF", feat: "longhair" },
+  { name: "NOA", hair: "#3D63FF", skirt: null, feat: "mohawk" },
+  { name: "SASHA", hair: "#E8C15A", skirt: "#B04AA0", feat: "bob" },
+];
+let chosenRaver = 0;
+
+function applyRaver(frames, rv) {
+  return frames.map((f, fi) => {
+    const g = f.map(r => r.split(""));
+    if (rv.feat === "longhair") {
+      [[2,2],[2,7],[3,2],[3,7],[4,2],[4,7]].forEach(([r,c]) => {
+        if (g[r][c] === "." || g[r][c] === "s") g[r][c] = "h";
+      });
+    }
+    if (rv.feat === "mohawk") {
+      const hairRows = fi === 0 ? [1,2] : [1,2];
+      hairRows.forEach(r => {
+        for (let c = 3; c <= 6; c++) if (g[r][c] === "h") g[r][c] = (r === hairRows[1] ? "s" : ".");
+      });
+      g[0][4] = "h"; g[0][5] = "h";
+      g[1][4] = "h"; g[1][5] = "h";
+    }
+    if (rv.feat === "bob") {
+      if (g[3][2] === "." || g[3][2] === "s") g[3][2] = "e";
+    }
+    if (rv.skirt) {
+      for (let c = 0; c < 10; c++) {
+        if (g[8][c] === "p") g[8][c] = "k";
+        if (g[9][c] === "p") g[9][c] = "s";
+        if (g[10][c] === "p") g[10][c] = "s";
+      }
+      if (g[8][2] === ".") g[8][2] = "k";
+      if (g[8][7] === ".") g[8][7] = "k";
+    }
+    return g.map(r => r.join(""));
+  });
+}
+
+// sprites de sélection : tee AFROJACK (blanc, print néon)
+function afroFrames(rv) {
+  const base = [FRAME_A, FRAME_B].map(f => f.map(r =>
+    r.replace(/i/g, "j")));
+  return applyRaver(base, rv);
+}
+
+// ============ GATES ============
+let gateBeat = 0, gateTimer = null;
+function renderGate2() {
+  const row = document.getElementById("raver-row");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  row.innerHTML = "";
+  RAVERS.forEach((rv, i) => {
+    const frames = afroFrames(rv);
+    const f = reduced ? 0 : (gateBeat + i) % 2;
+    const btn = document.createElement("button");
+    btn.className = "raver-btn";
+    btn.innerHTML = `
+      ${dancerSVG(frames[f], { h: rv.hair, t: "#F2EFE8", k: rv.skirt || "#26261F" }, false, 9)}
+      <span class="raver-name">${rv.name}</span>
+      <span class="raver-tag">AFROJACK TOUR '19</span>`;
+    btn.onclick = () => {
+      chosenRaver = i;
+      coin();
+      document.getElementById("intro").innerHTML =
+        "Create your fashion artifact to save <em>" + rv.name +
+        "</em> and style your community.";
+      document.getElementById("gate2").classList.add("hidden");
+      if (gateTimer) { clearInterval(gateTimer); gateTimer = null; }
+    };
+    row.appendChild(btn);
+  });
+}
+function startGate2() {
+  document.getElementById("gate2").classList.remove("hidden");
+  renderGate2();
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduced && !gateTimer)
+    gateTimer = setInterval(() => { gateBeat++; renderGate2(); }, 480);
+}
+// logo pixel du gate 1
+const PIXGLYPHS = {
+  D: ["11110","10001","10001","10001","10001","10001","11110"],
+  A: ["01110","10001","10001","11111","10001","10001","10001"],
+  Z: ["11111","00010","00100","01000","10000","10000","11111"],
+  Y: ["10001","10001","01010","00100","00100","00100","00100"],
+};
+function renderGateLogo() {
+  const word = "DAZY", cell = 11, gap = 3, lg = 1;
+  const cols = word.length * 5 + (word.length - 1) * lg;
+  const W = cols * (cell + gap) - gap, H = 7 * (cell + gap) - gap;
+  let rects = "", cur = 0;
+  for (const ch of word) {
+    const color = ch === "Z" ? "#3D63FF" : "#F2EFE8";
+    PIXGLYPHS[ch].forEach((row, r) => {
+      row.split("").forEach((v, c) => {
+        if (v === "1")
+          rects += `<rect x="${(cur + c) * (cell + gap)}" y="${r * (cell + gap)}" width="${cell}" height="${cell}" fill="${color}"/>`;
+      });
+    });
+    cur += 5 + lg;
+  }
+  document.getElementById("gate-logo").innerHTML =
+    `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="image-rendering:pixelated">${rects}</svg>`;
+}
+function renderHeaderLogo() {
+  const cell = 3, gap = 1, lg = 1, word = "DAZY";
+  const cols = word.length * 5 + (word.length - 1) * lg;
+  const W = cols * (cell + gap) - gap, H = 7 * (cell + gap) - gap;
+  let rects = "", cur = 0;
+  for (const ch of word) {
+    const color = ch === "Z" ? "#3D63FF" : "#F2EFE8";
+    PIXGLYPHS[ch].forEach((row, r) => {
+      row.split("").forEach((v, c) => {
+        if (v === "1")
+          rects += `<rect x="${(cur + c) * (cell + gap)}" y="${r * (cell + gap)}" width="${cell}" height="${cell}" fill="${color}"/>`;
+      });
+    });
+    cur += 5 + lg;
+  }
+  document.getElementById("header-logo").innerHTML =
+    `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="image-rendering:pixelated;display:block">${rects}</svg>`;
+}
+document.getElementById("enter-btn").onclick = () => {
+  coin();
+  document.getElementById("gate1").classList.add("hidden");
+  startGate2();
+};
 
 let beatTimer = null, beat = 0;
 function renderStage() {
@@ -910,7 +1131,12 @@ function renderStage() {
   if (!roomOpen) { if (beatTimer) { clearInterval(beatTimer); beatTimer = null; } return; }
 
   const col = COULEURS.find(c => c.id === state.couleur);
+  const pieceFrames = crowdFrames();
+  const raverFrames = RAVERS.map(rv => applyRaver(pieceFrames, rv));
+  const rv0 = chosenRaver, rv1 = (chosenRaver + 1) % 3, rv2 = (chosenRaver + 2) % 3;
+  const lineup = [rv1, rv2, rv0, rv0, rv2, rv1];
   document.getElementById("stage-count").textContent =
+    "SAVED: " + RAVERS[chosenRaver].name + " · " +
     state.tirage + " TEES · " + (state.tirage * 2) + " SHOULDERS · 180 BPM";
   const floor = document.getElementById("floor");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -918,9 +1144,11 @@ function renderStage() {
   function draw() {
     let html = "";
     for (let i = 0; i < 6; i++) {
+      const ri = lineup[i];
+      const rv = RAVERS[ri];
       const f = reduced ? 0 : (beat + i) % 2;
       html += `<div class="${reduced ? "" : "jump"}" style="animation-delay:${(i % 3) * 0.11}s">
-        ${dancerSVG(f, HAIRS[i], col.bot, col.ink, i % 2 === 1)}</div>`;
+        ${dancerSVG(raverFrames[ri][f], { h: rv.hair, t: col.top, i: col.ink, k: rv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
     }
     floor.innerHTML = html;
   }
@@ -1040,6 +1268,11 @@ document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
 renderFAQ();
+renderGateLogo();
+renderHeaderLogo();
+if (roomOpen) {
+  document.getElementById("gate1").classList.add("hidden");
+}
 render();
 </script>
 </body>
