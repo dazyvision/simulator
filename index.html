@@ -184,6 +184,59 @@
   }
   .stage-sub { font-size: 9px; letter-spacing: 3px; color: #9C9789; margin-bottom: 22px; }
   #guru { display: flex; justify-content: center; margin-bottom: 26px; }
+  #fader-block { margin-top: 30px; }
+  .fader-label { font-size: 9px; letter-spacing: 2px; color: #9C9789; margin-bottom: 14px; }
+  #fader-wrap {
+    position: relative; width: 34px; height: 118px; margin: 0 auto;
+    touch-action: none; cursor: grab;
+  }
+  #fader-track {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 6px;
+    transform: translateX(-50%);
+    background: #16150F; border: 1px solid #33322E;
+  }
+  .ftick { position: absolute; width: 7px; height: 1px; background: #45443E; left: 0; }
+  .ftick.r { left: auto; right: 0; }
+  #fader-cap {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 32px; height: 15px;
+    background: #F2EFE8; border: 1px solid #0C0B09;
+    box-shadow: 0 2px 0 #55534E;
+  }
+  #fader-cap::after {
+    content: ""; position: absolute; left: 3px; right: 3px; top: 6px; height: 2px;
+    background: #3D63FF;
+  }
+  #set-end { padding-top: 8px; }
+  #onemore {
+    margin-top: 16px; padding: 13px 22px;
+    background: #3D63FF; color: #F2EFE8; border-color: #3D63FF;
+    font-weight: 700; letter-spacing: 2px;
+  }
+  .exit-l { animation: exitl .9s linear forwards; }
+  .exit-r { animation: exitr .9s linear forwards; }
+  @keyframes exitr {
+    0% { transform: translate(0, 0); }
+    12% { transform: translate(14vw, -7px); }
+    24% { transform: translate(28vw, 0); }
+    36% { transform: translate(42vw, -7px); }
+    48% { transform: translate(56vw, 0); }
+    60% { transform: translate(70vw, -7px); }
+    72% { transform: translate(84vw, 0); }
+    86% { transform: translate(100vw, -7px); }
+    100% { transform: translate(120vw, 0); opacity: 0; }
+  }
+  @keyframes exitl {
+    0% { transform: translate(0, 0); }
+    12% { transform: translate(-14vw, -7px); }
+    24% { transform: translate(-28vw, 0); }
+    36% { transform: translate(-42vw, -7px); }
+    48% { transform: translate(-56vw, 0); }
+    60% { transform: translate(-70vw, -7px); }
+    72% { transform: translate(-84vw, 0); }
+    86% { transform: translate(-100vw, -7px); }
+    100% { transform: translate(-120vw, 0); opacity: 0; }
+  }
   #floor { display: flex; justify-content: center; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
   .dancer { image-rendering: pixelated; }
   .jump { animation: jump .333s steps(2) infinite; }
@@ -249,6 +302,7 @@
     gap: 30px; padding: 24px; text-align: center;
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   }
+  .hidden { display: none !important; }
   .gate.hidden { display: none; }
   .gate-title {
     font-family: "Press Start 2P", ui-monospace, monospace;
@@ -420,6 +474,18 @@
     <div class="stage-sub" id="stage-count"></div>
     <div id="guru"></div>
     <div id="floor"></div>
+    <div id="fader-block">
+      <div class="fader-label">MASTER OUT · PULL DOWN TO CLOSE THE SET</div>
+      <div id="fader-wrap">
+        <div id="fader-track"></div>
+        <div id="fader-cap"></div>
+      </div>
+    </div>
+    <div id="set-end" class="hidden">
+      <div class="stage-title">END OF SET.</div>
+      <div class="stage-sub">LIGHTS ON. LET'S LAUNCH THE DROP.</div>
+      <button id="onemore">ONE MORE TUNE ↻</button>
+    </div>
   </div>
 </div>
 </div>
@@ -444,7 +510,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question.</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b14</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -655,13 +721,17 @@ document.getElementById("snd").onclick = function () {
 // ============ MUSIC: 180 BPM techno-game, phrases de 4 mesures ============
 const BPM = 180, BEAT = 60 / BPM, S16 = BEAT / 4;
 let musicTimer = null, nextBeat = 0, beatCount = 0, dist = null, comp = null;
+let master = null, faderVal = 1, setEnded = false;
+let lastCtx = null, exitTimer = null;
 
 function out() {
   if (!comp) {
     comp = actx.createDynamicsCompressor();
     comp.threshold.value = -18; comp.ratio.value = 4;
     comp.attack.value = 0.004; comp.release.value = 0.16;
-    comp.connect(actx.destination);
+    master = actx.createGain();
+    master.gain.value = faderVal;
+    comp.connect(master); master.connect(actx.destination);
   }
   return comp;
 }
@@ -1068,14 +1138,14 @@ function crowdFrames() {
         if (g[r][c] === "i") g[r][c] = "t";
   });
   if (long) {
-    if (A[1][1] === "s") A[1][1] = "t";
-    if (A[1][8] === "s") A[1][8] = "t";
-    if (A[0][1] === ".") A[0][1] = "t";
-    if (A[0][8] === ".") A[0][8] = "t";
-    if (B[4][1] === "s") B[4][1] = "t";
-    if (B[4][8] === "s") B[4][8] = "t";
-    if (B[5][1] === ".") B[5][1] = "t";
-    if (B[5][8] === ".") B[5][8] = "t";
+    if (A[1][1] === "s") A[1][1] = "l";
+    if (A[1][8] === "s") A[1][8] = "l";
+    if (A[0][1] === ".") A[0][1] = "l";
+    if (A[0][8] === ".") A[0][8] = "l";
+    if (B[4][1] === "s") B[4][1] = "l";
+    if (B[4][8] === "s") B[4][8] = "l";
+    if (B[5][1] === ".") B[5][1] = "l";
+    if (B[5][8] === ".") B[5][8] = "l";
   }
   [A, B].forEach(g => {
     if (state.placements.includes("poitrine")) { g[5][4] = "i"; g[5][5] = "i"; }
@@ -1085,11 +1155,18 @@ function crowdFrames() {
   return [A.map(r => r.join("")), B.map(r => r.join(""))];
 }
 
+function lighten(hex, f) {
+  const n = parseInt(hex.slice(1), 16);
+  const L = v => Math.min(255, Math.round(v + (255 - v) * f));
+  return "#" + [L((n >> 16) & 255), L((n >> 8) & 255), L(n & 255)]
+    .map(v => v.toString(16).padStart(2, "0")).join("");
+}
 function dancerSVG(grid, colors, flip, px) {
   px = px || PX;
   const map = Object.assign(
     { s: "#C9A183", p: "#26261F", b: "#232220", e: "#E8C15A", j: "#3AE12B" },
     colors);
+  if (!map.l) map.l = map.t;
   let rects = "";
   for (let y = 0; y < D_H; y++)
     for (let x = 0; x < D_W; x++) {
@@ -1238,8 +1315,9 @@ document.getElementById("enter-btn").onclick = () => {
 let beatTimer = null, beat = 0;
 function renderStage() {
   const stage = document.getElementById("stage");
-  stage.className = roomOpen ? "open lit" : "";
+  stage.className = roomOpen ? (setEnded ? "open" : "open lit") : "";
   if (!roomOpen) { if (beatTimer) { clearInterval(beatTimer); beatTimer = null; } return; }
+  if (setEnded) return;
 
   const col = COULEURS.find(c => c.id === state.couleur);
   const pieceFrames = crowdFrames();
@@ -1258,9 +1336,17 @@ function renderStage() {
     const name = printText();
     let overlay = "";
     if (overlaySleeve) {
-      overlay += `<text x="${2.5 * px}" y="${4.82 * px}" text-anchor="middle"
-        font-family="'Press Start 2P', ui-monospace, monospace"
-        font-size="${(px * 0.5).toFixed(1)}" fill="${colors.i}">${name.slice(0, 1)}</text>`;
+      if (state.sleeves === "long") {
+        const ax = 1.55 * px, ay = 1.75 * px;
+        overlay += `<text x="${ax}" y="${ay}" text-anchor="middle"
+          transform="rotate(-45 ${ax} ${ay - 0.3 * px})"
+          font-family="'Press Start 2P', ui-monospace, monospace"
+          font-size="${(px * 0.5).toFixed(1)}" fill="${colors.i}">${name.slice(0, 1)}</text>`;
+      } else {
+        overlay += `<text x="${2.5 * px}" y="${4.82 * px}" text-anchor="middle"
+          font-family="'Press Start 2P', ui-monospace, monospace"
+          font-size="${(px * 0.5).toFixed(1)}" fill="${colors.i}">${name.slice(0, 1)}</text>`;
+      }
     }
     if (state.placements.includes("poitrine")) {
       const size = Math.max(3.5, Math.min(px * 0.85, (5.4 * px) / Math.max(name.length, 1)));
@@ -1296,19 +1382,26 @@ function renderStage() {
   const guruEl = document.getElementById("guru");
   const floor = document.getElementById("floor");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  lastCtx = {
+    guruFrames: guruFrames,
+    backPerRaver: backPerRaver,
+    crowd: crowd,
+    guruColors: { h: RAVERS[chosenRaver].hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: RAVERS[chosenRaver].skirt || "#26261F" },
+    crowdColors: crowd.map(ri => ({ h: RAVERS[ri].hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: RAVERS[ri].skirt || "#26261F" })),
+  };
 
   function draw() {
     const rv = RAVERS[chosenRaver];
     const gf = reduced ? 0 : beat % 2;
     guruEl.innerHTML = `<div class="${reduced ? "" : "jump-big"}" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-      ${guruSVG(guruFrames[gf], { h: rv.hair, t: col.top, i: col.ink, k: rv.skirt || "#26261F" }, 14)}
+      ${guruSVG(guruFrames[gf], { h: rv.hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: rv.skirt || "#26261F" }, 14)}
       <span class="hero-name">${rv.name}</span></div>`;
     let html = "";
     crowd.forEach((ri, i) => {
       const crv = RAVERS[ri];
       const f = reduced ? 0 : (beat + i + 1) % 2;
       html += `<div class="${reduced ? "" : "jump"}" style="animation-delay:${(i % 3) * 0.11 + 0.08}s">
-        ${dancerSVG(backPerRaver[ri][f], { h: crv.hair, t: col.top, i: col.ink, k: crv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
+        ${dancerSVG(backPerRaver[ri][f], { h: crv.hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: crv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
     });
     floor.innerHTML = html;
   }
@@ -1392,9 +1485,13 @@ function render() {
   renderGroup("g-placement", PLACEMENTS, id => state.placements.includes(id), id => {
     if (state.placements.includes(id)) {
       if (state.placements.length > 1) state.placements = state.placements.filter(p => p !== id);
-    } else if (state.placements.length < 3) {
-      state.placements.push(id);
-      state.side = PLACEMENTS.find(x => x.id === id).side;
+    } else {
+      if (id === "poitrine") state.placements = state.placements.filter(p => p !== "coeur");
+      if (id === "coeur") state.placements = state.placements.filter(p => p !== "poitrine");
+      if (state.placements.length < 3) {
+        state.placements.push(id);
+        state.side = PLACEMENTS.find(x => x.id === id).side;
+      }
     }
   });
   document.getElementById("done").disabled = !state.stage.trim();
@@ -1416,6 +1513,94 @@ document.getElementById("prix").addEventListener("input", e => {
 document.getElementById("btn-front").onclick = () => { state.side = "front"; renderTee(); };
 document.getElementById("btn-back").onclick = () => { state.side = "back"; renderTee(); };
 
+function endSet() {
+  if (setEnded) return;
+  setEnded = true;
+  stopMusic();
+  document.getElementById("stage").classList.remove("lit");
+  if (beatTimer) { clearInterval(beatTimer); beatTimer = null; }
+  const g = document.getElementById("guru").firstElementChild;
+  if (g) { g.classList.remove("jump-big"); g.classList.add("exit-l"); g.style.animationDelay = ".5s"; }
+  const kids = Array.from(document.getElementById("floor").children);
+  kids.forEach((el, i) => {
+    el.classList.remove("jump");
+    el.classList.add(i % 2 ? "exit-l" : "exit-r");
+    el.style.animationDelay = (i * 0.1) + "s";
+  });
+  document.getElementById("fader-block").classList.add("hidden");
+  // foulées : frames alternées pendant la course, chacun tourné vers sa sortie
+  if (lastCtx && !exitTimer) {
+    let step = 0;
+    const ctx = lastCtx;
+    exitTimer = setInterval(() => {
+      step++;
+      kids.forEach((el, i) => {
+        const sv = el.querySelector("svg");
+        if (sv)
+          sv.outerHTML = dancerSVG(
+            ctx.backPerRaver[ctx.crowd[i]][step % 2],
+            ctx.crowdColors[i],
+            i % 2 === 1,   // les sortants gauche courent en miroir
+            5);
+      });
+      if (step * 110 >= 480 && g) {
+        const gsv = g.querySelector("svg");
+        if (gsv)
+          gsv.outerHTML = dancerSVG(ctx.guruFrames[step % 2], ctx.guruColors, true, 14);
+      }
+      if (step > 14) { clearInterval(exitTimer); exitTimer = null; }
+    }, 110);
+  }
+  setTimeout(() => {
+    document.getElementById("set-end").classList.remove("hidden");
+  }, 1600);
+}
+const faderWrap = document.getElementById("fader-wrap");
+const faderCap = document.getElementById("fader-cap");
+(function buildTicks() {
+  for (let i = 0; i <= 5; i++) {
+    ["", "r"].forEach(side => {
+      const t = document.createElement("div");
+      t.className = "ftick " + side;
+      t.style.top = (i * 20) + "%";
+      faderWrap.appendChild(t);
+    });
+  }
+})();
+function setFader(v, silent) {
+  faderVal = Math.max(0, Math.min(1, v));
+  const H = faderWrap.clientHeight - faderCap.offsetHeight;
+  faderCap.style.top = ((1 - faderVal) * H) + "px";
+  try {
+    if (master) master.gain.setTargetAtTime(faderVal, actx.currentTime, 0.05);
+  } catch (err) {}
+  if (!silent && faderVal <= 0) endSet();
+}
+setFader(1, true);
+let faderDrag = false;
+faderWrap.addEventListener("pointerdown", e => {
+  faderDrag = true;
+  faderWrap.setPointerCapture(e.pointerId);
+  const r = faderWrap.getBoundingClientRect();
+  setFader(1 - (e.clientY - r.top - 7) / (r.height - 15));
+});
+faderWrap.addEventListener("pointermove", e => {
+  if (!faderDrag) return;
+  const r = faderWrap.getBoundingClientRect();
+  setFader(1 - (e.clientY - r.top - 7) / (r.height - 15));
+});
+faderWrap.addEventListener("pointerup", () => { faderDrag = false; });
+document.getElementById("onemore").onclick = () => {
+  if (exitTimer) { clearInterval(exitTimer); exitTimer = null; }
+  setEnded = false;
+  setFader(1, true);
+  document.getElementById("set-end").classList.add("hidden");
+  document.getElementById("fader-block").classList.remove("hidden");
+  coin();
+  renderStage();
+  startMusic();
+};
+
 document.getElementById("done").onclick = () => {
   roomOpen = true;
   renderStage();
@@ -1427,6 +1612,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
+console.log("DAZY simulator · build 14");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
