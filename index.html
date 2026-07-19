@@ -504,40 +504,40 @@ const FAQ = [
 // ============ TEE GEOMETRY (premium) ============
 const CUTS = {
   regular: {
-    body: "M112 50 C100 52 88 56 78 60 C64 66 50 72 40 78 C36 96 32 114 30 132 L68 144 C71 134 74 125 76 116 C77 170 78 224 80 278 C103 281 127 282 150 282 C173 282 197 281 220 278 C222 224 223 170 224 116 C226 125 229 134 232 144 L270 132 C268 114 264 96 260 78 C250 72 236 66 222 60 C212 56 200 52 188 50 C176 62 124 62 112 50 Z",
-    collarIn: "M114 52 Q150 70 186 52",
-    backNeck: "M120 48 Q150 41 180 48",
-    seams: ["M76 116 C80 92 84 72 90 57", "M224 116 C220 92 216 72 210 57"],
-    folds: ["M98 154 C94 200 94 240 98 270", "M202 154 C206 200 206 240 202 270", "M150 94 C147 140 151 190 149 232"],
-    hemStitch: "M84 274 C106 277 194 277 216 274",
-    shadow: { cy: 294, rx: 116 },
-    longL: "M30 132 C24 176 21 214 22 246 L58 252 C62 216 65 180 68 144 Z",
-    longR: "M270 132 C276 176 279 214 278 246 L242 252 C238 216 235 180 232 144 Z",
-    cuffL: "M23 240 L57 246", cuffR: "M277 240 L243 246",
+    body: "M108 50 L84 60 L48 76 L36 134 L72 146 L78 114 L78 282 L222 282 L222 114 L228 146 L264 134 L252 76 L216 60 L192 50 L150 64 Z",
+    collarIn: "M112 52 L150 68 L188 52",
+    backNeck: "M120 47 L150 42 L180 47",
+    seams: ["M78 114 L90 58", "M222 114 L210 58"],
+    folds: ["M100 152 L100 272", "M200 152 L200 272", "M150 94 L150 240"],
+    hemStitch: "M84 274 L216 274",
+    shadow: { cy: 294, rx: 110 },
+    longL: "M36 134 L30 232 L64 238 L72 146 Z",
+    longR: "M264 134 L270 232 L236 238 L228 146 Z",
+    cuffL: "M31 226 L63 232", cuffR: "M269 226 L237 232",
   },
   boxy: {
-    body: "M108 50 C94 52 82 56 72 60 C58 66 44 72 34 78 C30 96 26 116 22 136 L62 150 C65 140 68 130 70 120 C70 170 70 220 70 264 C96 267 123 268 150 268 C177 268 204 267 230 264 C230 220 230 170 230 120 C232 130 235 140 238 150 L278 136 C274 116 270 96 266 78 C256 72 242 66 228 60 C218 56 206 52 192 50 C178 63 122 63 108 50 Z",
-    collarIn: "M110 52 Q150 72 190 52",
-    backNeck: "M116 48 Q150 40 184 48",
-    seams: ["M70 120 C74 96 79 74 86 56", "M230 120 C226 96 221 74 214 56"],
-    folds: ["M96 158 C92 200 92 236 96 260", "M204 158 C208 200 208 236 204 260", "M150 96 C147 140 151 184 149 222"],
-    hemStitch: "M76 260 C100 263 200 263 224 260",
-    shadow: { cy: 280, rx: 126 },
-    longL: "M22 136 C16 180 13 218 14 250 L52 256 C56 220 59 184 62 150 Z",
-    longR: "M278 136 C284 180 287 218 286 250 L248 256 C244 220 241 184 238 150 Z",
-    cuffL: "M15 244 L51 250", cuffR: "M285 244 L249 250",
+    body: "M104 50 L78 62 L38 78 L26 138 L64 150 L70 118 L70 268 L230 268 L230 118 L236 150 L274 138 L262 78 L222 62 L196 50 L150 66 Z",
+    collarIn: "M108 52 L150 70 L192 52",
+    backNeck: "M116 47 L150 41 L184 47",
+    seams: ["M70 118 L84 60", "M230 118 L216 60"],
+    folds: ["M96 156 L96 258", "M204 156 L204 258", "M150 96 L150 232"],
+    hemStitch: "M76 260 L224 260",
+    shadow: { cy: 280, rx: 122 },
+    longL: "M26 138 L20 236 L56 242 L64 150 Z",
+    longR: "M274 138 L280 236 L244 242 L236 150 Z",
+    cuffL: "M21 230 L55 236", cuffR: "M279 230 L245 236",
   },
   oversize: {
-    body: "M104 54 C88 57 74 62 64 66 C48 73 34 80 24 86 C19 108 15 130 12 150 L56 166 C59 154 62 143 64 132 C63 188 63 244 64 298 C92 301 121 302 150 302 C179 302 208 301 236 298 C237 244 237 188 236 132 C238 143 241 154 244 166 L288 150 C285 130 281 108 276 86 C266 80 252 73 236 66 C226 62 212 57 196 54 C180 68 120 68 104 54 Z",
-    collarIn: "M106 56 Q150 76 194 56",
-    backNeck: "M112 52 Q150 43 188 52",
-    seams: ["M64 132 C70 104 76 80 84 60", "M236 132 C230 104 224 80 216 60"],
-    folds: ["M92 172 C88 216 88 256 92 292", "M208 172 C212 216 212 256 208 292", "M150 100 C146 150 152 204 149 252"],
-    hemStitch: "M70 294 C96 297 204 297 230 294",
-    shadow: { cy: 314, rx: 138 },
-    longL: "M12 150 C7 194 5 232 6 262 L48 268 C52 232 54 198 56 166 Z",
-    longR: "M288 150 C293 194 295 232 294 262 L252 268 C248 232 246 198 244 166 Z",
-    cuffL: "M7 256 L47 262", cuffR: "M293 256 L253 262",
+    body: "M100 54 L70 66 L26 86 L14 152 L58 166 L64 128 L64 300 L236 300 L236 128 L242 166 L286 152 L274 86 L230 66 L200 54 L150 72 Z",
+    collarIn: "M104 56 L150 76 L196 56",
+    backNeck: "M112 51 L150 44 L188 51",
+    seams: ["M64 128 L80 64", "M236 128 L220 64"],
+    folds: ["M92 172 L92 290", "M208 172 L208 290", "M150 102 L150 262"],
+    hemStitch: "M70 296 L230 296",
+    shadow: { cy: 316, rx: 134 },
+    longL: "M14 152 L8 254 L50 260 L58 166 Z",
+    longR: "M286 152 L292 254 L250 260 L242 166 Z",
+    cuffL: "M9 248 L49 254", cuffR: "M291 248 L251 254",
   },
 };
 
@@ -778,8 +778,8 @@ function renderTee() {
     pl => PLACEMENTS.find(x => x.id === pl).side === state.side
   );
   const sleevePaths = isLong
-    ? `<path d="${G.longL}" fill="url(#shade)" stroke="${col.line}" stroke-width="${cot.stroke}" stroke-linejoin="round"/>
-       <path d="${G.longR}" fill="url(#shade)" stroke="${col.line}" stroke-width="${cot.stroke}" stroke-linejoin="round"/>`
+    ? `<path d="${G.longL}" fill="url(#shade)" stroke="${col.line}" stroke-width="${cot.stroke}" stroke-linejoin="miter"/>
+       <path d="${G.longR}" fill="url(#shade)" stroke="${col.line}" stroke-width="${cot.stroke}" stroke-linejoin="miter"/>`
     : "";
   const cuffs = isLong
     ? `<path d="${G.cuffL}" stroke="${col.line}" stroke-width="0.7" opacity=".6" fill="none"/>
@@ -804,20 +804,20 @@ function renderTee() {
         <clipPath id="teeclip">${clipPaths}</clipPath>
       </defs>
 
-      <ellipse cx="150" cy="${G.shadow.cy}" rx="${G.shadow.rx}" ry="9"
-        fill="#000" opacity=".4" filter="url(#shadowblur)"/>
+      <rect x="${150 - G.shadow.rx}" y="${G.shadow.cy - 4}" width="${G.shadow.rx * 2}" height="8"
+        fill="#000" opacity=".38" filter="url(#shadowblur)"/>
 
       ${sleevePaths}
       <path d="${G.body}" fill="url(#shade)" stroke="${col.line}"
-        stroke-width="${cot.stroke}" stroke-linejoin="round"/>
+        stroke-width="${cot.stroke}" stroke-linejoin="miter"/>
 
       <g clip-path="url(#teeclip)">
         <rect x="0" y="0" width="300" height="330" filter="url(#grainF)"/>
         ${G.folds.map(d =>
-          `<path d="${d}" fill="none" stroke="${col.foldD}" stroke-width="6"
-             stroke-linecap="round" filter="url(#softblur)"/>`).join("")}
-        <path d="${G.collarIn}" fill="none" stroke="${col.foldD}" stroke-width="5"
-          filter="url(#softblur)" opacity=".8"/>
+          `<path d="${d}" fill="none" stroke="${col.foldD}" stroke-width="3"
+             stroke-linecap="butt"/>`).join("")}
+        <path d="${G.collarIn}" fill="none" stroke="${col.foldD}" stroke-width="4"
+          opacity=".7"/>
       </g>
 
       ${G.seams.map(d =>
