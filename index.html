@@ -98,6 +98,33 @@
   .eyebrow { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
   .eyebrow .n.done { background: var(--ink); color: var(--bg); }
 
+  .prompt {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-size: 13.5px; color: var(--grey); margin: -8px 0 18px; letter-spacing: .2px;
+  }
+  .conseq {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-size: 12.5px; color: var(--ink); opacity: .88; margin-top: 12px;
+  }
+  .split { margin: 2px 0 14px; }
+  .split-bar { display: flex; height: 34px; border: 1px solid var(--line); }
+  .split-dazy, .split-you {
+    display: flex; align-items: center; overflow: hidden;
+    transition: width .25s ease; min-width: 0;
+  }
+  .split-dazy { background: #23211C; justify-content: flex-start; }
+  .split-you { background: var(--blue); justify-content: flex-end; }
+  .split-you.neg { background: #C4573F; }
+  .split-tag {
+    font-size: 8.5px; letter-spacing: 1px; color: var(--ink);
+    padding: 0 9px; white-space: nowrap;
+  }
+  .split-tag b { font-size: 11px; margin-left: 5px; font-variant-numeric: tabular-nums; }
+  .split-chips { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; }
+  .split-chips span { font-size: 8.5px; letter-spacing: .5px; color: var(--grey); }
+  .opt-ic { display: block; margin: 0 auto 7px; width: 34px; height: 30px; color: currentColor; }
+  .opt-ic.sq { width: 26px; height: 26px; }
+  button.card { min-width: 78px; padding: 11px 10px 10px; }
   /* payout terminal */
   .pay { position: relative; border: 1px solid var(--line); background: #0E0D0B; padding: 4px 16px 16px; }
   .pay::before {
@@ -330,6 +357,42 @@
   }
   .stage-sub { font-size: 9px; letter-spacing: 3px; color: var(--grey); margin-bottom: 22px; }
   #guru { display: flex; justify-content: center; margin-bottom: 26px; }
+  #event-banner {
+    position: absolute; left: 14px; right: 14px; top: 88px; z-index: 6;
+    background: var(--bg); border: 2px solid #C4573F;
+    padding: 13px 15px; text-align: left;
+    font-family: "Press Start 2P", ui-monospace, monospace;
+    font-size: 9px; line-height: 2; letter-spacing: 1px; color: var(--ink);
+    animation: evpunch .45s steps(4);
+  }
+  #event-banner b { color: #C4573F; display: block; margin-top: 6px; }
+  .ev-k { display: block; color: #C4573F; font-size: 8px; margin-bottom: 8px; letter-spacing: 2px; }
+  @keyframes evpunch {
+    0% { transform: scale(.6) rotate(-2deg); opacity: 0; }
+    60% { transform: scale(1.06) rotate(1deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .gabber { animation: gjump .17s linear infinite alternate; position: relative; }
+  .gabber::before, .gabber::after {
+    content: ""; position: absolute; width: 3px; height: 3px;
+    background: #8FD8FF; top: 16px;
+  }
+  .gabber::before { left: 6px; animation: sweatL .55s linear infinite; }
+  .gabber::after { right: 6px; animation: sweatR .7s linear infinite; }
+  @keyframes sweatL {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(-11px, 15px); opacity: 0; }
+  }
+  @keyframes sweatR {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(11px, 17px); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .gabber::before, .gabber::after { animation: none; opacity: 0; } }
+  @keyframes gjump {
+    from { transform: translateY(0) translateX(-1px); }
+    to { transform: translateY(-10px) translateX(1px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .gabber { animation: none; } }
   #edit-config {
     margin-top: 24px; padding: 10px 16px;
     background: transparent; color: var(--grey); border: 1px solid var(--line);
@@ -501,6 +564,16 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 30px; padding: 24px; text-align: center;
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  @media (max-height: 860px) {
+    #gate2 { justify-content: flex-start; padding-top: 34px; }
+  }
+  #raver-row { max-width: 560px; }
+  @media (max-width: 560px) {
+    #raver-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .raver-btn .dancer { transform: scale(.85); }
+    .raver-def { font-size: 10px; max-width: 130px; }
   }
   .hidden { display: none !important; }
   .gate.hidden { display: none; }
@@ -524,6 +597,12 @@
   }
   .raver-btn:hover { border-color: var(--blue); }
   .raver-name { font-size: 11px; letter-spacing: 3px; font-weight: 700; }
+  .raver-arch { font-size: 8.5px; letter-spacing: 2px; color: var(--blue); font-weight: 700; }
+  .raver-def {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-size: 11px; color: var(--grey); max-width: 150px; line-height: 1.5;
+    letter-spacing: .2px; text-transform: none;
+  }
   .raver-tag { font-size: 8px; letter-spacing: 1px; color: #6B675C; }
   .raver-btn .dancer { image-rendering: pixelated; }
 
@@ -582,6 +661,7 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-01">01</span><span class="t">LET'S TRY WITH YOUR NAME</span></div>
+        <div class="prompt">Your name is the design. Let's see it on cotton.</div>
         <div class="names">
           <div class="field">
             <div class="label">Stage name</div>
@@ -596,6 +676,7 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-02">02</span><span class="t">THE TEE</span></div>
+        <div class="prompt">Choose what your crowd will wear for years.</div>
         <div class="field">
           <div class="label">Fabric</div>
           <div class="row" id="g-coton"></div>
@@ -611,14 +692,17 @@
         <div class="field">
           <div class="label">Color</div>
           <div class="row" id="g-couleur"></div>
+          <div class="conseq" id="cq-tee"></div>
         </div>
       </div>
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-03">03</span><span class="t">THE PRINT</span></div>
+        <div class="prompt">Your signature, placed like a password.</div>
         <div class="field">
           <div class="label">Logo</div>
           <div class="row" id="g-logo"></div>
+          <div class="conseq" id="cq-print"></div>
           <div class="micro-note" id="logo-note"></div>
           <div class="motto">Pricing purpose only: we'd rather die than make merch with a big logo on it.</div>
         </div>
@@ -634,9 +718,17 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-04">04</span><span class="t">THE EDITION</span></div>
+        <div class="prompt">A gift for your community. A revenue stream for you.</div>
         <div class="field">
           <div class="label" id="prix-label">Public price · what fans pay</div>
           <div class="price-big" id="prix-big">€45</div>
+          <div class="split">
+            <div class="split-bar">
+              <div class="split-dazy" id="split-dazy"><span class="split-tag">DAZY ALL-IN <b id="sd-v"></b></span></div>
+              <div class="split-you" id="split-you"><span class="split-tag">YOU KEEP <b id="sy-v"></b></span></div>
+            </div>
+            <div class="split-chips" id="split-chips"></div>
+          </div>
           <div class="price-wrap" id="price-wrap">
             <input type="range" id="prix" min="35" max="80" step="1" value="45">
             <div class="mini-earn" id="mini-earn"></div>
@@ -652,14 +744,20 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-05">05</span><span class="t">YOU EARN</span></div>
+        <div class="prompt">One number in, everything handled. The rest is yours.</div>
         <div class="pay">
           <div class="pay-row">
-            <div class="pay-l">DAZY PRICE<span class="pay-cap">per piece · design, production, digital assets</span></div>
+            <div class="pay-l">PUBLIC PRICE<span class="pay-cap">what fans pay · you set it</span></div>
+            <div class="leader"></div>
+            <div class="pay-v" id="e-pub"></div>
+          </div>
+          <div class="pay-row">
+            <div class="pay-l">DAZY ALL-IN<span class="pay-cap">per piece, everything included: blank, print, editorial page, shooting, selling, fulfilment</span></div>
             <div class="leader"></div>
             <div class="pay-v dim" id="e-edition"></div>
           </div>
           <div class="pay-row">
-            <div class="pay-l">YOU EARN<span class="pay-cap">per piece · paid out weekly</span></div>
+            <div class="pay-l">= YOU EARN / PIECE<span class="pay-cap">public price − DAZY all-in · paid out weekly</span></div>
             <div class="leader"></div>
             <div class="pay-v" id="e-part"></div>
           </div>
@@ -692,7 +790,8 @@
     <div id="guru"></div>
     <div id="floor"></div>
     <button id="edit-config">↑ EDIT MY CONFIG · THE CROWD UPDATES LIVE</button>
-    <div id="fader-block">
+    <div id="event-banner" class="hidden"></div>
+    <div id="fader-block" class="hidden">
       <div class="fader-kicker">MASTER OUT</div>
       <div class="fader-label">PULL DOWN · CLOSE LIKE A HEADLINER <span class="fader-arrow">↓</span></div>
       <div id="fader-wrap">
@@ -732,7 +831,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b60</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b69</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -777,7 +876,7 @@ const TECHNIQUES = [
   { id: "broderie", label: "Embroidery" },
 ];
 const TIRAGES = [50, 100, 150];
-const MOODS = { 50: "50 · tight run", 100: "100 · open run", 150: "150 · wide run" };
+const MOODS = { 50: "50 · tight run · insiders only", 100: "100 · open run", 150: "150 · wide run · oh no, the shirtless gym bros are coming to sweat on our merch" };
 
 // internal grid: never itemized on screen
 const ED_COTON = { "180": 13, "220": 15, "250": 18 };
@@ -921,6 +1020,43 @@ function unlockIOSAudio() {
 }
 document.addEventListener("touchend", unlockIOSAudio, { once: true });
 document.addEventListener("click", unlockIOSAudio, { once: true });
+function alarmSound(t) {
+  try {
+    for (let i = 0; i < 3; i++) {
+      const o = actx.createOscillator(); o.type = "square";
+      o.frequency.setValueAtTime(i % 2 ? 622 : 932, t + i * 0.14);
+      const g = actx.createGain();
+      g.gain.setValueAtTime(0.055, t + i * 0.14);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.14 + 0.13);
+      o.connect(g); g.connect(actx.destination);
+      o.start(t + i * 0.14); o.stop(t + i * 0.14 + 0.14);
+    }
+  } catch (e) {}
+}
+function fireBros(withSound) {
+  if (brosFired) return;
+  brosFired = true;
+  clearTimeout(brosFallback);
+  if (withSound && actx) {
+    const t = actx.currentTime;
+    alarmUntil = t + 1.15;
+    alarmSound(t);
+  }
+  setTimeout(() => {
+    brosIn = true;
+    const bn = document.getElementById("event-banner");
+    if (bn) {
+      bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Let our style protect us from them and their sweat.</b>';
+      bn.classList.remove("hidden");
+      bn.style.cursor = "pointer";
+      bn.onclick = () => bn.classList.add("hidden");
+      setTimeout(() => bn.classList.add("hidden"), 9500);
+    }
+    const fb = document.getElementById("fader-block");
+    if (fb) fb.classList.remove("hidden");
+    renderStage();
+  }, 480);
+}
 function uiClick() {
   if (!soundOn) return;
   try {
@@ -967,6 +1103,7 @@ const BPM = 148, BEAT = 60 / BPM, S16 = BEAT / 4;
 let musicTimer = null, nextBeat = 0, beatCount = 0, dist = null, comp = null;
 let master = null, faderVal = 1, setEnded = false;
 let lastCtx = null, exitTimer = null, stageT = null, enterHold = 0;
+let brosAt = Infinity, brosFired = false, brosIn = false, alarmUntil = 0, brosFallback = null;
 function queueStage() { clearTimeout(stageT); stageT = setTimeout(renderStage, 90); }
 
 function out() {
@@ -1099,7 +1236,7 @@ function swell(t, freqs, len, g) {
     o.frequency.setValueAtTime(fq * (1 + (i - 1) * 0.0035), t);
     const f = actx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 1.2;
     f.frequency.setValueAtTime(280, t);
-    f.frequency.linearRampToValueAtTime(1100, t + len * 0.55);
+    f.frequency.linearRampToValueAtTime(1500, t + len * 0.55);
     f.frequency.exponentialRampToValueAtTime(240, t + len);
     const gn = actx.createGain();
     gn.gain.setValueAtTime(0.0001, t);
@@ -1115,7 +1252,7 @@ function choir(t, f, len) {
     o.frequency.setValueAtTime(fq, t);
     const gn = actx.createGain();
     gn.gain.setValueAtTime(0.0001, t);
-    gn.gain.linearRampToValueAtTime(i ? 0.008 : 0.014, t + len * 0.4);
+    gn.gain.linearRampToValueAtTime(i ? 0.011 : 0.02, t + len * 0.4);
     gn.gain.exponentialRampToValueAtTime(0.001, t + len);
     o.connect(gn); gn.connect(out());
     o.start(t); o.stop(t + len + 0.05);
@@ -1132,6 +1269,8 @@ const TOMPAT = [
 ];
 const SW = 0.16; // shuffle hard groove
 function scheduleBeat(t, n) {
+  if (t < alarmUntil) return;
+  if (!brosFired && roomOpen && !setEnded && n >= brosAt) { fireBros(true); return; }
   const bar = Math.floor(n / 4) % 4;
   const b = n % 4;
   const phrase = Math.floor(n / 16) % 2;
@@ -1164,13 +1303,11 @@ function scheduleBeat(t, n) {
   if (b === 2) bass(t + 3.5 * S16, root * 0.75, 0.1, 0.07);
 
   // nappes dramatiques : cordes en crescendo tous les 4 temps forts
-  if (n % 16 === 0) swell(t, SWELLS[phrase], BEAT * 5, 0.03);
-  if (n % 16 === 8) choir(t, 329.63, BEAT * 4);
+  if (n % 8 === 0) swell(t, SWELLS[(n >> 3) % 2], BEAT * 6, 0.045);
+  if (n % 16 === 8) choir(t, 329.63, BEAT * 5);
 }
 function startMusic() {
   if (musicTimer || !soundOn) return;
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) return;
   try {
     unlockIOSAudio();
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
@@ -1385,7 +1522,24 @@ function renderEco() {
   const ed = prixEdition();
   const part = state.prix - ed;
   const total = part * state.tirage;
-  document.getElementById("e-edition").textContent = fmt(ed);
+  const pub = document.getElementById("e-pub");
+  if (pub) pub.textContent = fmt(state.prix);
+  document.getElementById("e-edition").textContent = "− " + fmt(ed);
+  // barre de partage : la marge de chacun, indiscutable
+  const dz = document.getElementById("split-dazy");
+  const yu = document.getElementById("split-you");
+  if (dz && yu) {
+    const pct = Math.min(100, Math.max(0, (ed / state.prix) * 100));
+    dz.style.width = pct + "%";
+    yu.style.width = (100 - pct) + "%";
+    yu.classList.toggle("neg", part < 0);
+    document.getElementById("sd-v").textContent = fmt(ed);
+    document.getElementById("sy-v").textContent = part < 0 ? fmt(part) : fmt(part);
+    const blank = ED_COTON[state.coton] + ED_SLEEVE[state.sleeves] + ED_TIRAGE[state.tirage];
+    const mark = ed - blank;
+    document.getElementById("split-chips").innerHTML =
+      `<span>blank & cut ${fmt(blank)}</span><span>print & finish ${fmt(mark)}</span><span>page, shooting & selling included</span>`;
+  }
   const ep = document.getElementById("e-part");
   ep.textContent = fmt(part);
   ep.classList.toggle("neg", part < 0);
@@ -1517,9 +1671,14 @@ function dancerSVG(grid, colors, flip, px) {
 
 // ============ RAVERS : trois personnages, features appliquées sur les frames ============
 const RAVERS = [
-  { name: "ALIX", hair: "#F5A3C7", skirt: "#3D63FF", feat: "longhair" },
-  { name: "NOA", hair: "#3D63FF", skirt: null, feat: "mohawk" },
-  { name: "SASHA", hair: "#E8C15A", skirt: "#B04AA0", feat: "bob" },
+  { name: "ALIX", hair: "#F5A3C7", skirt: "#3D63FF", feat: "longhair",
+    arch: "THE OPENING-SET DEFENDER", def: "At doors open. Swears the warm-up was the best set of the night. She's right." },
+  { name: "NOA", hair: "#3D63FF", skirt: null, feat: "mohawk",
+    arch: "THE LEFT-STACK RESIDENT", def: "Same two square meters by the left speaker, every night. Politely non-negotiable." },
+  { name: "SASHA", hair: "#E8C15A", skirt: "#B04AA0", feat: "bob",
+    arch: "THE SMOKING-AREA CRITIC", def: "Hears every set from the smoking area. Reviews them all anyway." },
+  { name: "TYON", hair: "#3A2E22", skirt: null, feat: "buzz",
+    arch: "THE LOST GYMBRO", def: "Followed the kick drum from the gym next door. The pill? Swears it was fake. Took a second one." },
 ];
 let chosenRaver = 0;
 
@@ -1540,6 +1699,9 @@ function applyRaver(frames, rv) {
     }
     if (rv.feat === "bob") {
       if (g[3][2] === "." || g[3][2] === "s") g[3][2] = "e";
+    }
+    if (rv.feat === "buzz") {
+      [2, 3].forEach(r => { for (let c = 0; c < 10; c++) if (g[r][c] === "h") g[r][c] = "s"; });
     }
     if (rv.skirt) {
       for (let c = 0; c < 10; c++) {
@@ -1568,13 +1730,18 @@ function renderGate2() {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   row.innerHTML = "";
   RAVERS.forEach((rv, i) => {
-    const frames = afroFrames(rv);
+    let frames = afroFrames(rv);
+    if (rv.feat === "buzz")
+      frames = frames.map(f => f.map(r =>
+        r.split("").map(c => (c === "t" || c === "l" || c === "j") ? "s" : c).join("")));
     const f = reduced ? 0 : (gateBeat + i) % 2;
     const btn = document.createElement("button");
     btn.className = "raver-btn";
     btn.innerHTML = `
       ${dancerSVG(frames[f], { h: rv.hair, t: "#F2EFE8", k: rv.skirt || "#26261F" }, false, 9)}
       <span class="raver-name">${rv.name}</span>
+      <span class="raver-arch">${rv.arch}</span>
+      <span class="raver-def">${rv.def}</span>
       <span class="raver-tag">AFROJACK TOUR '19</span>`;
     btn.onclick = () => {
       chosenRaver = i;
@@ -1657,6 +1824,7 @@ function renderHeaderLogo() {
 }
 document.getElementById("enter-btn").onclick = () => {
   coin();
+  coin();
   document.getElementById("gate1").classList.add("hidden");
   startGate2();
 };
@@ -1705,6 +1873,10 @@ function guruFigure(fi, rv, col) {
       fill(x, x, T - 1 - ht, T - 2, "h");
       g[T - 1 - ht][x + 1] = "h";
     });
+  } else if (rv.feat === "buzz") {
+    fill(8, 18, T - 1, T - 1, "h");
+    g[T - 1][8] = "."; g[T - 1][18] = ".";
+    fill(10, 16, T - 2, T - 2, "h");
   } else {
     fill(7, 19, T - 5, T - 1, "h");
     g[T - 5][7] = "."; g[T - 5][19] = ".";
@@ -1870,7 +2042,14 @@ function renderStage() {
     });
   }
   const backPerRaver = RAVERS.map(rv => toBack(applyRaver(pieceFrames, rv)));
-  const rv0 = chosenRaver, rv1 = (chosenRaver + 1) % 3, rv2 = (chosenRaver + 2) % 3;
+  // les gym bros : torse nu, crâne ras, prêts à transpirer
+  function shirtless(frames) {
+    return frames.map(f =>
+      f.map(r => r.split("").map(c => (c === "t" || c === "l" || c === "i") ? "s" : c).join("")));
+  }
+  const broFrames = shirtless(toBack(applyRaver(pieceFrames, RAVERS[3])));
+  const N = RAVERS.length;
+  const rv0 = chosenRaver, rv1 = (chosenRaver + 1) % N, rv2 = (chosenRaver + 2) % N;
   const crowd = [rv1, rv2, rv0, rv2, rv1];
   document.getElementById("stage-count").textContent =
     "SAVED: " + RAVERS[chosenRaver].name + " · " +
@@ -1894,12 +2073,21 @@ function renderStage() {
       ${guruSVGs[gf]}
       <span class="hero-name">${rv.name}</span></div>`;
     let html = "";
+    const broCols = { h: "#3A2E22", t: "#C9A183", l: "#C9A183", i: "#C9A183", k: "#26261F" };
+    if (brosIn) {
+      html += `<div class="gabber" title="tyon's crew">${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
+      html += `<div class="gabber" style="animation-delay:.05s" title="tyon's crew">${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
+    }
     crowd.forEach((ri, i) => {
       const crv = RAVERS[ri];
       const f = reduced ? 0 : (beat + i + 1) % 2;
       html += `<div class="${reduced ? "" : "jump"}" style="animation-delay:${(i % 3) * 0.11 + 0.08}s">
         ${dancerSVG(backPerRaver[ri][f], { h: crv.hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: crv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
     });
+    if (brosIn) {
+      html += `<div class="gabber" style="animation-delay:.09s" title="tyon's crew">${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
+      html += `<div class="gabber" style="animation-delay:.13s" title="tyon's crew">${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
+    }
     floor.innerHTML = html;
   }
   draw();
@@ -1951,6 +2139,51 @@ document.getElementById("deal").addEventListener("click", e => {
 });
 
 // ============ GLOBAL RENDER ============
+const OPTICON = {
+  "g-coupe": id =>
+    `<svg class="opt-ic" viewBox="10 40 280 250"><path d="${CUTS[id].body}" fill="currentColor" opacity=".92"/></svg>`,
+  "g-sleeves": id => {
+    const G = CUTS[state.coupe];
+    const arms = id === "long" ? `<path d="${G.longL}" fill="currentColor"/><path d="${G.longR}" fill="currentColor"/>` : "";
+    return `<svg class="opt-ic" viewBox="0 40 300 250">${arms}<path d="${G.body}" fill="currentColor" opacity=".92"/></svg>`;
+  },
+  "g-technique": id => {
+    if (id === "serigraphie") return `<svg class="opt-ic sq" viewBox="0 0 30 30"><rect x="6" y="6" width="18" height="18" fill="currentColor"/></svg>`;
+    if (id === "dtf") return `<svg class="opt-ic sq" viewBox="0 0 30 30"><rect x="9" y="9" width="18" height="18" fill="currentColor" opacity=".35"/><rect x="5" y="5" width="18" height="18" fill="currentColor"/></svg>`;
+    return `<svg class="opt-ic sq" viewBox="0 0 30 30"><rect x="6" y="6" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-dasharray="3 2.4"/></svg>`;
+  },
+  "g-tirage": id => {
+    const n = { 50: 3, 100: 2, 150: 1 }[id];
+    let bars = "";
+    for (let i = 0; i < 3; i++)
+      bars += `<rect x="${4 + i * 9}" y="${20 - (i + 1) * 4}" width="6" height="${(i + 1) * 4 + 4}" fill="currentColor" opacity="${i < n ? 1 : 0.25}"/>`;
+    return `<svg class="opt-ic sq" viewBox="0 0 30 30">${bars}</svg>`;
+  },
+  "g-placement": id => {
+    const dots = { poitrine: [15, 12], coeur: [10.5, 11], dos: [15, 12], manche: [5, 9.5] };
+    const [dx, dy] = dots[id];
+    const back = id === "dos";
+    return `<svg class="opt-ic sq" viewBox="0 0 30 30">
+      <path d="M9 6 L12 6 L12 8 L18 8 L18 6 L21 6 L24 9 L24 13 L21 13 L21 24 L9 24 L9 13 L6 13 L6 9 Z"
+        fill="currentColor" opacity="${back ? ".4" : ".9"}"/>
+      <circle cx="${dx}" cy="${dy}" r="2.4" fill="var(--blue)" stroke="#0C0B09" stroke-width="1"/></svg>`;
+  },
+};
+const CONSEQ = {
+  coupe: { regular: "the classic cut · fits every floor", boxy: "wider, cropped · attitude first", oversize: "heavy drape · the rave uniform" },
+  sleeves: { short: "bare arms · summer floors", long: "cuffed · winter-proof armor" },
+  technique: { serigraphie: "flat punchy ink · the club standard", dtf: "photo-grade detail, every pixel", broderie: "stitched relief · built to outlive the tour" },
+  placement: { poitrine: "the frontline statement", coeur: "the discreet password", dos: "reads from the booth", manche: "the insider detail" },
+};
+function renderConseq() {
+  const ct = document.getElementById("cq-tee");
+  if (ct) ct.textContent = CONSEQ.coupe[state.coupe] + " · " + CONSEQ.sleeves[state.sleeves];
+  const cp = document.getElementById("cq-print");
+  if (cp) {
+    const lastPl = state.placements[state.placements.length - 1];
+    cp.textContent = CONSEQ.technique[state.technique] + (lastPl ? " · " + CONSEQ.placement[lastPl] : "");
+  }
+}
 function renderGroup(elId, items, isOn, onClick) {
   const el = document.getElementById(elId);
   el.innerHTML = "";
@@ -1958,13 +2191,15 @@ function renderGroup(elId, items, isOn, onClick) {
     const id = item.id !== undefined ? item.id : item;
     const label = item.label !== undefined ? item.label : item;
     const b = document.createElement("button");
+    const icon = OPTICON[elId] ? OPTICON[elId](id) : "";
+    if (icon) b.classList.add("card");
     if (elId === "g-couleur") {
       b.className = "swbtn" + (isOn(id) ? " on" : "");
       b.innerHTML = `<span class="sw" style="background: radial-gradient(circle at 32% 28%, ${item.top}, ${item.bot})"></span>
                      <span class="swl">${label}</span>`;
     } else {
-      b.innerHTML = label + (item.hint ? `<span class="hint">${item.hint}</span>` : "");
-      b.className = isOn(id) ? "on" : "";
+      b.innerHTML = icon + label + (item.hint ? `<span class="hint">${item.hint}</span>` : "");
+      b.className = (icon ? "card" : "") + (isOn(id) ? " on" : "");
     }
     b.onclick = () => { uiClick(); onClick(id); render(); };
     el.appendChild(b);
@@ -2024,6 +2259,7 @@ function render() {
   document.getElementById("done").disabled = !state.stage.trim();
   paintSteps();
   renderRecap();
+  renderConseq();
   renderTee();
   renderEco();
   queueStage();
@@ -2038,6 +2274,7 @@ document.getElementById("in-nick").addEventListener("input", e => {
 });
 document.getElementById("prix").addEventListener("input", e => {
   touched.add(4);
+  if (+e.target.value % 5 === 0) uiClick();
   state.prix = Number(e.target.value); renderEco(); syncURL(); sliderCoins();
 });
 document.getElementById("btn-front").onclick = () => { state.side = "front"; renderTee(); };
@@ -2128,6 +2365,13 @@ faderWrap.addEventListener("pointermove", e => {
 });
 faderWrap.addEventListener("pointerup", () => { faderDrag = false; });
 document.getElementById("onemore").onclick = () => {
+  brosAt = beatCount + 5;
+  brosFired = false; brosIn = false;
+  document.getElementById("fader-block").classList.add("hidden");
+  const bn0 = document.getElementById("event-banner");
+  if (bn0) bn0.classList.add("hidden");
+  clearTimeout(brosFallback);
+  brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 2600);
   if (exitTimer) { clearInterval(exitTimer); exitTimer = null; }
   document.getElementById("guru").classList.remove("hidden");
   document.getElementById("floor").classList.remove("hidden");
@@ -2148,6 +2392,11 @@ document.getElementById("edit-config").onclick = () => {
 };
 document.getElementById("done").onclick = () => {
   roomOpen = true;
+  brosAt = beatCount + 5;
+  brosFired = false; brosIn = false;
+  document.getElementById("fader-block").classList.add("hidden");
+  clearTimeout(brosFallback);
+  brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 2600);
   renderStage();
   coin();
   enterHold = Date.now() + 1300;
@@ -2167,7 +2416,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 60");
+console.log("DAZY simulator · build 69");
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
