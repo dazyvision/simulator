@@ -59,9 +59,13 @@
   }
   #tee-box svg { width: 100%; max-width: 310px; display: block; margin: 0 auto; }
   .under-tee { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; margin-top: 12px; }
+  .motto {
+    font-size: 11px; font-weight: 700; color: #3D63FF;
+    margin-top: 10px; letter-spacing: 0.3px;
+  }
   .preview-note {
-    font-size: 8.5px; letter-spacing: 0.4px; color: #6B675C;
-    margin-top: 2px; text-align: center; max-width: 300px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #3D63FF;
+    margin-top: 3px; text-align: center; max-width: 320px; line-height: 1.6;
   }
   .numbering {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
@@ -462,6 +466,7 @@
         <div class="field">
           <div class="label">Logo</div>
           <div class="row" id="g-logo"></div>
+          <div class="motto">Pricing purpose only: we'd rather die than make merch with a big logo on it.</div>
         </div>
         <div class="field">
           <div class="label">Placement · up to 3</div>
@@ -560,7 +565,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b45</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b48</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1824,7 +1829,7 @@ document.getElementById("done").onclick = () => {
 document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
-console.log("DAZY simulator · build 45");
+console.log("DAZY simulator · build 48");
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
