@@ -358,15 +358,15 @@
   .stage-sub { font-size: 9px; letter-spacing: 3px; color: var(--grey); margin-bottom: 22px; }
   #guru { display: flex; justify-content: center; margin-bottom: 26px; }
   #event-banner {
-    position: absolute; left: 14px; right: 14px; top: 88px; z-index: 6;
-    background: var(--bg); border: 2px solid #C4573F;
+    position: absolute; left: 14px; right: 14px; top: 210px; z-index: 6;
+    background: var(--bg); border: 2px solid #EF3340;
     padding: 13px 15px; text-align: left;
     font-family: "Press Start 2P", ui-monospace, monospace;
     font-size: 9px; line-height: 2; letter-spacing: 1px; color: var(--ink);
     animation: evpunch .45s steps(4);
   }
-  #event-banner b { color: #C4573F; display: block; margin-top: 6px; }
-  .ev-k { display: block; color: #C4573F; font-size: 8px; margin-bottom: 8px; letter-spacing: 2px; }
+  #event-banner b { color: #EF3340; display: block; margin-top: 6px; }
+  .ev-k { display: block; color: #EF3340; font-size: 8px; margin-bottom: 8px; letter-spacing: 2px; }
   @keyframes evpunch {
     0% { transform: scale(.6) rotate(-2deg); opacity: 0; }
     60% { transform: scale(1.06) rotate(1deg); }
@@ -374,13 +374,13 @@
   }
   #red-flash {
     position: absolute; inset: 0; z-index: 5; pointer-events: none;
-    background: radial-gradient(circle at 50% 40%, rgba(196,87,63,.32), rgba(196,87,63,.10) 70%);
+    background: radial-gradient(circle at 50% 40%, rgba(239,51,64,.34), rgba(239,51,64,.11) 70%);
   }
   #red-flash.pulsing { animation: redpulse .3s steps(2) infinite; }
   #vs-burst {
     position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%);
     z-index: 8; font-family: "Press Start 2P", monospace; font-size: 22px;
-    color: #C4573F; text-shadow: 0 0 18px rgba(196,87,63,.9); letter-spacing: 2px;
+    color: #EF3340; text-shadow: 0 0 18px rgba(239,51,64,.95); letter-spacing: 2px;
     pointer-events: none; white-space: nowrap;
   }
   #vs-burst.go { animation: vsburst .7s cubic-bezier(.2,1.2,.3,1); }
@@ -391,8 +391,8 @@
     100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
   }
   @keyframes redpulse { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
-  #stage.alert::before { background: radial-gradient(circle, rgba(196,87,63,.4), transparent 62%) !important; }
-  #stage.invaded::before { background: radial-gradient(circle, rgba(196,87,63,.28), transparent 66%) !important; }
+  #stage.alert::before { background: radial-gradient(circle, rgba(239,51,64,.44), transparent 62%) !important; }
+  #stage.invaded::before { background: radial-gradient(circle, rgba(239,51,64,.30), transparent 66%) !important; }
   #stage.invaded #floor > div:not(.gabber) { filter: brightness(.4) saturate(.6); animation-duration: .5s !important; transition: filter .4s; }
   #stage.invaded #guru { filter: brightness(.55) saturate(.7); transition: filter .4s; }
   #stage.quake { animation: quake .09s steps(2) 6; }
@@ -401,8 +401,8 @@
     50% { transform: translate(4px,-2px); } 75% { transform: translate(-3px,-2px); }
     100% { transform: translate(0,0); }
   }
-  .broburst-l { animation: burstL .5s cubic-bezier(.2,.9,.3,1) backwards, gjump .17s linear .5s infinite alternate; }
-  .broburst-r { animation: burstR .5s cubic-bezier(.2,.9,.3,1) backwards, gjump .17s linear .5s infinite alternate; }
+  .broburst-l { animation: burstL 1.1s cubic-bezier(.22,.7,.3,1) backwards, gjump .17s linear 1.1s infinite alternate; }
+  .broburst-r { animation: burstR 1.1s cubic-bezier(.22,.7,.3,1) backwards, gjump .17s linear 1.1s infinite alternate; }
   @keyframes burstL {
     0% { transform: translateX(-90vw) scale(1.15); opacity: 0; }
     70% { opacity: 1; }
@@ -420,12 +420,12 @@
   }
   .gabber {
     animation: gjump .17s linear infinite alternate; position: relative; z-index: 3;
-    filter: drop-shadow(0 0 10px rgba(196,87,63,.85)) drop-shadow(0 0 22px rgba(196,87,63,.5));
+    filter: drop-shadow(0 0 10px rgba(255,255,255,.95)) drop-shadow(0 0 24px rgba(255,255,255,.6));
   }
   .gabber .halo {
     position: absolute; left: 50%; top: 46%; width: 96px; height: 96px;
     transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
-    background: radial-gradient(circle, rgba(196,87,63,.55) 0%, rgba(196,87,63,.18) 42%, transparent 68%);
+    background: radial-gradient(circle, rgba(255,255,255,.7) 0%, rgba(255,255,255,.24) 42%, transparent 68%);
     animation: haloPulse .5s ease-in-out infinite alternate;
   }
   @keyframes haloPulse { from { opacity: .6; transform: translate(-50%,-50%) scale(.92); } to { opacity: 1; transform: translate(-50%,-50%) scale(1.12); } }
@@ -527,8 +527,8 @@
     100% { opacity: 1; transform: scale(1); filter: blur(0); }
   }
   .fs-overlay .end-kicker { animation: rise .5s .1s backwards; }
-  .fs-overlay .end-line { animation: rise .6s .40s backwards; }
-  .fs-overlay .end-recap { animation: rise .6s .52s backwards; }
+  .fs-overlay .end-title { animation: rise .6s .40s backwards; }
+  .fs-overlay .end-deal { animation: rise .7s .54s backwards; }
   .fs-overlay .end-actions { animation: rise .6s .64s backwards; }
   @keyframes rise { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) {
@@ -538,12 +538,17 @@
     font-size: 10px; letter-spacing: 3px; color: var(--grey);
     margin-bottom: 16px;
   }
-  .end-line {
+  .end-title {
     font-family: "Press Start 2P", ui-monospace, monospace;
-    line-height: 1.75; color: var(--ink); margin: 0 auto 6px; max-width: 340px;
+    color: var(--ink); margin: 0 auto 4px; max-width: 340px;
   }
-  .end-line .who { font-size: 17px; }
-  .end-line .x { color: var(--blue); }
+  .end-title .who { font-size: 15px; display: block; line-height: 1.5; }
+  .end-title .x { color: var(--blue); }
+  .end-title .pfw {
+    display: block; margin-top: 10px;
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-size: 12px; letter-spacing: .3px; color: var(--blue); font-weight: 500;
+  }
   .dazy-avatar { margin: 2px auto 4px; animation: rise .6s .16s backwards; }
   .duo { display: flex; justify-content: center; align-items: flex-end; gap: 10px; }
   .duo-daz { position: relative; top: 6px; }
@@ -551,36 +556,49 @@
   .duo-daz svg { filter: drop-shadow(0 0 15px rgba(61,99,255,.5)); }
   .dazy-intro {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
-    font-size: 14px; color: var(--ink); margin: 2px auto 14px;
+    font-size: 14px; color: var(--ink); margin: 2px auto 12px;
     animation: rise .6s .28s backwards;
   }
   .dazy-intro b { color: var(--blue); }
-  .end-recap {
-    font-size: 10px; letter-spacing: 1.2px; color: var(--grey);
-    margin: 12px auto 2px; max-width: 340px; line-height: 1.8;
+  .end-deal {
+    display: flex; align-items: stretch; justify-content: center; gap: 0;
+    margin: 20px auto 4px; padding: 16px 10px;
+    border: 1px solid var(--line); background: #0E0D0B; position: relative;
+    max-width: 360px;
   }
-  .end-recap b { color: var(--blue); font-size: 12px; }
-  .end-line .pfw {
-    display: block; font-size: 9.5px; color: var(--blue);
-    margin-top: 14px; letter-spacing: 1px;
+  .end-deal::before {
+    content: ""; position: absolute; top: -1px; left: -1px; width: 11px; height: 11px;
+    border-top: 2px solid var(--blue); border-left: 2px solid var(--blue);
   }
+  .end-deal::after {
+    content: ""; position: absolute; bottom: -1px; right: -1px; width: 11px; height: 11px;
+    border-bottom: 2px solid var(--blue); border-right: 2px solid var(--blue);
+  }
+  .deal-cell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0 6px; }
+  .deal-cell b { font-size: 22px; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
+  .deal-cell span { font-size: 8px; letter-spacing: .8px; color: var(--grey); text-align: center; line-height: 1.4; }
+  .deal-cell.hero b { font-size: 30px; color: var(--blue); }
+  .deal-sep { width: 1px; background: var(--line); margin: 2px 0; }
   .end-actions {
-    display: flex; gap: 10px; justify-content: center; align-items: center;
-    flex-wrap: wrap; margin-top: 16px;
+    display: flex; flex-direction: column; gap: 10px; align-items: center;
+    margin-top: 20px; width: 100%; max-width: 360px;
   }
   #drop-link {
-    display: inline-block; padding: 14px 24px;
+    display: block; width: 100%; box-sizing: border-box; text-align: center;
+    padding: 17px 24px;
     background: var(--blue); color: var(--ink); border: 1px solid var(--blue);
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-weight: 700; letter-spacing: 2px; font-size: 11px;
+    font-weight: 700; letter-spacing: 2px; font-size: 12px;
     text-decoration: none; text-transform: uppercase;
+    animation: readypulse 1.8s ease-in-out infinite;
   }
   #drop-link:hover { background: var(--bg); color: var(--blue); }
   #onemore {
-    padding: 13px 22px;
-    background: transparent; color: #C9C3B4; border: 1px solid var(--line);
-    font-weight: 700; letter-spacing: 2px;
+    padding: 6px 12px; background: transparent; color: var(--grey);
+    border: none; font-size: 11px; letter-spacing: 1px; text-decoration: underline;
+    text-underline-offset: 3px;
   }
+  @media (prefers-reduced-motion: reduce) { #drop-link { animation: none; } }
   .exit-l { animation: exitl .9s linear forwards; }
   .exit-r { animation: exitr .9s linear forwards; }
   @keyframes exitr {
@@ -940,11 +958,11 @@
       <div class="end-kicker">END OF SET. LIGHTS ON.</div>
       <div class="dazy-avatar" id="dazy-avatar"></div>
       <div class="dazy-intro" id="dazy-intro"></div>
-      <div class="end-line" id="end-line"></div>
-      <div class="end-recap" id="end-recap"></div>
+      <div class="end-title" id="end-line"></div>
+      <div class="end-deal" id="end-deal"></div>
       <div class="end-actions">
         <a id="drop-link" href="https://ig.me/m/dazy.vision" target="_blank" rel="noopener">LET'S GOOO ↗</a>
-        <button id="onemore">ONE MORE TUNE ↻</button>
+        <button id="onemore">One more tune ↻</button>
       </div>
     </div>
   </div>
@@ -972,7 +990,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b85</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b89</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1203,7 +1221,7 @@ function fireBros(withSound) {
   setTimeout(() => {
     brosIn = true;
     if (stg) { stg.classList.remove("alert"); stg.classList.add("invaded"); }
-    brosBurst = true; setTimeout(() => { brosBurst = false; }, 950);
+    brosBurst = true; setTimeout(() => { brosBurst = false; }, 1150);
     if (stg && !reduced) {
       const vs = document.getElementById("vs-burst");
       if (vs) { vs.classList.remove("hidden"); vs.classList.add("go"); setTimeout(() => { vs.classList.add("hidden"); vs.classList.remove("go"); }, 700); }
@@ -1231,7 +1249,7 @@ function fireBros(withSound) {
       if (fb && typeof fb.scrollIntoView === "function")
         fb.scrollIntoView({ behavior: "smooth", block: "center" });
       coin();
-    }, 2000);
+    }, 3400);
     renderStage();
     // secousse d'impact à l'irruption
     if (stg && !reduced) {
@@ -1262,38 +1280,84 @@ function applause() {
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     const t0 = actx.currentTime;
-    // nappe d'applaudissements : ~2.4s de salves de claps aléatoires
-    for (let i = 0; i < 90; i++) {
-      const t = t0 + Math.random() * 2.2;
-      const src = actx.createBufferSource();
-      const len = 0.05;
-      const buf = actx.createBuffer(1, Math.max(1, actx.sampleRate * len), actx.sampleRate);
-      const d = buf.getChannelData(0);
-      for (let s = 0; s < d.length; s++) d[s] = (Math.random() * 2 - 1) * (1 - s / d.length);
-      src.buffer = buf;
-      const bp = actx.createBiquadFilter();
-      bp.type = "bandpass"; bp.frequency.value = 1400 + Math.random() * 1600; bp.Q.value = 0.8;
-      const g = actx.createGain();
-      const vol = 0.012 + Math.random() * 0.02;
-      g.gain.setValueAtTime(vol, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
-      src.connect(bp); bp.connect(g); g.connect(actx.destination);
-      src.start(t); src.stop(t + 0.06);
+    const DUR = 3.4, SR = actx.sampleRate;
+    const bus = actx.createGain(); bus.gain.value = 0.9;
+    // léger reverb pour l'espace "salle"
+    const conv = actx.createConvolver();
+    const irLen = Math.floor(SR * 0.5);
+    const ir = actx.createBuffer(2, irLen, SR);
+    for (let c = 0; c < 2; c++) {
+      const ch = ir.getChannelData(c);
+      for (let i = 0; i < irLen; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / irLen, 2.5);
     }
-    // couche de "foule" continue en fond
-    const nz = actx.createBufferSource();
-    const nb = actx.createBuffer(1, actx.sampleRate * 2.4, actx.sampleRate);
-    const nd = nb.getChannelData(0);
-    for (let s = 0; s < nd.length; s++) nd[s] = (Math.random() * 2 - 1) * 0.5;
-    nz.buffer = nb;
-    const nf = actx.createBiquadFilter(); nf.type = "bandpass"; nf.frequency.value = 1800; nf.Q.value = 0.5;
-    const ng = actx.createGain();
-    ng.gain.setValueAtTime(0.0001, t0);
-    ng.gain.linearRampToValueAtTime(0.02, t0 + 0.3);
-    ng.gain.setValueAtTime(0.02, t0 + 1.4);
-    ng.gain.exponentialRampToValueAtTime(0.0001, t0 + 2.4);
-    nz.connect(nf); nf.connect(ng); ng.connect(actx.destination);
-    nz.start(t0); nz.stop(t0 + 2.4);
+    conv.buffer = ir;
+    const wet = actx.createGain(); wet.gain.value = 0.35;
+    bus.connect(actx.destination); bus.connect(conv); conv.connect(wet); wet.connect(actx.destination);
+
+    // UN applaudissement = un buffer entier de claps très courts, densité qui monte puis tient puis retombe
+    const buf = actx.createBuffer(1, Math.floor(SR * DUR), SR);
+    const data = buf.getChannelData(0);
+    // enveloppe de densité (nombre de claps/seconde) : swell d'ovation
+    const clapCount = 1400;
+    for (let k = 0; k < clapCount; k++) {
+      // répartition : montée rapide (0-0.4s), plateau, léger fade
+      const r = Math.random();
+      let ct;
+      if (r < 0.15) ct = Math.random() * 0.4;                 // l'attaque de l'ovation
+      else if (r < 0.85) ct = 0.4 + Math.random() * 2.2;       // le plateau dense
+      else ct = 2.6 + Math.random() * 0.8;                     // la retombée
+      const start = Math.floor(ct * SR);
+      const clapLen = Math.floor(SR * (0.004 + Math.random() * 0.006)); // 4-10ms : claquement sec humain
+      const amp = 0.10 + Math.random() * 0.18;
+      for (let s = 0; s < clapLen && start + s < data.length; s++) {
+        // burst filtré grossièrement (deux pôles) + decay très rapide
+        const env = Math.pow(1 - s / clapLen, 1.8);
+        data[start + s] += (Math.random() * 2 - 1) * amp * env;
+      }
+    }
+    // rumeur de foule continue sous les claps
+    for (let s = 0; s < data.length; s++) {
+      const pos = s / data.length;
+      const swell = Math.min(1, pos * 5) * (pos > 0.8 ? (1 - (pos - 0.8) * 5) : 1);
+      data[s] += (Math.random() * 2 - 1) * 0.03 * swell;
+    }
+    const src = actx.createBufferSource(); src.buffer = buf;
+    // EQ : atténue les graves (pas de "kick"), présence medium des mains
+    const hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 700;
+    const pk = actx.createBiquadFilter(); pk.type = "peaking"; pk.frequency.value = 2200; pk.gain.value = 5; pk.Q.value = 0.7;
+    const g = actx.createGain(); g.gain.value = 0.5;
+    src.connect(hp); hp.connect(pk); pk.connect(g); g.connect(bus);
+    src.start(t0);
+
+    // cris de félicitation : whoops montants dispersés
+    const whoops = 5;
+    for (let i = 0; i < whoops; i++) {
+      const t = t0 + 0.2 + Math.random() * 2.2;
+      const o = actx.createOscillator(); o.type = "sawtooth";
+      const f0 = 300 + Math.random() * 200;
+      o.frequency.setValueAtTime(f0, t);
+      o.frequency.exponentialRampToValueAtTime(f0 * (2.2 + Math.random()), t + 0.18);
+      o.frequency.exponentialRampToValueAtTime(f0 * 1.4, t + 0.5);
+      const bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 900; bp.Q.value = 3;
+      const wg = actx.createGain();
+      wg.gain.setValueAtTime(0.0001, t);
+      wg.gain.linearRampToValueAtTime(0.06 + Math.random() * 0.04, t + 0.08);
+      wg.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+      o.connect(bp); bp.connect(wg); wg.connect(bus);
+      o.start(t); o.stop(t + 0.6);
+    }
+    // un "wooo" plus long qui traverse
+    const wo = actx.createOscillator(); wo.type = "sawtooth";
+    wo.frequency.setValueAtTime(360, t0 + 0.4);
+    wo.frequency.exponentialRampToValueAtTime(760, t0 + 0.9);
+    wo.frequency.exponentialRampToValueAtTime(520, t0 + 1.6);
+    const wof = actx.createBiquadFilter(); wof.type = "bandpass"; wof.frequency.value = 800; wof.Q.value = 2.5;
+    const wog = actx.createGain();
+    wog.gain.setValueAtTime(0.0001, t0 + 0.4);
+    wog.gain.linearRampToValueAtTime(0.07, t0 + 0.7);
+    wog.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.8);
+    wo.connect(wof); wof.connect(wog); wog.connect(bus);
+    wo.start(t0 + 0.4); wo.stop(t0 + 1.9);
   } catch (e) {}
 }
 function victoryFanfare() {
@@ -2720,13 +2784,17 @@ function endSet() {
      </div>`;
   const edP = prixEdition();
   const earnP = state.prix - edP;
-  document.getElementById("end-recap").innerHTML =
-    state.tirage + " tees · an extraordinary custom design · you earn <b>" +
-    fmt(earnP * state.tirage) + "</b>";
   const intro = document.getElementById("dazy-intro");
   if (intro) intro.innerHTML = `Hey ${nm}, meet <b>DAZ</b>. Your new partner.`;
   document.getElementById("end-line").innerHTML =
-    `<span class="who">${nm} <span class="x">×</span> DAZY</span><span class="pfw">LET'S BRING THE RAVE TO PARIS FASHION WEEK 2027</span>`;
+    `<span class="who">${nm} <span class="x">×</span> DAZY</span>
+     <span class="pfw">Let's bring the rave to Paris Fashion Week 2027</span>`;
+  document.getElementById("end-deal").innerHTML =
+    `<div class="deal-cell"><b>${state.tirage}</b><span>tees</span></div>
+     <div class="deal-sep"></div>
+     <div class="deal-cell hero"><b>${fmt(earnP * state.tirage)}</b><span>you earn</span></div>
+     <div class="deal-sep"></div>
+     <div class="deal-cell"><b>1</b><span>extraordinary design</span></div>`;
   setTimeout(() => {
     victoryFanfare();
     document.body.style.overflow = "hidden";
@@ -2770,14 +2838,14 @@ faderWrap.addEventListener("pointermove", e => {
 });
 faderWrap.addEventListener("pointerup", () => { faderDrag = false; });
 document.getElementById("onemore").onclick = () => {
-  brosAt = beatCount + 5;
+  brosAt = beatCount + 20;
   brosFired = false; brosIn = false; brosBurst = false;
   const _st2 = document.getElementById("stage"); if (_st2) _st2.classList.remove("invaded","alert","quake");
   document.getElementById("fader-block").classList.add("hidden");
   const bn0 = document.getElementById("event-banner");
   if (bn0) bn0.classList.add("hidden");
   clearTimeout(brosFallback);
-  brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 2600);
+  brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 6000);
   if (exitTimer) { clearInterval(exitTimer); exitTimer = null; }
   document.body.style.overflow = "";
   setEnded = false;
@@ -2791,12 +2859,12 @@ document.getElementById("onemore").onclick = () => {
 
 document.getElementById("done").onclick = () => {
   roomOpen = true;
-  brosAt = beatCount + 5;
+  brosAt = beatCount + 20;
   brosFired = false; brosIn = false; brosBurst = false;
   const _st = document.getElementById("stage"); if (_st) _st.classList.remove("invaded","alert","quake");
   document.getElementById("fader-block").classList.add("hidden");
   clearTimeout(brosFallback);
-  brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 2600);
+  brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 6000);
   renderStage();
   coin();
   enterHold = Date.now() + 1300;
@@ -2825,7 +2893,7 @@ window.addEventListener("error", e => {
 window.addEventListener("unhandledrejection", e => {
   if (e.reason && e.reason.message) console.warn("[dazy]", e.reason.message);
 });
-console.log("DAZY simulator · build 85");
+console.log("DAZY simulator · build 89");
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
