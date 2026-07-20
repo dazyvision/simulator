@@ -372,6 +372,36 @@
     60% { transform: scale(1.06) rotate(1deg); }
     100% { transform: scale(1) rotate(0); opacity: 1; }
   }
+  #red-flash {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    background: radial-gradient(circle at 50% 40%, rgba(196,87,63,.32), rgba(196,87,63,.10) 70%);
+  }
+  #red-flash.pulsing { animation: redpulse .3s steps(2) infinite; }
+  @keyframes redpulse { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
+  #stage.alert::before { background: radial-gradient(circle, rgba(196,87,63,.4), transparent 62%) !important; }
+  #stage.invaded::before { background: radial-gradient(circle, rgba(196,87,63,.22), transparent 64%) !important; }
+  #stage.quake { animation: quake .09s steps(2) 6; }
+  @keyframes quake {
+    0% { transform: translate(0,0); } 25% { transform: translate(-4px,2px); }
+    50% { transform: translate(4px,-2px); } 75% { transform: translate(-3px,-2px); }
+    100% { transform: translate(0,0); }
+  }
+  .broburst-l { animation: burstL .5s cubic-bezier(.2,.9,.3,1) backwards, gjump .17s linear .5s infinite alternate; }
+  .broburst-r { animation: burstR .5s cubic-bezier(.2,.9,.3,1) backwards, gjump .17s linear .5s infinite alternate; }
+  @keyframes burstL {
+    0% { transform: translateX(-90vw) scale(1.15); opacity: 0; }
+    70% { opacity: 1; }
+    100% { transform: translateX(0) scale(1); opacity: 1; }
+  }
+  @keyframes burstR {
+    0% { transform: translateX(90vw) scale(1.15); opacity: 0; }
+    70% { opacity: 1; }
+    100% { transform: translateX(0) scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #stage.quake, .broburst-l, .broburst-r { animation: none; }
+    #red-flash { display: none; }
+  }
   .gabber { animation: gjump .17s linear infinite alternate; position: relative; }
   .gabber::before, .gabber::after {
     content: ""; position: absolute; width: 3px; height: 3px;
@@ -430,7 +460,26 @@
     content: ""; position: absolute; left: 2px; right: 2px; top: 4px; height: 2px;
     background: var(--blue);
   }
-  #set-end { padding-top: 8px; }
+  .fs-overlay {
+    position: fixed; inset: 0; z-index: 120;
+    background: radial-gradient(circle at 50% 42%, #14120D 0%, var(--bg) 70%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; padding: 30px 22px; text-align: center;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    animation: fsin .6s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes fsin {
+    0% { opacity: 0; transform: scale(1.04); filter: blur(6px); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+  .fs-overlay .end-kicker { animation: rise .5s .1s backwards; }
+  .fs-overlay .end-line { animation: rise .6s .40s backwards; }
+  .fs-overlay .end-recap { animation: rise .6s .52s backwards; }
+  .fs-overlay .end-actions { animation: rise .6s .64s backwards; }
+  @keyframes rise { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .fs-overlay, .fs-overlay * { animation: none !important; }
+  }
   .end-kicker {
     font-size: 10px; letter-spacing: 3px; color: var(--grey);
     margin-bottom: 16px;
@@ -441,6 +490,14 @@
   }
   .end-line .who { font-size: 17px; }
   .end-line .x { color: var(--blue); }
+  .dazy-avatar { margin: 2px auto 4px; animation: rise .6s .16s backwards; }
+  .dazy-avatar svg { filter: drop-shadow(0 0 14px rgba(61,99,255,.4)); }
+  .dazy-intro {
+    font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
+    font-size: 14px; color: var(--ink); margin: 2px auto 14px;
+    animation: rise .6s .28s backwards;
+  }
+  .dazy-intro b { color: var(--blue); }
   .end-recap {
     font-size: 10px; letter-spacing: 1.2px; color: var(--grey);
     margin: 12px auto 2px; max-width: 340px; line-height: 1.8;
@@ -614,12 +671,16 @@
     .cols { display: block; }
     .col-preview {
       position: sticky; top: 0; z-index: 20;
-      background: var(--bg); margin: 0 -20px 24px; padding: 6px 20px 8px;
+      background: var(--bg); margin: 0 -20px 16px; padding: 6px 20px 8px;
       border-bottom: 1px solid #2A2925;
+      max-height: 46vh; overflow: hidden;
     }
     .preview-panel {
-    border: 1px solid var(--hair); background: #100F0C; padding: 12px 10px 10px; }
-    #tee-box svg { max-width: 150px; }
+      border: 1px solid var(--hair); background: #100F0C; padding: 8px 10px 8px;
+    }
+    #tee-box svg { max-width: 116px; }
+    .preview-note { display: none; }
+    .hype { margin-top: 5px; }
     .under-tee { margin-top: 6px; }
     .numbering { font-size: 12px; }
     .sub { display: none; }
@@ -788,6 +849,7 @@
     <div class="stage-sub" id="stage-count"></div>
     <div id="guru"></div>
     <div id="floor"></div>
+    <div id="red-flash" class="hidden"></div>
     <div id="event-banner" class="hidden"></div>
     <div id="fader-block" class="hidden">
       <div class="fader-kicker">MASTER OUT</div>
@@ -797,8 +859,10 @@
         <div id="fader-cap"></div>
       </div>
     </div>
-    <div id="set-end" class="hidden">
+    <div id="set-end" class="hidden fs-overlay">
       <div class="end-kicker">END OF SET. LIGHTS ON.</div>
+      <div class="dazy-avatar" id="dazy-avatar"></div>
+      <div class="dazy-intro">This is <b>DAZ</b>, your new partner.</div>
       <div class="end-line" id="end-line"></div>
       <div class="end-recap" id="end-recap"></div>
       <div class="end-actions">
@@ -830,7 +894,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b71</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b77</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -1041,11 +1105,23 @@ function fireBros(withSound) {
     alarmUntil = t + 1.15;
     alarmSound(t);
   }
+  const stg = document.getElementById("stage");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // pré-alerte : la scène vire au rouge et tremble avant l'irruption
+  if (stg && !reduced) {
+    stg.classList.add("alert");
+    const flash = document.getElementById("red-flash");
+    if (flash) { flash.classList.remove("hidden"); flash.classList.add("pulsing"); }
+  }
   setTimeout(() => {
     brosIn = true;
+    if (stg) { stg.classList.remove("alert"); stg.classList.add("invaded"); }
+    brosBurst = true; setTimeout(() => { brosBurst = false; }, 950);
+    const flash = document.getElementById("red-flash");
+    if (flash) { flash.classList.remove("pulsing"); flash.classList.add("hidden"); }
     const bn = document.getElementById("event-banner");
     if (bn) {
-      bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Protect us from their sticky bodies.</b>';
+      bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Only your DAZY piece stands between you and the sweat!</b>';
       bn.classList.remove("hidden");
       bn.style.cursor = "pointer";
       bn.onclick = () => bn.classList.add("hidden");
@@ -1054,7 +1130,13 @@ function fireBros(withSound) {
     const fb = document.getElementById("fader-block");
     if (fb) fb.classList.remove("hidden");
     renderStage();
-  }, 480);
+    // secousse d'impact à l'irruption
+    if (stg && !reduced) {
+      stg.classList.add("quake");
+      setTimeout(() => stg.classList.remove("quake"), 620);
+      setTimeout(() => stg.classList.remove("invaded"), 2400);
+    }
+  }, 900);
 }
 function uiClick() {
   if (!soundOn) return;
@@ -1102,7 +1184,7 @@ const BPM = 148, BEAT = 60 / BPM, S16 = BEAT / 4;
 let musicTimer = null, nextBeat = 0, beatCount = 0, dist = null, comp = null;
 let master = null, faderVal = 1, setEnded = false;
 let lastCtx = null, exitTimer = null, stageT = null, enterHold = 0;
-let brosAt = Infinity, brosFired = false, brosIn = false, alarmUntil = 0, brosFallback = null;
+let brosAt = Infinity, brosFired = false, brosIn = false, brosBurst = false, alarmUntil = 0, brosFallback = null;
 function queueStage() { clearTimeout(stageT); stageT = setTimeout(renderStage, 90); }
 
 function out() {
@@ -1649,6 +1731,89 @@ function lighten(hex, f) {
   return "#" + [L((n >> 16) & 255), L((n >> 8) & 255), L(n & 255)]
     .map(v => v.toString(16).padStart(2, "0")).join("");
 }
+function dazyAvatar() {
+  const PXG = 6, GW = 27, GH = 40;
+  const skin = "#C9A183", OL = "#191813", eye = "#1A1A18";
+  const hair = "#3D63FF", tee = "#141414", line = "#3D63FF", ink = "#F2EFE8", blush = "#D98A8A";
+  const g = Array.from({ length: GH }, () => Array(GW).fill("."));
+  const fill = (x0, x1, y0, y1, c) => {
+    for (let y = Math.max(0, y0); y <= Math.min(GH - 1, y1); y++)
+      for (let x = Math.max(0, x0); x <= Math.min(GW - 1, x1); x++) g[y][x] = c;
+  };
+  const T = 4;
+  // visage 13x11
+  fill(7, 19, T, T + 10, "s");
+  g[T][7] = "."; g[T][19] = ".";
+  g[T + 10][7] = "."; g[T + 10][19] = ".";
+  // cheveux bleu : frange nette + petites pattes
+  fill(7, 19, T - 4, T - 1, "h");
+  g[T - 4][7] = "."; g[T - 4][19] = ".";
+  fill(7, 19, T, T, "h");
+  for (let x = 8; x <= 18; x += 2) g[T + 1][x] = "h";
+  fill(6, 6, T - 1, T + 4, "h");
+  fill(20, 20, T - 1, T + 4, "h");
+  // tee noir épaules droites
+  const S0 = T + 11;
+  fill(8, 18, S0, S0, "t");
+  g[S0][12] = "."; g[S0][13] = "."; g[S0][14] = ".";
+  fill(7, 19, S0 + 1, S0 + 7, "t");
+  g[S0 + 7][7] = "."; g[S0 + 7][19] = ".";
+  // BRAS TENDUS vers l'avant, ouverts, paumes offertes (accueil)
+  // manche courte puis bras qui descend en s'écartant, main ouverte au bout
+  fill(4, 5, S0 + 1, S0 + 2, "t");      // manche gauche
+  fill(3, 4, S0 + 3, S0 + 4, "s");      // bras gauche
+  fill(1, 3, S0 + 5, S0 + 6, "s");      // main gauche ouverte, basse
+  fill(0, 1, S0 + 5, S0 + 5, "s");      // doigts
+  fill(21, 22, S0 + 1, S0 + 2, "t");    // manche droite
+  fill(22, 23, S0 + 3, S0 + 4, "s");    // bras droit
+  fill(23, 25, S0 + 5, S0 + 6, "s");    // main droite ouverte, basse
+  fill(25, 26, S0 + 5, S0 + 5, "s");    // doigts
+  // jambes + chaussures noires
+  const hemY = S0 + 7;
+  fill(9, 12, hemY + 1, hemY + 6, "p");
+  fill(14, 17, hemY + 1, hemY + 6, "p");
+  fill(8, 12, hemY + 7, hemY + 8, "b");
+  fill(14, 18, hemY + 7, hemY + 8, "b");
+  // rendu plages fusionnées
+  const map = { h: hair, s: skin, t: tee, p: "#141414", b: "#0A0A0A" };
+  let back = "", cells = "";
+  for (let y = 0; y < GH; y++) {
+    let x = 0;
+    while (x < GW) {
+      if (g[y][x] === ".") { x++; continue; }
+      const c = g[y][x]; let x2 = x;
+      while (x2 + 1 < GW && g[y][x2 + 1] === c) x2++;
+      const rx = x * PXG, rw = (x2 - x + 1) * PXG;
+      back += `<rect x="${rx - 1.1}" y="${y * PXG - 1.1}" width="${rw + 2.2}" height="${PXG + 2.2}" fill="${OL}"/>`;
+      cells += `<rect x="${rx}" y="${y * PXG - 0.4}" width="${rw}" height="${PXG + 0.8}" fill="${map[c]}"/>`;
+      x = x2 + 1;
+    }
+  }
+  let s = back + cells;
+  // visage : regard droit posé (yeux ouverts) + pommettes rosées + demi-sourire
+  const cx = 13 * PXG, ey = (T + 5) * PXG;
+  // yeux (regard droit) visibles à travers le verre
+  s += `<rect x="${cx - 20}" y="${ey + 1}" width="6" height="6" fill="${eye}"/>`;
+  s += `<rect x="${cx - 18}" y="${ey + 2}" width="2" height="2" fill="#F2EFE8"/>`;
+  s += `<rect x="${cx + 14}" y="${ey + 1}" width="6" height="6" fill="${eye}"/>`;
+  s += `<rect x="${cx + 16}" y="${ey + 2}" width="2" height="2" fill="#F2EFE8"/>`;
+  // lunettes teintées translucides : deux verres + pont + branches
+  const gy = ey - 2, gw = 13, gh = 12;
+  s += `<rect x="${cx - 22}" y="${gy}" width="${gw}" height="${gh}" rx="2" fill="#3D63FF" opacity="0.28" stroke="#12121A" stroke-width="1.4"/>`;
+  s += `<rect x="${cx + 9}" y="${gy}" width="${gw}" height="${gh}" rx="2" fill="#3D63FF" opacity="0.28" stroke="#12121A" stroke-width="1.4"/>`;
+  s += `<rect x="${cx - 9}" y="${gy + 3}" width="18" height="2.4" fill="#12121A"/>`;
+  s += `<rect x="${cx - 34}" y="${gy + 2}" width="12" height="2.4" fill="#12121A"/>`;
+  s += `<rect x="${cx + 22}" y="${gy + 2}" width="12" height="2.4" fill="#12121A"/>`;
+  // reflet sur le verre
+  s += `<rect x="${cx - 20}" y="${gy + 2}" width="3" height="3" fill="#EAF0FF" opacity="0.5"/>`;
+  s += `<rect x="${cx + 11}" y="${gy + 2}" width="3" height="3" fill="#EAF0FF" opacity="0.5"/>`;
+  s += `<rect x="${cx - 22}" y="${ey + 12}" width="10" height="5" rx="1" fill="${blush}" opacity=".75"/>`;
+  s += `<rect x="${cx + 12}" y="${ey + 12}" width="10" height="5" rx="1" fill="${blush}" opacity=".75"/>`;
+  s += `<path d="M${cx - 8} ${ey + 15} Q${cx} ${ey + 20} ${cx + 8} ${ey + 15}" stroke="${eye}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  // DAZY discret en poitrine
+  s += `<text x="${cx}" y="${(S0 + 4.4) * PXG}" text-anchor="middle" font-family="ui-monospace, monospace" font-weight="700" letter-spacing="1" font-size="7.5" fill="${ink}">DAZY</text>`;
+  return `<svg viewBox="-6 0 ${GW * PXG + 12} ${GH * PXG - 6}" width="150" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+}
 function dancerSVG(grid, colors, flip, px) {
   px = px || PX;
   const map = Object.assign(
@@ -1670,14 +1835,14 @@ function dancerSVG(grid, colors, flip, px) {
 
 // ============ RAVERS : trois personnages, features appliquées sur les frames ============
 const RAVERS = [
+  { name: "TYON", hair: "#3A2E22", skirt: null, feat: "buzz",
+    arch: "THE LOST GYMBRO", def: "Followed the kick drum from the gym next door. The pill? Swears it was fake. Took a second one." },
   { name: "ALIX", hair: "#F5A3C7", skirt: "#3D63FF", feat: "longhair",
     arch: "THE OPENING-SET DEFENDER", def: "At doors open. Swears the warm-up was the best set of the night. She's right." },
   { name: "NOA", hair: "#3D63FF", skirt: null, feat: "mohawk",
     arch: "THE LEFT-STACK RESIDENT", def: "Same two square meters by the left speaker, every night. Politely non-negotiable." },
   { name: "SASHA", hair: "#E8C15A", skirt: "#B04AA0", feat: "bob",
     arch: "THE SMOKING-AREA CRITIC", def: "Hears every set from the smoking area. Reviews them all anyway." },
-  { name: "TYON", hair: "#3A2E22", skirt: null, feat: "buzz",
-    arch: "THE LOST GYMBRO", def: "Followed the kick drum from the gym next door. The pill? Swears it was fake. Took a second one." },
 ];
 let chosenRaver = 0;
 
@@ -2046,7 +2211,7 @@ function renderStage() {
     return frames.map(f =>
       f.map(r => r.split("").map(c => (c === "t" || c === "l" || c === "i") ? "s" : c).join("")));
   }
-  const broFrames = shirtless(toBack(applyRaver(pieceFrames, RAVERS[3])));
+  const broFrames = shirtless(toBack(applyRaver(pieceFrames, RAVERS[0])));
   const N = RAVERS.length;
   const rv0 = chosenRaver, rv1 = (chosenRaver + 1) % N, rv2 = (chosenRaver + 2) % N;
   const crowd = [rv1, rv2, rv0, rv2, rv1];
@@ -2074,8 +2239,9 @@ function renderStage() {
     let html = "";
     const broCols = { h: "#3A2E22", t: "#C9A183", l: "#C9A183", i: "#C9A183", k: "#26261F" };
     if (brosIn) {
-      html += `<div class="gabber" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
-      html += `<div class="gabber" style="animation-delay:.05s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
+      const burst = brosBurst ? " broburst-l" : "";
+      html += `<div class="gabber${burst}" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
+      html += `<div class="gabber${burst}" style="animation-delay:.05s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
     }
     crowd.forEach((ri, i) => {
       const crv = RAVERS[ri];
@@ -2084,8 +2250,9 @@ function renderStage() {
         ${dancerSVG(backPerRaver[ri][f], { h: crv.hair, t: col.top, l: lighten(col.top, 0.3), i: col.ink, k: crv.skirt || "#26261F" }, i % 2 === 1)}</div>`;
     });
     if (brosIn) {
-      html += `<div class="gabber" style="animation-delay:.09s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
-      html += `<div class="gabber" style="animation-delay:.13s" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
+      const burst = brosBurst ? " broburst-r" : "";
+      html += `<div class="gabber${burst}" style="animation-delay:.09s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
+      html += `<div class="gabber${burst}" style="animation-delay:.13s" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
     }
     floor.innerHTML = html;
   }
@@ -2317,6 +2484,8 @@ function endSet() {
     }, 110);
   }
   const nm = (state.stage || "").trim().toUpperCase() || RAVERS[chosenRaver].name;
+  const av = document.getElementById("dazy-avatar");
+  if (av) av.innerHTML = dazyAvatar();
   const edP = prixEdition();
   const earnP = state.prix - edP;
   document.getElementById("end-recap").innerHTML =
@@ -2325,10 +2494,8 @@ function endSet() {
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span><span class="pfw">LET'S BRING THE RAVE TO PARIS FASHION WEEK 2027</span>`;
   setTimeout(() => {
-    document.getElementById("guru").classList.add("hidden");
-    document.getElementById("floor").classList.add("hidden");
-    document.getElementById("stage-head").classList.add("hidden");
-    document.getElementById("stage-count").classList.add("hidden");
+    document.body.style.overflow = "hidden";
+    window.scrollTo(0, 0);
     document.getElementById("set-end").classList.remove("hidden");
   }, 1600);
 }
@@ -2369,17 +2536,15 @@ faderWrap.addEventListener("pointermove", e => {
 faderWrap.addEventListener("pointerup", () => { faderDrag = false; });
 document.getElementById("onemore").onclick = () => {
   brosAt = beatCount + 5;
-  brosFired = false; brosIn = false;
+  brosFired = false; brosIn = false; brosBurst = false;
+  const _st2 = document.getElementById("stage"); if (_st2) _st2.classList.remove("invaded","alert","quake");
   document.getElementById("fader-block").classList.add("hidden");
   const bn0 = document.getElementById("event-banner");
   if (bn0) bn0.classList.add("hidden");
   clearTimeout(brosFallback);
   brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 2600);
   if (exitTimer) { clearInterval(exitTimer); exitTimer = null; }
-  document.getElementById("guru").classList.remove("hidden");
-  document.getElementById("floor").classList.remove("hidden");
-  document.getElementById("stage-head").classList.remove("hidden");
-  document.getElementById("stage-count").classList.remove("hidden");
+  document.body.style.overflow = "";
   setEnded = false;
   setFader(1, true);
   document.getElementById("set-end").classList.add("hidden");
@@ -2392,7 +2557,8 @@ document.getElementById("onemore").onclick = () => {
 document.getElementById("done").onclick = () => {
   roomOpen = true;
   brosAt = beatCount + 5;
-  brosFired = false; brosIn = false;
+  brosFired = false; brosIn = false; brosBurst = false;
+  const _st = document.getElementById("stage"); if (_st) _st.classList.remove("invaded","alert","quake");
   document.getElementById("fader-block").classList.add("hidden");
   clearTimeout(brosFallback);
   brosFallback = setTimeout(() => { if (roomOpen && !setEnded) fireBros(false); }, 2600);
@@ -2421,7 +2587,7 @@ window.addEventListener("error", e => {
 window.addEventListener("unhandledrejection", e => {
   console.warn("[dazy] promise:", e.reason && e.reason.message);
 });
-console.log("DAZY simulator · build 71");
+console.log("DAZY simulator · build 77");
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
