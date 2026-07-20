@@ -377,9 +377,24 @@
     background: radial-gradient(circle at 50% 40%, rgba(196,87,63,.32), rgba(196,87,63,.10) 70%);
   }
   #red-flash.pulsing { animation: redpulse .3s steps(2) infinite; }
+  #vs-burst {
+    position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%);
+    z-index: 8; font-family: "Press Start 2P", monospace; font-size: 22px;
+    color: #C4573F; text-shadow: 0 0 18px rgba(196,87,63,.9); letter-spacing: 2px;
+    pointer-events: none; white-space: nowrap;
+  }
+  #vs-burst.go { animation: vsburst .7s cubic-bezier(.2,1.2,.3,1); }
+  @keyframes vsburst {
+    0% { transform: translate(-50%,-50%) scale(2.4); opacity: 0; }
+    30% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+    75% { opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+  }
   @keyframes redpulse { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
   #stage.alert::before { background: radial-gradient(circle, rgba(196,87,63,.4), transparent 62%) !important; }
-  #stage.invaded::before { background: radial-gradient(circle, rgba(196,87,63,.22), transparent 64%) !important; }
+  #stage.invaded::before { background: radial-gradient(circle, rgba(196,87,63,.28), transparent 66%) !important; }
+  #stage.invaded #floor > div:not(.gabber) { filter: brightness(.4) saturate(.6); animation-duration: .5s !important; transition: filter .4s; }
+  #stage.invaded #guru { filter: brightness(.55) saturate(.7); transition: filter .4s; }
   #stage.quake { animation: quake .09s steps(2) 6; }
   @keyframes quake {
     0% { transform: translate(0,0); } 25% { transform: translate(-4px,2px); }
@@ -399,10 +414,21 @@
     100% { transform: translateX(0) scale(1); opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
-    #stage.quake, .broburst-l, .broburst-r { animation: none; }
+    #stage.quake, .broburst-l, .broburst-r, .gabber .halo, #vs-burst.go { animation: none; }
+    .gabber .halo { opacity: .8; }
     #red-flash { display: none; }
   }
-  .gabber { animation: gjump .17s linear infinite alternate; position: relative; }
+  .gabber {
+    animation: gjump .17s linear infinite alternate; position: relative; z-index: 3;
+    filter: drop-shadow(0 0 10px rgba(196,87,63,.85)) drop-shadow(0 0 22px rgba(196,87,63,.5));
+  }
+  .gabber .halo {
+    position: absolute; left: 50%; top: 46%; width: 96px; height: 96px;
+    transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
+    background: radial-gradient(circle, rgba(196,87,63,.55) 0%, rgba(196,87,63,.18) 42%, transparent 68%);
+    animation: haloPulse .5s ease-in-out infinite alternate;
+  }
+  @keyframes haloPulse { from { opacity: .6; transform: translate(-50%,-50%) scale(.92); } to { opacity: 1; transform: translate(-50%,-50%) scale(1.12); } }
   .gabber::before, .gabber::after {
     content: ""; position: absolute; width: 3px; height: 3px;
     background: #8FD8FF; top: 16px;
@@ -423,7 +449,24 @@
     to { transform: translateY(-10px) translateX(1px); }
   }
   @media (prefers-reduced-motion: reduce) { .gabber { animation: none; } }
-  #fader-block { margin-top: 22px; }
+  #fader-block { margin-top: 22px; transition: transform .5s ease; }
+  #fader-block.spotlight {
+    position: relative; z-index: 7; transform: scale(1.14);
+    animation: faderRise .6s cubic-bezier(.2,1,.3,1);
+  }
+  #fader-block.spotlight::before {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    width: 240px; height: 240px; transform: translate(-50%,-50%); z-index: -1;
+    background: radial-gradient(circle, rgba(61,99,255,.28), transparent 62%);
+    pointer-events: none; animation: faderGlow 1.4s ease-in-out infinite alternate;
+  }
+  @keyframes faderRise { 0% { transform: scale(1); } 60% { transform: scale(1.2); } 100% { transform: scale(1.14); } }
+  @keyframes faderGlow { from { opacity: .5; } to { opacity: 1; } }
+  #stage.dim-for-fader #floor, #stage.dim-for-fader #guru { filter: brightness(.5); transition: filter .6s; }
+  @media (prefers-reduced-motion: reduce) {
+    #fader-block.spotlight { animation: none; }
+    #fader-block.spotlight::before { animation: none; }
+  }
   .fader-kicker { font-size: 9px; letter-spacing: 3px; color: var(--grey2); margin-bottom: 8px; }
   .fader-label {
     font-family: "Press Start 2P", ui-monospace, monospace;
@@ -685,8 +728,16 @@
     .jump, .jump-big, #stage.lit, .coin-pop.go, .fly-coin { animation: none; }
     .fly-coin { display: none; }
   }
+  #peek-tee {
+    position: fixed; right: 14px; bottom: 18px; z-index: 60; display: none;
+    background: var(--blue); color: var(--ink); border: none;
+    padding: 12px 15px; font-size: 10px; letter-spacing: 1.5px; font-weight: 700;
+    box-shadow: 0 3px 0 #1E2F82; cursor: pointer;
+  }
+  #peek-tee:active { transform: translateY(1px); }
   @media (max-width: 700px) {
     .cols { display: block; }
+    #peek-tee.show { display: block; }
     .col-preview {
       position: sticky; top: 0; z-index: 20;
       background: var(--bg); margin: 0 -20px 16px; padding: 6px 20px 8px;
@@ -794,6 +845,10 @@
           <div class="label">Technique</div>
           <div class="row" id="g-technique"></div>
         </div>
+        <div class="field">
+          <div class="label">Print ink</div>
+          <div class="row" id="g-ink"></div>
+        </div>
       </div>
 
       <div class="section">
@@ -870,6 +925,7 @@
     <div id="guru"></div>
     <div id="floor"></div>
     <div id="red-flash" class="hidden"></div>
+    <div id="vs-burst" class="hidden">THEY&#39;RE IN</div>
     <div id="event-banner" class="hidden"></div>
     <div id="fader-block" class="hidden">
       <div class="fader-kicker">MASTER OUT</div>
@@ -895,6 +951,7 @@
 </div>
 </div>
 
+<button id="peek-tee" class="hidden" aria-label="see your tee">SEE YOUR TEE</button>
 <div class="gate" id="gate1">
   <div id="gate-logo"></div>
   <button class="gate-btn" id="enter-btn">ENTER THE SIMULATION</button>
@@ -915,7 +972,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b82</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b85</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -955,6 +1012,13 @@ const PLACEMENTS = [
   { id: "coeur", label: "Heart", side: "front", small: true },
   { id: "dos", label: "Back", side: "back", small: false },
   { id: "manche", label: "Sleeve", side: "front", small: true },
+];
+const INKS = [
+  { id: "cream",  label: "Cream",  hex: "#F2EFE8", on: "dark" },
+  { id: "acid",   label: "Acid",   hex: "#3AE12B", on: "dark" },
+  { id: "blue",   label: "Blue",   hex: "#5A7BFF", on: "any" },
+  { id: "ink",    label: "Ink",    hex: "#14130F", on: "light" },
+  { id: "red",    label: "Red",    hex: "#C4433A", on: "any" },
 ];
 const TECHNIQUES = [
   { id: "serigraphie", label: "Screen print" },
@@ -1045,7 +1109,7 @@ const CUTS = {
 let state = {
   stage: "", nick: "", teeBase: "dark",
   coton: "220", coupe: "boxy", sleeves: "short", couleur: "noir",
-  logo: "max", technique: "serigraphie", placements: ["poitrine"],
+  logo: "max", technique: "serigraphie", ink: "cream", placements: ["poitrine"],
   prix: 45, tirage: 100, side: "front",
 };
 let roomOpen = false;
@@ -1140,6 +1204,10 @@ function fireBros(withSound) {
     brosIn = true;
     if (stg) { stg.classList.remove("alert"); stg.classList.add("invaded"); }
     brosBurst = true; setTimeout(() => { brosBurst = false; }, 950);
+    if (stg && !reduced) {
+      const vs = document.getElementById("vs-burst");
+      if (vs) { vs.classList.remove("hidden"); vs.classList.add("go"); setTimeout(() => { vs.classList.add("hidden"); vs.classList.remove("go"); }, 700); }
+    }
     const flash = document.getElementById("red-flash");
     if (flash) { flash.classList.remove("pulsing"); flash.classList.add("hidden"); }
     const bn = document.getElementById("event-banner");
@@ -1154,6 +1222,16 @@ function fireBros(withSound) {
     if (fb) fb.classList.remove("hidden");
     const fw0 = document.getElementById("fader-wrap");
     if (fw0) fw0.classList.add("armed");
+    // 2s après l'irruption : le fader passe en exergue cinématique
+    setTimeout(() => {
+      if (setEnded) return;
+      if (fb) fb.classList.add("spotlight");
+      const stg2 = document.getElementById("stage");
+      if (stg2) stg2.classList.add("dim-for-fader");
+      if (fb && typeof fb.scrollIntoView === "function")
+        fb.scrollIntoView({ behavior: "smooth", block: "center" });
+      coin();
+    }, 2000);
     renderStage();
     // secousse d'impact à l'irruption
     if (stg && !reduced) {
@@ -1177,6 +1255,94 @@ function uiClick() {
     o.frequency.setValueAtTime(1180, t);
     o.connect(g);
     o.start(t); o.stop(t + 0.05);
+  } catch (e) {}
+}
+function applause() {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = actx.currentTime;
+    // nappe d'applaudissements : ~2.4s de salves de claps aléatoires
+    for (let i = 0; i < 90; i++) {
+      const t = t0 + Math.random() * 2.2;
+      const src = actx.createBufferSource();
+      const len = 0.05;
+      const buf = actx.createBuffer(1, Math.max(1, actx.sampleRate * len), actx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let s = 0; s < d.length; s++) d[s] = (Math.random() * 2 - 1) * (1 - s / d.length);
+      src.buffer = buf;
+      const bp = actx.createBiquadFilter();
+      bp.type = "bandpass"; bp.frequency.value = 1400 + Math.random() * 1600; bp.Q.value = 0.8;
+      const g = actx.createGain();
+      const vol = 0.012 + Math.random() * 0.02;
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+      src.connect(bp); bp.connect(g); g.connect(actx.destination);
+      src.start(t); src.stop(t + 0.06);
+    }
+    // couche de "foule" continue en fond
+    const nz = actx.createBufferSource();
+    const nb = actx.createBuffer(1, actx.sampleRate * 2.4, actx.sampleRate);
+    const nd = nb.getChannelData(0);
+    for (let s = 0; s < nd.length; s++) nd[s] = (Math.random() * 2 - 1) * 0.5;
+    nz.buffer = nb;
+    const nf = actx.createBiquadFilter(); nf.type = "bandpass"; nf.frequency.value = 1800; nf.Q.value = 0.5;
+    const ng = actx.createGain();
+    ng.gain.setValueAtTime(0.0001, t0);
+    ng.gain.linearRampToValueAtTime(0.02, t0 + 0.3);
+    ng.gain.setValueAtTime(0.02, t0 + 1.4);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t0 + 2.4);
+    nz.connect(nf); nf.connect(ng); ng.connect(actx.destination);
+    nz.start(t0); nz.stop(t0 + 2.4);
+  } catch (e) {}
+}
+function victoryFanfare() {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = actx.currentTime + 0.15;
+    const master = actx.createGain(); master.gain.value = 0.5; master.connect(actx.destination);
+    // accord montant héroïque : I - IV - V - I (Do majeur, brillant)
+    const chords = [
+      [261.63, 329.63, 392.00],  // C
+      [349.23, 440.00, 523.25],  // F
+      [392.00, 493.88, 587.33],  // G
+      [523.25, 659.25, 783.99],  // C octave, triomphe
+    ];
+    chords.forEach((ch, ci) => {
+      const t = t0 + ci * 0.26;
+      ch.forEach(f => {
+        const o = actx.createOscillator();
+        o.type = ci === 3 ? "sawtooth" : "triangle";
+        o.frequency.setValueAtTime(f, t);
+        const g = actx.createGain();
+        const dur = ci === 3 ? 1.2 : 0.3;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(ci === 3 ? 0.16 : 0.1, t + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + dur + 0.05);
+      });
+      // basse
+      const b = actx.createOscillator(); b.type = "square";
+      b.frequency.setValueAtTime(ch[0] / 2, t);
+      const bg = actx.createGain();
+      bg.gain.setValueAtTime(0.08, t);
+      bg.gain.exponentialRampToValueAtTime(0.0001, t + (ci === 3 ? 1.1 : 0.28));
+      b.connect(bg); bg.connect(master);
+      b.start(t); b.stop(t + 1.2);
+    });
+    // scintillement final
+    const t3 = t0 + 3 * 0.26;
+    [1046.5, 1318.5, 1568].forEach((f, i) => {
+      const o = actx.createOscillator(); o.type = "triangle";
+      o.frequency.setValueAtTime(f, t3 + 0.3 + i * 0.08);
+      const g = actx.createGain();
+      g.gain.setValueAtTime(0.06, t3 + 0.3 + i * 0.08);
+      g.gain.exponentialRampToValueAtTime(0.0001, t3 + 0.3 + i * 0.08 + 0.5);
+      o.connect(g); g.connect(master);
+      o.start(t3 + 0.3 + i * 0.08); o.stop(t3 + 1.2);
+    });
   } catch (e) {}
 }
 function coin() {
@@ -1510,6 +1676,12 @@ function logoSVG(placement, coupe, technique, ink) {
 }
 
 // ============ PREMIUM TEE RENDER ============
+function inkHex() {
+  const k = INKS.find(x => x.id === state.ink);
+  const teeIsDark = ["noir","bleu","rouge"].includes(state.couleur);
+  if (k && (k.on === "any" || k.on === (teeIsDark ? "dark" : "light"))) return k.hex;
+  return (COULEURS.find(c => c.id === state.couleur) || {}).ink || "#F2EFE8";
+}
 function renderTee() {
   const _tb = document.getElementById("tee-box");
   if (_tb) { _tb.classList.remove("tflash"); void _tb.offsetWidth; _tb.classList.add("tflash"); }
@@ -1570,7 +1742,7 @@ function renderTee() {
       <path d="${G.hemStitch}" fill="none" stroke="${col.line}" stroke-width="0.7" opacity=".55"/>
       ${cuffs}
 
-      ${visibles.map(pl => logoSVG(pl, state.coupe, state.technique, col.ink)).join("")}
+      ${visibles.map(pl => logoSVG(pl, state.coupe, state.technique, inkHex())).join("")}
     </svg>`;
 
   const frontHas = state.placements.some(p => PLACEMENTS.find(x => x.id === p).side === "front");
@@ -2202,14 +2374,14 @@ function guruFigure(fi, rv, col, handshake) {
     const y0 = lines.length === 2 ? chestY - lh / 2 : chestY;
     lines.forEach((ln, i) => {
       s += `<text x="${cx}" y="${(y0 + i * lh).toFixed(1)}" text-anchor="middle" font-family="${mono}" font-weight="700"
-        letter-spacing="0.6" font-size="${size.toFixed(1)}" fill="${col.ink}">${ln}</text>`;
+        letter-spacing="0.6" font-size="${size.toFixed(1)}" fill="${inkHex()}">${ln}</text>`;
     });
   } else if (state.placements.includes("coeur")) {
     // nickname s'il existe, sinon le nom de scène entier auto-réduit
     const label = nickName || stageName;
     const size = Math.max(3.8, Math.min(7.5, (46 / Math.max(label.length, 1)) * 1.15));
     s += `<text x="${10.2 * PXG}" y="${chestY + 3}" text-anchor="middle" font-family="${mono}" font-weight="700"
-      font-size="${size.toFixed(1)}" fill="${col.ink}">${label}</text>`;
+      font-size="${size.toFixed(1)}" fill="${inkHex()}">${label}</text>`;
   }
   if (state.placements.includes("manche")) {
     const ini = stageName.slice(0, 1);
@@ -2218,7 +2390,7 @@ function guruFigure(fi, rv, col, handshake) {
     while (sxq < GW && g[rowY][sxq] !== "t") sxq++;
     if (sxq < GW)
       s += `<text x="${(sxq + 1) * PXG}" y="${(rowY + 0.85) * PXG}" text-anchor="middle" font-family="${mono}" font-weight="700"
-        font-size="6" fill="${col.ink}">${ini}</text>`;
+        font-size="6" fill="${inkHex()}">${ini}</text>`;
   }
   return `<svg class="dancer" width="188" viewBox="12 0 ${GW * PXG - 24} ${GH * PXG - 10}" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
 }
@@ -2278,8 +2450,8 @@ function renderStage() {
     const broCols = { h: "#3A2E22", t: "#C9A183", l: "#C9A183", i: "#C9A183", k: "#26261F" };
     if (brosIn) {
       const burst = brosBurst ? " broburst-l" : "";
-      html += `<div class="gabber${burst}" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
-      html += `<div class="gabber${burst}" style="animation-delay:.05s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
+      html += `<div class="gabber${burst}" title="sweaty"><span class="halo"></span>${dancerSVG(broFrames[beat % 2], broCols, false)}</div>`;
+      html += `<div class="gabber${burst}" style="animation-delay:.05s" title="sweaty"><span class="halo"></span>${dancerSVG(broFrames[(beat + 1) % 2], broCols, true)}</div>`;
     }
     crowd.forEach((ri, i) => {
       const crv = RAVERS[ri];
@@ -2289,8 +2461,8 @@ function renderStage() {
     });
     if (brosIn) {
       const burst = brosBurst ? " broburst-r" : "";
-      html += `<div class="gabber${burst}" style="animation-delay:.09s" title="sweaty">${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
-      html += `<div class="gabber${burst}" style="animation-delay:.13s" title="sweaty">${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
+      html += `<div class="gabber${burst}" style="animation-delay:.09s" title="sweaty"><span class="halo"></span>${dancerSVG(broFrames[(beat + 1) % 2], broCols, false)}</div>`;
+      html += `<div class="gabber${burst}" style="animation-delay:.13s" title="sweaty"><span class="halo"></span>${dancerSVG(broFrames[beat % 2], broCols, true)}</div>`;
     }
     floor.innerHTML = html;
   }
@@ -2399,7 +2571,11 @@ function renderGroup(elId, items, isOn, onClick) {
     if (icon) b.classList.add("card");
     if (elId === "g-couleur") {
       b.className = "swbtn" + (isOn(id) ? " on" : "");
-      b.innerHTML = `<span class="sw" style="background: radial-gradient(circle at 32% 28%, ${item.top}, ${item.bot})"></span>
+      b.innerHTML = `<span class="sw" style="background: ${item.top}"></span>
+                     <span class="swl">${label}</span>`;
+    } else if (elId === "g-ink") {
+      b.className = "swbtn" + (isOn(id) ? " on" : "");
+      b.innerHTML = `<span class="sw" style="background: ${item.hex}"></span>
                      <span class="swl">${label}</span>`;
     } else {
       b.innerHTML = icon + label + (item.hint ? `<span class="hint">${item.hint}</span>` : "");
@@ -2454,6 +2630,11 @@ function render() {
   renderGroup("g-couleur", availCol, id => state.couleur === id, T(2, id => state.couleur = id));
   renderGroup("g-logo", LOGOS, id => state.logo === id, T(3, id => state.logo = id));
   renderGroup("g-technique", TECHNIQUES, id => state.technique === id, T(3, id => state.technique = id));
+  const teeIsDark = (COULEURS.find(c => c.id === state.couleur) || {}).ink === "#F2EFE8"
+    || ["noir","bleu","rouge"].includes(state.couleur);
+  const availInk = INKS.filter(k => k.on === "any" || k.on === (teeIsDark ? "dark" : "light"));
+  if (!availInk.find(k => k.id === state.ink)) state.ink = availInk[0].id;
+  renderGroup("g-ink", availInk, id => state.ink === id, T(3, id => state.ink = id));
   renderGroup("g-tirage", TIRAGES, id => state.tirage === id, T(4, id => state.tirage = id));
   renderGroup("g-placement", PLACEMENTS, id => state.placements.includes(id), T(3, id => {
     if (state.placements.includes(id)) {
@@ -2495,6 +2676,7 @@ function endSet() {
   if (setEnded) return;
   setEnded = true;
   stopMusic();
+  applause();
   document.getElementById("stage").classList.remove("lit");
   if (beatTimer) { clearInterval(beatTimer); beatTimer = null; }
   const g = document.getElementById("guru").firstElementChild;
@@ -2546,6 +2728,7 @@ function endSet() {
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span><span class="pfw">LET'S BRING THE RAVE TO PARIS FASHION WEEK 2027</span>`;
   setTimeout(() => {
+    victoryFanfare();
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
     document.getElementById("set-end").classList.remove("hidden");
@@ -2642,7 +2825,7 @@ window.addEventListener("error", e => {
 window.addEventListener("unhandledrejection", e => {
   if (e.reason && e.reason.message) console.warn("[dazy]", e.reason.message);
 });
-console.log("DAZY simulator · build 82");
+console.log("DAZY simulator · build 85");
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
@@ -2651,6 +2834,17 @@ if (typeof IntersectionObserver !== "undefined") {
 } else {
   document.querySelectorAll(".section").forEach(s => s.classList.add("in"));
 }
+(function peekSetup() {
+  const btn = document.getElementById("peek-tee");
+  const prev = document.querySelector(".col-preview");
+  if (!btn || !prev || typeof IntersectionObserver === "undefined") return;
+  const io = new IntersectionObserver(es => es.forEach(x => {
+    if (!roomOpen && window.innerWidth <= 700) btn.classList.toggle("show", !x.isIntersecting);
+    else btn.classList.remove("show");
+  }), { threshold: 0.15 });
+  io.observe(prev);
+  btn.onclick = () => { prev.scrollIntoView({ behavior: "smooth", block: "start" }); };
+})();
 renderFAQ();
 renderGateLogo();
 renderHeaderLogo();
