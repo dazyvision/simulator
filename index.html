@@ -440,21 +440,32 @@
     .fader-label { animation: none; }
   }
   #fader-wrap {
-    position: relative; width: 24px; height: 80px; margin: 0 auto;
-    touch-action: none; cursor: grab;
+    position: relative; width: 64px; height: 66px; margin: 0 auto;
+    touch-action: none; cursor: grab; -webkit-user-select: none; user-select: none;
+    display: flex; justify-content: center;
   }
+  #fader-wrap.armed #fader-cap { animation: capbeat 1.1s ease-in-out infinite; }
+  @keyframes capbeat {
+    0%, 100% { box-shadow: 0 2px 0 #55534E, 0 0 0 0 rgba(61,99,255,0); transform: translateX(-50%) translateY(0); }
+    50% { box-shadow: 0 2px 0 #55534E, 0 0 0 6px rgba(61,99,255,.35); transform: translateX(-50%) translateY(3px); }
+  }
+  @media (prefers-reduced-motion: reduce) { #fader-wrap.armed #fader-cap { animation: none; } }
   #fader-track {
     position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
     transform: translateX(-50%);
     background: #16150F; border: 1px solid #33322E;
   }
+  #fader-hit {
+    position: absolute; left: 50%; top: -10px; bottom: -10px; width: 60px;
+    transform: translateX(-50%);
+  }
   .ftick { position: absolute; width: 5px; height: 1px; background: #45443E; left: 0; }
   .ftick.r { left: auto; right: 0; }
   #fader-cap {
     position: absolute; left: 50%; transform: translateX(-50%);
-    width: 22px; height: 11px;
+    width: 30px; height: 14px;
     background: var(--ink); border: 1px solid var(--bg);
-    box-shadow: 0 2px 0 #55534E;
+    box-shadow: 0 2px 0 #55534E; z-index: 2;
   }
   #fader-cap::after {
     content: ""; position: absolute; left: 2px; right: 2px; top: 4px; height: 2px;
@@ -491,7 +502,10 @@
   .end-line .who { font-size: 17px; }
   .end-line .x { color: var(--blue); }
   .dazy-avatar { margin: 2px auto 4px; animation: rise .6s .16s backwards; }
-  .dazy-avatar svg { filter: drop-shadow(0 0 14px rgba(61,99,255,.4)); }
+  .duo { display: flex; justify-content: center; align-items: flex-end; gap: 10px; }
+  .duo-daz { position: relative; top: 6px; }
+  .duo svg { width: 116px; display: block; }
+  .duo-daz svg { filter: drop-shadow(0 0 15px rgba(61,99,255,.5)); }
   .dazy-intro {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
     font-size: 14px; color: var(--ink); margin: 2px auto 14px;
@@ -626,9 +640,13 @@
     #gate2 { justify-content: flex-start; padding-top: 34px; }
   }
   #raver-row { max-width: 560px; }
+  .picker-fig { position: relative; display: inline-block; }
+  .tee-T { position: absolute; left: 50%; top: 0; transform: translateX(-50%); pointer-events: none; }
   @media (max-width: 560px) {
     #raver-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .raver-btn .dancer { transform: scale(.85); }
+  .picker-fig { position: relative; display: inline-block; }
+  .tee-T { position: absolute; left: 50%; top: 0; transform: translateX(-50%); pointer-events: none; }
     .raver-def { font-size: 10px; max-width: 130px; }
   }
   .hidden { display: none !important; }
@@ -750,7 +768,9 @@
           <div class="row" id="g-sleeves"></div>
         </div>
         <div class="field">
-          <div class="label">Color</div>
+          <div class="label">Base</div>
+          <div class="row" id="g-base"></div>
+          <div class="label" style="margin-top:14px;">Color</div>
           <div class="row" id="g-couleur"></div>
           <div class="conseq" id="cq-tee"></div>
         </div>
@@ -854,15 +874,16 @@
     <div id="fader-block" class="hidden">
       <div class="fader-kicker">MASTER OUT</div>
       <div class="fader-label">PULL DOWN · CLOSE LIKE A HEADLINER <span class="fader-arrow">↓</span></div>
-      <div id="fader-wrap">
+      <div id="fader-wrap" class="armed">
         <div id="fader-track"></div>
+        <div id="fader-hit"></div>
         <div id="fader-cap"></div>
       </div>
     </div>
     <div id="set-end" class="hidden fs-overlay">
       <div class="end-kicker">END OF SET. LIGHTS ON.</div>
       <div class="dazy-avatar" id="dazy-avatar"></div>
-      <div class="dazy-intro">This is <b>DAZ</b>, your new partner.</div>
+      <div class="dazy-intro" id="dazy-intro"></div>
       <div class="end-line" id="end-line"></div>
       <div class="end-recap" id="end-recap"></div>
       <div class="end-actions">
@@ -882,7 +903,7 @@
 
 <div class="gate hidden" id="gate2">
   <div class="gate-title">SAVE A RAVER</div>
-  <div class="gate-sub">They've been stuck in AFROJACK tour merch since 2019. Choose who you save: they'll wear your piece and lead your crowd.</div>
+  <div class="gate-sub">They've been stuck in Tiësto tour merch since 2009. Choose who you save: they'll wear your piece and lead your crowd.</div>
   <div id="raver-row"></div>
 </div>
 
@@ -894,7 +915,7 @@
       <span class="t">FAQ</span>
       <button class="close" id="deal-close">✕ CLOSE</button>
     </div>
-    <div class="deal-sub">The contract, in plain words. Tap a question. · b77</div>
+    <div class="deal-sub">The contract, in plain words. Tap a question. · b82</div>
     <div id="qa-list"></div>
   </div>
 </div>
@@ -916,12 +937,14 @@ const SLEEVES = [
   { id: "long", label: "Long" },
 ];
 const COULEURS = [
-  { id: "noir", label: "Black", top: "#201F1C", bot: "#131311", line: "#413F39",
+  { id: "noir", label: "Black", base: "dark", top: "#201F1C", bot: "#131311", line: "#413F39",
     ink: "#F2EFE8", grainW: true, foldD: "rgba(0,0,0,.3)" },
-  { id: "blanc", label: "White", top: "#F8F6EF", bot: "#E2DFD2", line: "#B0AB9B",
+  { id: "blanc", label: "White", base: "light", top: "#F8F6EF", bot: "#E2DFD2", line: "#B0AB9B",
     ink: "#14130F", grainW: false, foldD: "rgba(58,53,38,.16)" },
-  { id: "ecru", label: "Ecru", top: "#E5DECB", bot: "#CCC2AA", line: "#9E947B",
-    ink: "#221C10", grainW: false, foldD: "rgba(66,56,32,.18)" },
+  { id: "rouge", label: "Red", base: "any", top: "#B23A34", bot: "#8E2B27", line: "#5E1D1A",
+    ink: "#F8EFE6", grainW: false, foldD: "rgba(0,0,0,.24)" },
+  { id: "bleu", label: "Blue", base: "any", top: "#3D63FF", bot: "#2C49CC", line: "#1E2F82",
+    ink: "#F2EFE8", grainW: false, foldD: "rgba(0,0,0,.22)" },
 ];
 const LOGOS = [
   { id: "min", label: "Minimal", hint: "nickname" },
@@ -1020,7 +1043,7 @@ const CUTS = {
 
 // ============ STATE ============
 let state = {
-  stage: "", nick: "",
+  stage: "", nick: "", teeBase: "dark",
   coton: "220", coupe: "boxy", sleeves: "short", couleur: "noir",
   logo: "max", technique: "serigraphie", placements: ["poitrine"],
   prix: 45, tirage: 100, side: "front",
@@ -1129,6 +1152,8 @@ function fireBros(withSound) {
     }
     const fb = document.getElementById("fader-block");
     if (fb) fb.classList.remove("hidden");
+    const fw0 = document.getElementById("fader-wrap");
+    if (fw0) fw0.classList.add("armed");
     renderStage();
     // secousse d'impact à l'irruption
     if (stg && !reduced) {
@@ -1731,7 +1756,7 @@ function lighten(hex, f) {
   return "#" + [L((n >> 16) & 255), L((n >> 8) & 255), L(n & 255)]
     .map(v => v.toString(16).padStart(2, "0")).join("");
 }
-function dazyAvatar() {
+function dazyAvatar(holdLeft) {
   const PXG = 6, GW = 27, GH = 40;
   const skin = "#C9A183", OL = "#191813", eye = "#1A1A18";
   const hair = "#3D63FF", tee = "#141414", line = "#3D63FF", ink = "#F2EFE8", blush = "#D98A8A";
@@ -1760,14 +1785,14 @@ function dazyAvatar() {
   g[S0 + 7][7] = "."; g[S0 + 7][19] = ".";
   // BRAS TENDUS vers l'avant, ouverts, paumes offertes (accueil)
   // manche courte puis bras qui descend en s'écartant, main ouverte au bout
-  fill(4, 5, S0 + 1, S0 + 2, "t");      // manche gauche
-  fill(3, 4, S0 + 3, S0 + 4, "s");      // bras gauche
-  fill(1, 3, S0 + 5, S0 + 6, "s");      // main gauche ouverte, basse
-  fill(0, 1, S0 + 5, S0 + 5, "s");      // doigts
-  fill(21, 22, S0 + 1, S0 + 2, "t");    // manche droite
-  fill(22, 23, S0 + 3, S0 + 4, "s");    // bras droit
-  fill(23, 25, S0 + 5, S0 + 6, "s");    // main droite ouverte, basse
-  fill(25, 26, S0 + 5, S0 + 5, "s");    // doigts
+  // BRAS CROISÉS : manches courtes descendantes puis avant-bras repliés sur le torse
+  fill(5, 6, S0 + 1, S0 + 3, "t");        // manche gauche
+  fill(20, 21, S0 + 1, S0 + 3, "t");      // manche droite
+  // avant-bras qui se croisent devant la poitrine (peau)
+  fill(8, 14, S0 + 4, S0 + 5, "s");       // avant-bras gauche vers la droite
+  fill(12, 18, S0 + 5, S0 + 6, "s");      // avant-bras droit vers la gauche (par-dessus)
+  fill(7, 8, S0 + 4, S0 + 4, "s");        // coude gauche
+  fill(18, 19, S0 + 5, S0 + 6, "s");      // coude droit
   // jambes + chaussures noires
   const hemY = S0 + 7;
   fill(9, 12, hemY + 1, hemY + 6, "p");
@@ -1797,16 +1822,14 @@ function dazyAvatar() {
   s += `<rect x="${cx - 18}" y="${ey + 2}" width="2" height="2" fill="#F2EFE8"/>`;
   s += `<rect x="${cx + 14}" y="${ey + 1}" width="6" height="6" fill="${eye}"/>`;
   s += `<rect x="${cx + 16}" y="${ey + 2}" width="2" height="2" fill="#F2EFE8"/>`;
-  // lunettes teintées translucides : deux verres + pont + branches
-  const gy = ey - 2, gw = 13, gh = 12;
-  s += `<rect x="${cx - 22}" y="${gy}" width="${gw}" height="${gh}" rx="2" fill="#3D63FF" opacity="0.28" stroke="#12121A" stroke-width="1.4"/>`;
-  s += `<rect x="${cx + 9}" y="${gy}" width="${gw}" height="${gh}" rx="2" fill="#3D63FF" opacity="0.28" stroke="#12121A" stroke-width="1.4"/>`;
-  s += `<rect x="${cx - 9}" y="${gy + 3}" width="18" height="2.4" fill="#12121A"/>`;
-  s += `<rect x="${cx - 34}" y="${gy + 2}" width="12" height="2.4" fill="#12121A"/>`;
-  s += `<rect x="${cx + 22}" y="${gy + 2}" width="12" height="2.4" fill="#12121A"/>`;
-  // reflet sur le verre
-  s += `<rect x="${cx - 20}" y="${gy + 2}" width="3" height="3" fill="#EAF0FF" opacity="0.5"/>`;
-  s += `<rect x="${cx + 11}" y="${gy + 2}" width="3" height="3" fill="#EAF0FF" opacity="0.5"/>`;
+  // lunettes fashion : une seule visière teintée, fine et large (façon shield/futur)
+  const gy = ey - 1, vw = 44, vh = 9;
+  s += `<rect x="${cx - 22}" y="${gy}" width="${vw}" height="${vh}" rx="4.5"
+    fill="#3D63FF" opacity="0.22" stroke="#EAF0FF" stroke-width="1" stroke-opacity="0.5"/>`;
+  s += `<rect x="${cx - 22}" y="${gy}" width="${vw}" height="2.6" rx="1.3" fill="#EAF0FF" opacity="0.35"/>`;
+  // branches fines
+  s += `<rect x="${cx - 30}" y="${gy + 2}" width="8" height="1.8" fill="#12121A"/>`;
+  s += `<rect x="${cx + 22}" y="${gy + 2}" width="8" height="1.8" fill="#12121A"/>`;
   s += `<rect x="${cx - 22}" y="${ey + 12}" width="10" height="5" rx="1" fill="${blush}" opacity=".75"/>`;
   s += `<rect x="${cx + 12}" y="${ey + 12}" width="10" height="5" rx="1" fill="${blush}" opacity=".75"/>`;
   s += `<path d="M${cx - 8} ${ey + 15} Q${cx} ${ey + 20} ${cx + 8} ${ey + 15}" stroke="${eye}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
@@ -1880,7 +1903,7 @@ function applyRaver(frames, rv) {
   });
 }
 
-// sprites de sélection : tee AFROJACK (blanc, print néon)
+// sprites de sélection : tee Tiësto (blanc, gros T vert), sauf Tyon torse nu
 function afroFrames(rv) {
   const base = [FRAME_A, FRAME_B].map(f => f.map(r =>
     r.replace(/i/g, "j")));
@@ -1901,12 +1924,17 @@ function renderGate2() {
     const f = reduced ? 0 : (gateBeat + i) % 2;
     const btn = document.createElement("button");
     btn.className = "raver-btn";
+    const teeT = rv.feat === "buzz" ? "" :
+      `<svg class="tee-T" viewBox="0 0 90 108" width="90" height="108" aria-hidden="true">
+        <rect x="40" y="46" width="14" height="4" fill="#3AE12B"/>
+        <rect x="45" y="46" width="4" height="14" fill="#3AE12B"/>
+      </svg>`;
     btn.innerHTML = `
-      ${dancerSVG(frames[f], { h: rv.hair, t: "#F2EFE8", k: rv.skirt || "#26261F" }, false, 9)}
+      <span class="picker-fig">${dancerSVG(frames[f], { h: rv.hair, t: "#F2EFE8", k: rv.skirt || "#26261F" }, false, 9)}${teeT}</span>
       <span class="raver-name">${rv.name}</span>
       <span class="raver-arch">${rv.arch}</span>
       <span class="raver-def">${rv.def}</span>
-      <span class="raver-tag">AFROJACK TOUR '19</span>`;
+      <span class="raver-tag">TIËSTO TOUR '09</span>`;
     btn.onclick = () => {
       chosenRaver = i;
       coin();
@@ -2008,7 +2036,7 @@ function inPoly(pts, x, y) {
   }
   return inside;
 }
-function guruFigure(fi, rv, col) {
+function guruFigure(fi, rv, col, handshake) {
   const G = CUTS[state.coupe];
   const isLong = state.sleeves === "long";
   const skin = "#C9A183", boots = "#232220", pants = "#26261F";
@@ -2092,6 +2120,16 @@ function guruFigure(fi, rv, col) {
     fill(aR1, aR1 + 1, slBot + 1, slBot + 3, "s");
     fill(aL0 - 2, aL0 - 1, slBot + 4, slBot + 5, "s");
     fill(aR1 + 1, aR1 + 2, slBot + 4, slBot + 5, "s");
+  }
+  if (handshake) {
+    // efface UNIQUEMENT l'ancien bras droit (peau), sans jamais toucher au tee
+    for (let yy = S0 + 6; yy <= slBot + 8 && yy < GH; yy++)
+      for (let xx = aR1 - 2; xx <= Math.min(GW - 1, aR1 + 4); xx++)
+        if (g[yy][xx] === "s") g[yy][xx] = ".";
+    // redessine le bras droit qui descend vers la main de DAZ (bas-extérieur)
+    fill(aR1 - 1, aR1, slBot + 1, slBot + 2, "s");
+    fill(aR1, aR1 + 1, slBot + 3, slBot + 4, "s");
+    fill(aR1 + 1, aR1 + 2, slBot + 5, slBot + 7, "s");
   }
   // ---- jupe / jambes / bottes ----
   let legY = hemY + 1;
@@ -2406,7 +2444,14 @@ function render() {
   renderGroup("g-coton", COTONS, id => state.coton === id, T(2, id => state.coton = id));
   renderGroup("g-coupe", COUPES, id => state.coupe === id, T(2, id => state.coupe = id));
   renderGroup("g-sleeves", SLEEVES, id => state.sleeves === id, T(2, id => state.sleeves = id));
-  renderGroup("g-couleur", COULEURS, id => state.couleur === id, T(2, id => state.couleur = id));
+  renderGroup("g-base", [{id:"dark",label:"Dark tee"},{id:"light",label:"Light tee"}],
+    id => state.teeBase === id, T(2, id => {
+      state.teeBase = id;
+      state.couleur = (id === "dark") ? "noir" : "blanc";
+    }));
+  const availCol = COULEURS.filter(c => c.base === "any" || c.base === state.teeBase);
+  if (!availCol.find(c => c.id === state.couleur)) state.couleur = availCol[0].id;
+  renderGroup("g-couleur", availCol, id => state.couleur === id, T(2, id => state.couleur = id));
   renderGroup("g-logo", LOGOS, id => state.logo === id, T(3, id => state.logo = id));
   renderGroup("g-technique", TECHNIQUES, id => state.technique === id, T(3, id => state.technique = id));
   renderGroup("g-tirage", TIRAGES, id => state.tirage === id, T(4, id => state.tirage = id));
@@ -2485,12 +2530,19 @@ function endSet() {
   }
   const nm = (state.stage || "").trim().toUpperCase() || RAVERS[chosenRaver].name;
   const av = document.getElementById("dazy-avatar");
-  if (av) av.innerHTML = dazyAvatar();
+  const col2 = COULEURS.find(c => c.id === state.couleur);
+  if (av) av.innerHTML =
+    `<div class="duo">
+       <div class="duo-daz">${dazyAvatar(false)}</div>
+       <div class="duo-raver">${guruFigure(0, RAVERS[chosenRaver], col2, false)}</div>
+     </div>`;
   const edP = prixEdition();
   const earnP = state.prix - edP;
   document.getElementById("end-recap").innerHTML =
     state.tirage + " tees · an extraordinary custom design · you earn <b>" +
     fmt(earnP * state.tirage) + "</b>";
+  const intro = document.getElementById("dazy-intro");
+  if (intro) intro.innerHTML = `Hey ${nm}, meet <b>DAZ</b>. Your new partner.`;
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span><span class="pfw">LET'S BRING THE RAVE TO PARIS FASHION WEEK 2027</span>`;
   setTimeout(() => {
@@ -2582,12 +2634,15 @@ document.getElementById("in-stage").value = state.stage;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
 window.addEventListener("error", e => {
-  console.warn("[dazy] caught:", e.message, "@", (e.filename || "").split("/").pop() + ":" + e.lineno);
-});
+  // "Script error." @ :0 = erreur cross-origin (ex. Google Fonts), sans impact : on ignore
+  const anon = (!e.filename || e.lineno === 0) && (!e.message || /script error/i.test(e.message));
+  if (anon) { e.preventDefault && e.preventDefault(); return; }
+  console.warn("[dazy]", e.message);
+}, true);
 window.addEventListener("unhandledrejection", e => {
-  console.warn("[dazy] promise:", e.reason && e.reason.message);
+  if (e.reason && e.reason.message) console.warn("[dazy]", e.reason.message);
 });
-console.log("DAZY simulator · build 77");
+console.log("DAZY simulator · build 82");
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
