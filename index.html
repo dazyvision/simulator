@@ -2052,10 +2052,8 @@ function renderEco() {
     yu.classList.toggle("neg", part < 0);
     document.getElementById("sd-v").textContent = fmt(ed);
     document.getElementById("sy-v").textContent = part < 0 ? fmt(part) : fmt(part);
-    const blank = ED_COTON[state.coton] + ED_SLEEVE[state.sleeves] + ED_TIRAGE[state.tirage];
-    const mark = ed - blank;
     document.getElementById("split-chips").innerHTML =
-      `<span>blank & cut ${fmt(blank)}</span><span>print & finish ${fmt(mark)}</span><span>page, shooting & selling included</span>`;
+      `<span>materials, construction &amp; print included</span><span>page, shooting &amp; selling included</span>`;
   }
   const ep = document.getElementById("e-part");
   ep.textContent = fmt(part);
