@@ -199,11 +199,6 @@
     .section { opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
     .section.in { opacity: 1; transform: none; }
   }
-  .recap {
-    font-size: 10px; letter-spacing: 1px; color: var(--grey2);
-    margin: 4px 0 10px; line-height: 1.7;
-  }
-  .done-hint { font-size: 9.5px; color: var(--grey2); margin-top: 8px; text-align: center; }
   .micro-note { font-size: 9.5px; color: var(--grey2); margin-top: 8px; }
   .tflash { animation: teefade .18s ease; }
   .tewipe { animation: teewipe .34s cubic-bezier(.3,.9,.3,1); }
@@ -287,16 +282,42 @@
   button:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
   button .hint { display: block; font-size: 8.5px; letter-spacing: .5px; opacity: .7; margin-top: 3px; font-weight: 400; text-transform: none; }
 
+  /* FRONT et BACK partagent la même grille : trois colonnes, même gouttière */
+  #g-placement-front, .back-line {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-items: stretch;
+  }
+  #g-placement-front > button, .back-line .row > button { width: 100%; min-width: 0; }
+  .back-line .row { display: block; }
+  .back-line input[type=text] {
+    grid-column: span 2; min-width: 0; font-size: 12px; letter-spacing: 1.5px;
+    padding: 10px 12px; transition: border-color .15s;
+  }
+  .back-line input[type=text].idle { border-style: dashed; border-color: #4A473F; }
+  .back-line input[type=text].idle::placeholder { color: #8A857A; }
+  .side-block { margin-bottom: 10px; }
+  .side-block:last-child { margin-bottom: 0; }
+  .side-tag {
+    font-size: 8px; letter-spacing: 2.5px; color: #6B675C;
+    margin-bottom: 6px; padding-left: 1px;
+  }
+
   /* swatches couleur */
   .swbtn {
     display: flex; flex-direction: column; align-items: center; gap: 7px;
     background: transparent; border: none; padding: 4px 8px;
   }
   .swbtn:hover { border: none; }
-  .sw { width: 30px; height: 30px; border: 1px solid var(--line); }
+  .sw {
+    width: 54px; height: 54px; position: relative; display: block;
+  }
+  .sw.ink {
+    display: flex; align-items: center; justify-content: center;
+    font-family: inherit; font-weight: 700; font-size: 20px; letter-spacing: 0;
+  }
+  .swbtn { position: relative; }
   .swbtn.on { background: transparent; color: var(--ink); font-weight: 400; }
-  .swbtn.on .sw { outline: 1px solid var(--ink); outline-offset: 3px; }
-  .swl { font-size: 9px; letter-spacing: 2px; color: #C9C3B4; }
+  .swbtn.on .sw { box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--ink); }
+  .swl { font-size: 9px; letter-spacing: 2px; color: transparent; height: 11px; }
   .swbtn.on .swl { color: var(--ink); }
 
   input[type=range] {
@@ -331,9 +352,6 @@
   .note a { color: var(--blue); text-decoration: none; cursor: pointer; }
 
   .price-wrap { position: relative; padding-top: 8px; }
-  .mini-earn {
-    margin-top: 9px; font-size: 10px; letter-spacing: 1px; color: var(--blue);
-  }
   .fly-coin {
     position: absolute; bottom: 14px; font-size: 11px; color: var(--blue);
     pointer-events: none; user-select: none;
@@ -940,7 +958,7 @@
           </div>
           <span class="numbering" id="numbering"></span>
           <div class="hype" id="hype" title="config progress"></div>
-          <span class="preview-note">Deliberately non-realistic · shows the logic, not the piece · prices indicative, non-contractual</span>
+          <span class="preview-note">Shows the logic, not the piece · prices indicative</span>
         </div>
       </div>
     </div>
@@ -950,7 +968,7 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-01">01</span><span class="t">LET'S TRY WITH YOUR NAME</span></div>
-        <div class="prompt">Your name is the design. Let's see it on cotton.</div>
+
         <div class="names">
           <div class="field">
             <div class="label">Stage name</div>
@@ -965,7 +983,7 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-02">02</span><span class="t">THE TEE</span></div>
-        <div class="prompt">Choose what your crowd will wear for years.</div>
+        <div class="prompt">What your crowd wears for years.</div>
         <div class="field">
           <div class="label">Fabric</div>
           <div class="row" id="g-coton"></div>
@@ -979,9 +997,7 @@
           <div class="row" id="g-sleeves"></div>
         </div>
         <div class="field">
-          <div class="label">Base</div>
-          <div class="row" id="g-base"></div>
-          <div class="label" style="margin-top:14px;">Color</div>
+          <div class="label">Color</div>
           <div class="row" id="g-couleur"></div>
           <div class="conseq" id="cq-tee"></div>
         </div>
@@ -995,11 +1011,21 @@
           <div class="row" id="g-logo"></div>
           <div class="conseq" id="cq-print"></div>
           <div class="micro-note" id="logo-note"></div>
-          <div class="motto">Pricing purpose only: we'd rather die than make merch with a big logo on it.</div>
+          <div class="motto">We'd rather die than make merch with a big logo on it.</div>
         </div>
         <div class="field">
           <div class="label">Placement · up to 3</div>
-          <div class="row" id="g-placement"></div>
+          <div class="side-block">
+            <div class="side-tag">FRONT</div>
+            <div class="row" id="g-placement-front"></div>
+          </div>
+          <div class="side-block">
+            <div class="side-tag">BACK</div>
+            <div class="back-line">
+              <div class="row" id="g-placement-back"></div>
+              <input type="text" id="in-back" placeholder="TYPE YOUR LINE" maxlength="24" autocomplete="off">
+            </div>
+          </div>
         </div>
         <div class="field">
           <div class="label">Technique</div>
@@ -1013,7 +1039,7 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-04">04</span><span class="t">THE EDITION</span></div>
-        <div class="prompt">A gift for your community. A revenue stream for you.</div>
+        <div class="prompt">A gift for your community. Revenue for you.</div>
         <div class="field">
           <div class="label" id="prix-label">Public price · what fans pay</div>
           <div class="price-big" id="prix-big">€45</div>
@@ -1026,7 +1052,6 @@
           </div>
           <div class="price-wrap" id="price-wrap">
             <input type="range" id="prix" min="30" max="75" step="1" value="35">
-            <div class="mini-earn" id="mini-earn"></div>
           </div>
           <div class="range-ends"><span>€30</span><span>€75</span></div>
         </div>
@@ -1039,25 +1064,25 @@
 
       <div class="section">
         <div class="eyebrow"><span class="n" id="step-05">05</span><span class="t">YOU EARN</span></div>
-        <div class="prompt">One number in, everything handled. The rest is yours.</div>
+
         <div class="pay">
           <div class="pay-row">
-            <div class="pay-l">PUBLIC PRICE<span class="pay-cap">what fans pay · you set it</span></div>
+            <div class="pay-l">PUBLIC PRICE</div>
             <div class="leader"></div>
             <div class="pay-v" id="e-pub"></div>
           </div>
           <div class="pay-row">
-            <div class="pay-l">PRODUCTION COST<span class="pay-cap">at cost, no markup · blank, print, finishing, numbering</span></div>
+            <div class="pay-l">PRODUCTION COST<span class="pay-cap">at cost, no markup</span></div>
             <div class="leader"></div>
             <div class="pay-v dim" id="e-edition"></div>
           </div>
           <div class="pay-row">
-            <div class="pay-l">= YOU EARN / PIECE<span class="pay-cap">your share of the margin · paid out weekly</span></div>
+            <div class="pay-l">= YOU EARN / PIECE<span class="pay-cap" id="earn-pct"></span></div>
             <div class="leader"></div>
             <div class="pay-v" id="e-part"></div>
           </div>
           <div class="pay-total">
-            <div class="pay-l">YOU EARN / EDITION<span class="pay-cap">run of <span id="pt-run"></span> · one drop, never reprinted</span></div>
+            <div class="pay-l">YOU EARN / EDITION</div>
             <div class="coin-wrap">
               <div class="pay-big" id="e-total">€0</div>
               <div class="coin-pop" id="coin-pop">+ ¤</div>
@@ -1067,15 +1092,13 @@
         </div>
         <div class="note">
           DAZY does the design, production, digital assets, selling &amp; fulfilment.
-          You buy the run at cost before launch, DAZY takes nothing on it. DAZY is
-          paid on the margin only, once pieces sell. Payout every week.
+          DAZY is paid on the margin only, once pieces sell. You receive your sales
+          payout every week.
           <a id="deal-link">Read the FAQ →</a>
         </div>
       </div>
 
-      <div class="recap" id="recap"></div>
       <button id="done" disabled>I'M DONE WITH MY CONFIG</button>
-      <div class="done-hint" id="done-hint"></div>
 
     </div>
   </div>
@@ -1105,7 +1128,7 @@
       <div class="end-deal" id="end-deal"></div>
       <div class="end-actions">
         <a id="drop-link" href="https://ig.me/m/dazy.vision" target="_blank" rel="noopener">LET'S BUILD YOURS ↗</a>
-        <div class="cta-note">Opens a DM with DAZY · limited editions, a few artists per season</div>
+        <div class="cta-note">A few artists per season</div>
         <button id="onemore">One more tune ↻</button>
       </div>
     </div>
@@ -1264,7 +1287,7 @@ const CUTS = {
 
 // ============ STATE ============
 let state = {
-  stage: "", nick: "", teeBase: "dark",
+  stage: "", nick: "", backLine: "",
   coton: "220", coupe: "boxy", sleeves: "short", couleur: "noir",
   logo: "max", technique: "serigraphie", ink: "cream", placements: ["poitrine"],
   prix: 35, tirage: 100, side: "front",
@@ -1286,6 +1309,7 @@ let lastTotal = null;
   state.logo = pick("l", LOGOS, state.logo);
   state.technique = pick("t", TECHNIQUES, state.technique);
   const pr = parseInt(q.get("x")); if (pr >= 30 && pr <= 75) state.prix = pr;
+  if (q.get("bl")) state.backLine = q.get("bl").slice(0, 24);
   const ti = parseInt(q.get("n")); if (TIRAGES.includes(ti)) state.tirage = ti;
   const pl = (q.get("p") || "").split(",").filter(id => PLACEMENTS.some(x => x.id === id));
   if (pl.length >= 1 && pl.length <= 3) state.placements = pl;
@@ -1299,7 +1323,7 @@ function params() {
     a: state.stage, s: state.nick,
     c: state.coton, k: state.coupe, sl: state.sleeves, col: state.couleur, l: state.logo,
     t: state.technique, p: state.placements.join(","),
-    x: state.prix, n: state.tirage, go: roomOpen ? "1" : "0",
+    x: state.prix, n: state.tirage, bl: state.backLine, go: roomOpen ? "1" : "0",
   });
 }
 function syncURL() {
@@ -1947,6 +1971,10 @@ document.addEventListener("click", () => {
 });
 
 // ============ PRINT ============
+function printInitial() {
+  const s = state.stage.trim() || state.nick.trim();
+  return (s ? s[0] : "D").toUpperCase();
+}
 function printText() {
   const stage = state.stage.trim().toUpperCase() || "LET'S TRY WITH YOUR NAME";
   const nick = state.nick.trim().toUpperCase() || stage.split(" ")[0].slice(0, 4);
@@ -1990,6 +2018,7 @@ function logoSVG(placement, coupe, technique, ink) {
   const p = PLACEMENTS.find(x => x.id === placement);
   const pos = logoPos(placement, coupe);
   let text = printText();
+  if (placement === "dos" && state.backLine.trim()) text = state.backLine.trim().toUpperCase();
   if (p.small && state.logo === "max") text = text.split(" ")[0];
   // deux lignes plutôt qu'une réduction excessive
   let lines = [text];
@@ -2121,25 +2150,9 @@ function prodCost() {
   return Math.round(p * 2) / 2;
 }
 
-// partage de la marge : DAZY 35% cas normal, la lourdeur de production le monte. Bornes 30-40.
-// L'artiste garde le complément : 65% cas normal, 60-70 selon la config.
-function marginSplit() {
-  let dazy = 35;
-  const heavy = [], light = [];
-  if (state.placements.length === 1 && PLACEMENTS.find(x => x.id === state.placements[0]).small) {
-    dazy -= 1; light.push("minimal print");
-  }
-  if (state.technique === "broderie") { dazy += 2; heavy.push("embroidery"); }
-  if (state.placements.length === 2) { dazy += 1; heavy.push("2 placements"); }
-  if (state.placements.length === 3) { dazy += 2; heavy.push("3 placements"); }
-  if (state.coton === "250") { dazy += 1; heavy.push("heavy cotton"); }
-  if (state.sleeves === "long") { dazy += 1; heavy.push("long sleeves"); }
-  dazy = Math.min(40, Math.max(30, dazy));
-  let reason = "standard build";
-  if (dazy < 35) reason = "lighter build: " + light.join(", ");
-  if (dazy > 35) reason = "heavier build: " + heavy.join(", ");
-  return { dazy, you: 100 - dazy, reason };
-}
+// partage de la marge, fixe dans le simulateur : DAZY 35, artiste 65.
+// Le taux réel se cale au brief. La FAQ le dit, pas la simu.
+function marginSplit() { return { dazy: 35, you: 65 }; }
 
 let animFrame = null;
 const EARN_TIERS = [
@@ -2192,7 +2205,7 @@ function animateTotal(from, to) {
 }
 
 function renderEco() {
-  const { you, reason } = marginSplit();
+  const { you } = marginSplit();
   const cost = prodCost();
   const margin = Math.round((state.prix - cost) * 100) / 100;
   const part = Math.round(margin * you) / 100;
@@ -2211,15 +2224,13 @@ function renderEco() {
     document.getElementById("sd-v").textContent = fmt(dazyM);
     document.getElementById("sy-v").textContent = fmt(part);
     document.getElementById("split-chips").innerHTML =
-      `<span>margin after production: ${fmt(margin)}</span><span>your share: ${you}% of margin · ${reason}</span>`;
+      `<span>margin ${fmt(margin)}</span><span>you keep ${you}%, we take ${100 - you}% · average split, set per project</span>`;
   }
+  const epc = document.getElementById("earn-pct");
+  if (epc) epc.textContent = you + "% of the profit";
   const ep = document.getElementById("e-part");
   ep.textContent = fmt(part);
   ep.classList.remove("neg");
-  const ptr = document.getElementById("pt-run");
-  if (ptr) ptr.textContent = state.tirage;
-  document.getElementById("mini-earn").textContent =
-    "you earn " + fmt(part) + " / piece · " + fmt(part * state.tirage) + " / edition";
   animateTotal(lastTotal, total);
   lastTotal = total;
   document.getElementById("prix-big").textContent = fmt(state.prix);
@@ -2970,6 +2981,8 @@ const OPTICON = {
       bars += `<rect x="${4 + i * 9}" y="${20 - (i + 1) * 4}" width="6" height="${(i + 1) * 4 + 4}" fill="currentColor" opacity="${i < n ? 1 : 0.25}"/>`;
     return `<svg class="opt-ic sq" viewBox="0 0 30 30">${bars}</svg>`;
   },
+  "g-placement-front": id => OPTICON["g-placement"](id),
+  "g-placement-back": id => OPTICON["g-placement"](id),
   "g-placement": id => {
     const dots = { poitrine: [15, 12], coeur: [10.5, 11], dos: [15, 12], manche: [5, 9.5] };
     const [dx, dy] = dots[id];
@@ -3007,19 +3020,21 @@ function renderGroup(elId, items, isOn, onClick) {
     if (elId === "g-couleur") {
       b.className = "swbtn" + (isOn(id) ? " on" : "");
       b.innerHTML = `<span class="sw" style="background: ${item.top}"></span>
-                     <span class="swl">${label}</span>`;
+                     <span class="swl">${label.toUpperCase()}</span>`;
     } else if (elId === "g-ink") {
+      // l'encre se lit sur le coton choisi, avec l'initiale de l'artiste
+      const tee = COULEURS.find(c => c.id === state.couleur) || COULEURS[0];
       b.className = "swbtn" + (isOn(id) ? " on" : "");
-      b.innerHTML = `<span class="sw" style="background: ${item.hex}"></span>
-                     <span class="swl">${label}</span>`;
+      b.innerHTML = `<span class="sw ink" style="background: ${tee.top}; color: ${item.hex}">${printInitial()}</span>
+                     <span class="swl">${label.toUpperCase()}</span>`;
     } else {
       b.innerHTML = icon + label + (item.hint ? `<span class="hint">${item.hint}</span>` : "");
       b.className = (icon ? "card" : "") + (isOn(id) ? " on" : "");
     }
     b.onclick = () => {
       uiClick();
-      if (elId === "g-couleur" || elId === "g-base") window.__teeFx = "color";
-      else if (elId === "g-logo" || elId === "g-placement" || elId === "g-technique" || elId === "g-ink") window.__teeFx = "print";
+      if (elId === "g-couleur") window.__teeFx = "color";
+      else if (elId === "g-logo" || elId.indexOf("g-placement") === 0 || elId === "g-technique" || elId === "g-ink") window.__teeFx = "print";
       onClick(id); render();
     };
     el.appendChild(b);
@@ -3055,31 +3070,16 @@ function paintSteps() {
   if (pbar) pbar.style.width = (psteps.filter(Boolean).length / 4 * 100) + "%";
 }
 function renderRecap() {
-  const col = COULEURS.find(c => c.id === state.couleur);
-  const cp = COUPES.find(c => c.id === state.coupe);
-  const pl = state.placements.map(p => PLACEMENTS.find(x => x.id === p).label).join(" + ");
-  document.getElementById("recap").textContent =
-    [col.label, cp.label, state.sleeves === "long" ? "Long" : "Short", pl,
-     "€" + state.prix, "run " + state.tirage].join(" · ");
-  const dh = document.getElementById("done-hint");
-  dh.textContent = state.stage.trim() ? "" : "Type your stage name in 01 to open the room";
   const ln = document.getElementById("logo-note");
   if (ln) ln.textContent = (state.logo === "min" && !state.nick.trim())
-    ? "Minimal uses your nickname · none set, falls back to the first 4 letters"
+    ? "No nickname set · falls back to the first 4 letters"
     : "";
 }
 function render() {
   renderGroup("g-coton", COTONS, id => state.coton === id, T(2, id => state.coton = id));
   renderGroup("g-coupe", COUPES, id => state.coupe === id, T(2, id => state.coupe = id));
   renderGroup("g-sleeves", SLEEVES, id => state.sleeves === id, T(2, id => state.sleeves = id));
-  renderGroup("g-base", [{id:"dark",label:"Dark tee"},{id:"light",label:"Light tee"}],
-    id => state.teeBase === id, T(2, id => {
-      state.teeBase = id;
-      state.couleur = (id === "dark") ? "noir" : "blanc";
-    }));
-  const availCol = COULEURS.filter(c => c.base === "any" || c.base === state.teeBase);
-  if (!availCol.find(c => c.id === state.couleur)) state.couleur = availCol[0].id;
-  renderGroup("g-couleur", availCol, id => state.couleur === id, T(2, id => state.couleur = id));
+  renderGroup("g-couleur", COULEURS, id => state.couleur === id, T(2, id => state.couleur = id));
   renderGroup("g-logo", LOGOS, id => state.logo === id, T(3, id => state.logo = id));
   renderGroup("g-technique", TECHNIQUES, id => state.technique === id, T(3, id => state.technique = id));
   const teeIsDark = (COULEURS.find(c => c.id === state.couleur) || {}).ink === "#F2EFE8"
@@ -3088,7 +3088,7 @@ function render() {
   if (!availInk.find(k => k.id === state.ink)) state.ink = availInk[0].id;
   renderGroup("g-ink", availInk, id => state.ink === id, T(3, id => state.ink = id));
   renderGroup("g-tirage", TIRAGES, id => state.tirage === id, T(4, id => state.tirage = id));
-  renderGroup("g-placement", PLACEMENTS, id => state.placements.includes(id), T(3, id => {
+  const togglePlacement = T(3, id => {
     if (state.placements.includes(id)) {
       if (state.placements.length > 1) state.placements = state.placements.filter(p => p !== id);
     } else {
@@ -3099,7 +3099,12 @@ function render() {
         state.side = PLACEMENTS.find(x => x.id === id).side;
       }
     }
-  }));
+  });
+  const isPlaced = id => state.placements.includes(id);
+  const bi = document.getElementById("in-back");
+  if (bi) bi.classList.toggle("idle", !state.placements.includes("dos"));
+  renderGroup("g-placement-front", PLACEMENTS.filter(p => p.side === "front"), isPlaced, togglePlacement);
+  renderGroup("g-placement-back", PLACEMENTS.filter(p => p.side === "back"), isPlaced, togglePlacement);
   document.getElementById("done").disabled = !state.stage.trim();
   paintSteps();
   renderRecap();
@@ -3110,6 +3115,17 @@ function render() {
   syncURL();
 }
 
+document.getElementById("in-back").addEventListener("input", e => {
+  state.backLine = e.target.value;
+  // écrire au dos, c'est choisir le dos
+  if (state.backLine.trim() && !state.placements.includes("dos")) {
+    if (state.placements.length < 3) state.placements.push("dos");
+  }
+  window.__teeFx = "print";
+  state.side = "back";
+  render();
+  document.getElementById("in-back").focus();
+});
 document.getElementById("in-stage").addEventListener("input", e => {
   state.stage = e.target.value; render();
 });
@@ -3321,6 +3337,7 @@ document.getElementById("done").onclick = () => {
 };
 
 document.getElementById("in-stage").value = state.stage;
+document.getElementById("in-back").value = state.backLine;
 document.getElementById("in-nick").value = state.nick;
 document.getElementById("prix").value = state.prix;
 window.addEventListener("error", e => {
@@ -3332,7 +3349,7 @@ window.addEventListener("error", e => {
 window.addEventListener("unhandledrejection", e => {
   if (e.reason && e.reason.message) console.warn("[dazy]", e.reason.message);
 });
-console.log("DAZY simulator · build 97");
+console.log("DAZY simulator · " + document.lastModified);
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
     if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); }
