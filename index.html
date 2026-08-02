@@ -394,14 +394,14 @@
   #event-banner {
     position: fixed; left: 14px; right: 14px; bottom: 14px; z-index: 90;
     max-width: 540px; margin: 0 auto;
-    background: var(--bg); border: 2px solid #EF3340;
+    background: var(--bg); border: 2px solid #EC2639;
     padding: 13px 15px; text-align: left;
     font-family: "Press Start 2P", ui-monospace, monospace;
     font-size: 9px; line-height: 2; letter-spacing: 1px; color: var(--ink);
     animation: evpunch .45s steps(4);
   }
-  #event-banner b { color: #EF3340; display: block; margin-top: 6px; }
-  .ev-k { display: block; color: #EF3340; font-size: 8px; margin-bottom: 8px; letter-spacing: 2px; }
+  #event-banner b { color: #EC2639; display: block; margin-top: 6px; }
+  .ev-k { display: block; color: #EC2639; font-size: 8px; margin-bottom: 8px; letter-spacing: 2px; }
   @keyframes evpunch {
     0% { transform: scale(.6) rotate(-2deg); opacity: 0; }
     60% { transform: scale(1.06) rotate(1deg); }
@@ -415,7 +415,7 @@
   #vs-burst {
     position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%);
     z-index: 8; font-family: "Press Start 2P", monospace; font-size: 22px;
-    color: #EF3340; text-shadow: 0 0 18px rgba(239,51,64,.95); letter-spacing: 2px;
+    color: #EC2639; text-shadow: 0 0 18px rgba(239,51,64,.95); letter-spacing: 2px;
     pointer-events: none; white-space: nowrap;
   }
   #vs-burst.go { animation: vsburst .7s cubic-bezier(.2,1.2,.3,1); }
@@ -520,7 +520,7 @@
   @keyframes trackflow { 0% { top: 0; opacity: 1; } 100% { top: 46px; opacity: 0; } }
   #fader-block.spotlight::before { animation: none; }
   }
-  .fader-kicker { font-size: 9px; letter-spacing: 3px; color: var(--grey2); margin-bottom: 8px; }
+  .fader-kicker { font-size: 9px; letter-spacing: 3px; color: #C9C3B4; margin-bottom: 8px; }
   .fader-label {
     font-family: "Press Start 2P", ui-monospace, monospace;
     font-size: 9.5px; line-height: 1.8; letter-spacing: 1px;
@@ -542,14 +542,15 @@
   }
   #fader-wrap.armed #fader-cap { animation: capbeat 1.1s ease-in-out infinite; }
   @keyframes capbeat {
-    0%, 100% { box-shadow: 0 2px 0 #55534E, 0 0 0 0 rgba(61,99,255,0); transform: translateX(-50%) translateY(0); }
-    50% { box-shadow: 0 2px 0 #55534E, 0 0 0 6px rgba(61,99,255,.35); transform: translateX(-50%) translateY(3px); }
+    0%, 100% { box-shadow: 0 3px 0 #55534E, 0 0 12px rgba(61,99,255,.45); transform: translateX(-50%) translateY(0); }
+    50% { box-shadow: 0 3px 0 #55534E, 0 0 0 8px rgba(61,99,255,.40), 0 0 24px rgba(61,99,255,.85); transform: translateX(-50%) translateY(3px); }
   }
   @media (prefers-reduced-motion: reduce) { #fader-wrap.armed #fader-cap { animation: none; } }
   #fader-track {
-    position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 6px;
     transform: translateX(-50%);
-    background: #16150F; border: 1px solid #33322E;
+    background: #3A3831; border: 1px solid #6B6860;
+    box-shadow: 0 0 14px rgba(61,99,255,.30);
   }
   #fader-hit {
     position: absolute; left: 50%; top: -10px; bottom: -10px; width: 60px;
@@ -559,14 +560,15 @@
   .ftick.r { left: auto; right: 0; }
   #fader-cap {
     position: absolute; left: 50%; transform: translateX(-50%);
-    width: 30px; height: 14px;
+    width: 38px; height: 18px;
     background: var(--ink); border: 1px solid var(--bg);
-    box-shadow: 0 2px 0 #55534E; z-index: 2;
+    box-shadow: 0 3px 0 #55534E, 0 0 16px rgba(61,99,255,.55); z-index: 2;
   }
   #fader-cap::after {
-    content: ""; position: absolute; left: 2px; right: 2px; top: 4px; height: 2px;
+    content: ""; position: absolute; left: 2px; right: 2px; top: 6px; height: 3px;
     background: var(--blue);
   }
+  #snd-end { position: absolute; top: 14px; right: 16px; z-index: 6; }
   .fs-overlay {
     position: fixed; inset: 0; z-index: 120;
     background: radial-gradient(circle at 50% 42%, #14120D 0%, var(--bg) 70%);
@@ -614,6 +616,7 @@
     animation: rise .6s .7s backwards;
   }
   .dazy-intro b { color: var(--blue); }
+  .dazy-intro b i { font-style: italic; letter-spacing: .5px; }
   .end-deal {
     display: flex; flex-direction: column; align-items: center;
     margin: 22px auto 6px; max-width: 360px;
@@ -1016,16 +1019,16 @@
           <div class="price-big" id="prix-big">€45</div>
           <div class="split">
             <div class="split-bar">
-              <div class="split-dazy" id="split-dazy"><span class="split-tag">DAZY ALL-IN <b id="sd-v"></b></span></div>
+              <div class="split-dazy" id="split-dazy"><span class="split-tag">DAZY <b id="sd-v"></b></span></div>
               <div class="split-you" id="split-you"><span class="split-tag">YOU KEEP <b id="sy-v"></b></span></div>
             </div>
             <div class="split-chips" id="split-chips"></div>
           </div>
           <div class="price-wrap" id="price-wrap">
-            <input type="range" id="prix" min="35" max="80" step="1" value="45">
+            <input type="range" id="prix" min="30" max="75" step="1" value="35">
             <div class="mini-earn" id="mini-earn"></div>
           </div>
-          <div class="range-ends"><span>€35</span><span>€80</span></div>
+          <div class="range-ends"><span>€30</span><span>€75</span></div>
         </div>
         <div class="field">
           <div class="label">Run · numbered, never reprinted</div>
@@ -1044,12 +1047,12 @@
             <div class="pay-v" id="e-pub"></div>
           </div>
           <div class="pay-row">
-            <div class="pay-l">DAZY ALL-IN<span class="pay-cap">per piece, everything included: blank, print, editorial page, shooting, selling, fulfilment</span></div>
+            <div class="pay-l">PRODUCTION COST<span class="pay-cap">at cost, no markup · blank, print, finishing, numbering</span></div>
             <div class="leader"></div>
             <div class="pay-v dim" id="e-edition"></div>
           </div>
           <div class="pay-row">
-            <div class="pay-l">= YOU EARN / PIECE<span class="pay-cap">public price − DAZY all-in · paid out weekly</span></div>
+            <div class="pay-l">= YOU EARN / PIECE<span class="pay-cap">your share of the margin · paid out weekly</span></div>
             <div class="leader"></div>
             <div class="pay-v" id="e-part"></div>
           </div>
@@ -1063,9 +1066,9 @@
           </div>
         </div>
         <div class="note">
-          The DAZY price covers everything: design, art direction, production,
-          editorial page, sale. DAZY produces, edits, sells on its own site,
-          pays you out weekly. No upfront option if needed: pre-order system.
+          DAZY does the design, production, digital assets, selling &amp; fulfilment.
+          You buy the run at cost before launch, DAZY takes nothing on it. DAZY is
+          paid on the margin only, once pieces sell. Payout every week.
           <a id="deal-link">Read the FAQ →</a>
         </div>
       </div>
@@ -1094,6 +1097,7 @@
       </div>
     </div>
     <div id="set-end" class="hidden fs-overlay">
+      <button class="snd" id="snd-end" title="Sound">♪ on</button>
       <div class="end-kicker">END OF SET. LIGHTS ON.</div>
       <div class="dazy-avatar" id="dazy-avatar"></div>
       <div class="dazy-intro" id="dazy-intro"></div>
@@ -1190,25 +1194,16 @@ const TECHNIQUES = [
 const TIRAGES = [50, 100, 150];
 const MOODS = { 50: "50 · tight run · insiders only", 100: "100 · open run", 150: "150 · wide run · oh no, the shirtless gym bros are coming to sweat on our merch" };
 
-// internal grid: never itemized on screen
-const ED_COTON = { "180": 13, "220": 15, "250": 18 };
-const ED_SLEEVE = { short: 0, long: 2.5 };
-const ED_MARK = {
-  serigraphie: { small: 1.5, big: 2.5 },
-  dtf: { small: 2.5, big: 3 },
-  broderie: { small: 3, big: 5.5 },
-};
-const ED_TIRAGE = { 50: 2, 100: 0, 150: -1 };
 
 const FAQ = [
   ["Who makes it happen?",
-   "DAZY. Design, art direction, production, editorial page, sale. You bring the name and the vision, we build the object and put it in the world."],
+   "DAZY. Design, production, digital assets, selling & fulfilment. You bring the name and the vision, we build the object and put it in the world."],
   ["What do I pay?",
-   "One number: the DAZY price per piece. It covers everything above. Two ways to fund the run: upfront, or pre-order on dazyvision.com, zero cash needed."],
+   "The production, at cost, before launch. Nothing else. No fee, no retainer, no markup on the blanks or the print: you see the real number in the simulator. That's why we run a revenue share — DAZY is paid on the margin once pieces sell, so your upfront stays as low as it can be. Buying a finished run from a merch supplier costs you far more per piece, before a single sale."],
   ["Where does it sell?",
    "On dazyvision.com only. One channel, one page, your own room on the site. The page stays online after the run sells out. Forever. That's the archive."],
   ["How do I get paid?",
-   "Weekly. Sales report and payout, every single week. You earn the public price minus the DAZY price, on every piece sold. DAZY sells, DAZY transfers."],
+   "Weekly. Sales report and payout, every single week. Your upfront comes back first, from the first sales. On every piece, production comes off, then the margin is split: you keep 65% as the standard case; design workload, iterations and product complexity move your share between 60 and 70. Set together at kickoff, from the brief. It changes later only by mutual agreement, for extra asks: additional assets, new directions. DAZY sells, DAZY transfers."],
   ["What if it blows up?",
    "No reprint. Ever. A sold-out run stays sold out, that's what your first buyers own. If demand explodes, we cut a second edition: new form, new numbers, new run."],
   ["Who shoots the campaign?",
@@ -1216,7 +1211,7 @@ const FAQ = [
   ["What do you design with?",
    "Everything is art-directed and built in-house: Photoshop, Illustrator and InDesign for the pieces and the pages, ComfyUI and Stable Diffusion pipelines for visual research. Tools follow the direction, never the other way around."],
   ["Promo pieces for me?",
-   "As many as you want, billed at DAZY price, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
+   "As many as you want, billed at cost, numbered inside the run. Put them on the right shoulders, not on a marketplace."],
   ["The fine print?",
    "A signed edition contract before anything is produced; simulator visuals are deliberately non-realistic (they show the logic, not the final piece) and prices are indicative, non-contractual. French law, GDPR-clean customer data, art direction by DAZY inside your validated brief. Ask us for the full document."],
 ];
@@ -1272,7 +1267,7 @@ let state = {
   stage: "", nick: "", teeBase: "dark",
   coton: "220", coupe: "boxy", sleeves: "short", couleur: "noir",
   logo: "max", technique: "serigraphie", ink: "cream", placements: ["poitrine"],
-  prix: 45, tirage: 100, side: "front",
+  prix: 35, tirage: 100, side: "front",
 };
 let roomOpen = false;
 let soundOn = true;
@@ -1290,7 +1285,7 @@ let lastTotal = null;
   state.couleur = pick("col", COULEURS, state.couleur);
   state.logo = pick("l", LOGOS, state.logo);
   state.technique = pick("t", TECHNIQUES, state.technique);
-  const pr = parseInt(q.get("x")); if (pr >= 35 && pr <= 80) state.prix = pr;
+  const pr = parseInt(q.get("x")); if (pr >= 30 && pr <= 75) state.prix = pr;
   const ti = parseInt(q.get("n")); if (TIRAGES.includes(ti)) state.tirage = ti;
   const pl = (q.get("p") || "").split(",").filter(id => PLACEMENTS.some(x => x.id === id));
   if (pl.length >= 1 && pl.length <= 3) state.placements = pl;
@@ -1374,12 +1369,22 @@ function fireBros(withSound) {
     if (flash) { flash.classList.remove("pulsing"); flash.classList.add("hidden"); }
     const bn = document.getElementById("event-banner");
     if (bn) {
-      setTimeout(() => {
-        bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Only your DAZY piece stands between you and the sweat!</b>';
+      const flash2 = (msg, ms, next) => {
+        bn.innerHTML = msg;
         bn.classList.remove("hidden");
         bn.style.cursor = "pointer";
-        bn.onclick = () => bn.classList.add("hidden");
-        setTimeout(() => bn.classList.add("hidden"), 9500);
+        let done = false;
+        const adv = () => {
+          if (done) return; done = true;
+          bn.classList.add("hidden");
+          if (next) setTimeout(next, 260);
+        };
+        bn.onclick = adv;
+        setTimeout(adv, ms);
+      };
+      setTimeout(() => {
+        flash2('<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him.', 4200,
+          () => flash2('<span class="ev-k">⚠ CROWD EVENT</span><b>Only your DAZY piece stands between you and the sweat!</b>', 5200, null));
       }, 1600);
     }
     const fb = document.getElementById("fader-block");
@@ -1578,10 +1583,17 @@ function coin() {
 }
 document.getElementById("snd").onclick = function () {
   soundOn = !soundOn;
-  this.textContent = soundOn ? "♪ on" : "♪ off";
-  if (!soundOn) stopMusic();
+  const label = soundOn ? "♪ on" : "♪ off";
+  this.textContent = label;
+  const se = document.getElementById("snd-end");
+  if (se) se.textContent = label;
+  if (!soundOn) { stopMusic(); stopEndMusic(); }
+  else if (setEnded) startEndMusic();
   else if (roomOpen) startMusic();
 };
+const sndEndBtn = document.getElementById("snd-end");
+if (sndEndBtn) sndEndBtn.onclick = () =>
+  document.getElementById("snd").onclick.call(document.getElementById("snd"));
 
 // ============ MUSIC: 180 BPM techno-game, phrases de 4 mesures ============
 const BPM = 148, BEAT = 60 / BPM, S16 = BEAT / 4;
@@ -1817,8 +1829,120 @@ function startMusic() {
 function stopMusic() {
   if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
 }
+
+// ============ MUSIQUE DE L'ÉCRAN FINAL ============
+// Électronique, chaleureuse, évolutive : progression Am F C G, arpège tournant
+// par mesure, filtre qui respire, octaves qui montent par cycle. Jamais deux
+// mesures identiques de suite.
+let endTimer = null, endStepN = 0, endNext = 0, endGainNode = null, endLP = null;
+const EBPM8 = 60 / 112 / 2;
+const ECHORDS = [
+  [110.00, 130.81, 164.81],
+  [87.31, 110.00, 130.81],
+  [130.81, 164.81, 196.00],
+  [98.00, 123.47, 146.83],
+];
+const EARPS = [
+  [0, 1, 2, 1, 0, 2, 1, 2],
+  [2, 1, 0, 1, 2, 0, 1, 0],
+  [0, 2, 1, 0, 2, 1, 0, 2],
+  [1, 0, 2, 0, 1, 2, 0, 1],
+];
+function ensureEndChain() {
+  actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+  if (!endGainNode) {
+    endGainNode = actx.createGain(); endGainNode.gain.value = 0.55;
+    endLP = actx.createBiquadFilter(); endLP.type = "lowpass";
+    endLP.frequency.value = 1400; endLP.Q.value = 0.5;
+    endLP.connect(endGainNode); endGainNode.connect(actx.destination);
+  }
+}
+function eTone(t, f, dur, vol, type, dest) {
+  const o = actx.createOscillator(); o.type = type || "sine";
+  o.frequency.setValueAtTime(f, t);
+  const g = actx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(vol, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(dest || endLP);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+function ePad(t, chord, dur, vol) {
+  chord.forEach(f => [f, f * 1.004, f * 0.996].forEach((ff, i) => {
+    const o = actx.createOscillator(); o.type = i ? "sawtooth" : "triangle";
+    o.frequency.setValueAtTime(ff * 2, t);
+    const g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol / (i + 1.6), t + dur * 0.35);
+    g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(endLP);
+    o.start(t); o.stop(t + dur + 0.05);
+  }));
+}
+function scheduleEnd(t, n) {
+  const bar = Math.floor(n / 8);
+  const chI = Math.floor(bar / 2) % 4;
+  const cycle = Math.floor(bar / 8);
+  const s = n % 8;
+  const ch = ECHORDS[chI];
+  if (s === 0)
+    endLP.frequency.setTargetAtTime(
+      1050 + 450 * Math.sin(bar * 0.7) + Math.min(900, cycle * 200), t, 0.4);
+  // kick doux, quatre temps
+  if (s % 2 === 0) {
+    const o = actx.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(120, t);
+    o.frequency.exponentialRampToValueAtTime(44, t + 0.1);
+    const g = actx.createGain(); g.gain.setValueAtTime(0.15, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+    o.connect(g); g.connect(endGainNode); o.start(t); o.stop(t + 0.2);
+  }
+  // hat en contretemps, hauteur qui tourne
+  if (s % 2 === 1) eTone(t, 6200 + (n % 3) * 550, 0.04, 0.03, "square", endGainNode);
+  // basse : fondamentale sur 1 et 3, octave en fin de phrase
+  if (s === 0 || s === 4) eTone(t, ch[0] / 2, 0.34, 0.19, "sine", endGainNode);
+  if (s === 7 && bar % 2 === 1) eTone(t, ch[0], 0.2, 0.11, "sine", endGainNode);
+  // nappe au changement d'accord
+  if (s === 0 && bar % 2 === 0) ePad(t, ch, EBPM8 * 16, 0.05);
+  // arpège : motif tournant, octave qui monte un cycle sur deux
+  const pat = EARPS[(bar + chI) % 4];
+  const oct = cycle % 2 ? 6 : 4;
+  if (!(bar % 4 === 3 && s > 5))
+    eTone(t, ch[pat[s]] * oct, 0.16, 0.07, "triangle");
+  // scintillement rare, jamais au même endroit
+  if ((n * 7) % 31 === 0) eTone(t + EBPM8 * 0.5, ch[n % 3] * 8, 0.1, 0.028, "sine");
+}
+function startEndMusic() {
+  if (endTimer || !soundOn) return;
+  try {
+    unlockIOSAudio();
+    ensureEndChain();
+    const go = () => {
+      if (endTimer) return;
+      const t0 = actx.currentTime + 0.1;
+      ePad(t0, ECHORDS[0], 2.2, 0.075);
+      eTone(t0, 55, 1.4, 0.15, "sine", endGainNode);
+      endStepN = 0;
+      endNext = t0 + 1.6;
+      endTimer = setInterval(() => {
+        if (actx.state !== "running") { actx.resume().catch(() => {}); return; }
+        if (endNext < actx.currentTime) endNext = actx.currentTime + 0.06;
+        while (endNext < actx.currentTime + 0.3) {
+          try { scheduleEnd(endNext, endStepN++); } catch (err) {}
+          endNext += EBPM8;
+        }
+      }, 110);
+    };
+    if (actx && actx.state !== "running") actx.resume().then(go).catch(go);
+    else go();
+  } catch (e) {}
+}
+function stopEndMusic() {
+  if (endTimer) { clearInterval(endTimer); endTimer = null; }
+}
 // self-heal : tout tap pendant que la salle est ouverte relance la musique si elle est tombée
 document.addEventListener("click", () => {
+  if (setEnded) { if (soundOn && !endTimer) startEndMusic(); return; }
   if (roomOpen && soundOn && !musicTimer) startMusic();
 });
 
@@ -1979,13 +2103,42 @@ function renderTee() {
 // ============ ECONOMY ============
 const fmt = n => (n < 0 ? "− " : "") + "€" + Math.abs(n).toFixed(Math.abs(n) % 1 === 0 ? 0 : 2);
 
-function prixEdition() {
-  let p = ED_COTON[state.coton] + ED_SLEEVE[state.sleeves] + ED_TIRAGE[state.tirage];
+// coût de fabrication total, affiché en clair : blank, marquage, façonnage, numérotation
+const COST_COTON = { "180": 8.5, "220": 10, "250": 12 };
+const COST_SLEEVE = { short: 0, long: 2 };
+const COST_MARK = {
+  serigraphie: { small: 1.5, big: 2.5 },
+  dtf: { small: 2.5, big: 3 },
+  broderie: { small: 3, big: 5.5 },
+};
+const COST_TIRAGE = { 50: 1, 100: 0, 150: -0.5 };
+function prodCost() {
+  let p = COST_COTON[state.coton] + COST_SLEEVE[state.sleeves] + COST_TIRAGE[state.tirage];
   state.placements.forEach(pl => {
     const small = PLACEMENTS.find(x => x.id === pl).small;
-    p += ED_MARK[state.technique][small ? "small" : "big"];
+    p += COST_MARK[state.technique][small ? "small" : "big"];
   });
   return Math.round(p * 2) / 2;
+}
+
+// partage de la marge : DAZY 35% cas normal, la lourdeur de production le monte. Bornes 30-40.
+// L'artiste garde le complément : 65% cas normal, 60-70 selon la config.
+function marginSplit() {
+  let dazy = 35;
+  const heavy = [], light = [];
+  if (state.placements.length === 1 && PLACEMENTS.find(x => x.id === state.placements[0]).small) {
+    dazy -= 1; light.push("minimal print");
+  }
+  if (state.technique === "broderie") { dazy += 2; heavy.push("embroidery"); }
+  if (state.placements.length === 2) { dazy += 1; heavy.push("2 placements"); }
+  if (state.placements.length === 3) { dazy += 2; heavy.push("3 placements"); }
+  if (state.coton === "250") { dazy += 1; heavy.push("heavy cotton"); }
+  if (state.sleeves === "long") { dazy += 1; heavy.push("long sleeves"); }
+  dazy = Math.min(40, Math.max(30, dazy));
+  let reason = "standard build";
+  if (dazy < 35) reason = "lighter build: " + light.join(", ");
+  if (dazy > 35) reason = "heavier build: " + heavy.join(", ");
+  return { dazy, you: 100 - dazy, reason };
 }
 
 let animFrame = null;
@@ -2039,28 +2192,30 @@ function animateTotal(from, to) {
 }
 
 function renderEco() {
-  const ed = prixEdition();
-  const part = state.prix - ed;
+  const { you, reason } = marginSplit();
+  const cost = prodCost();
+  const margin = Math.round((state.prix - cost) * 100) / 100;
+  const part = Math.round(margin * you) / 100;
+  const dazyM = Math.round((margin - part) * 100) / 100;
   const total = part * state.tirage;
   const pub = document.getElementById("e-pub");
   if (pub) pub.textContent = fmt(state.prix);
-  document.getElementById("e-edition").textContent = "− " + fmt(ed);
-  // barre de partage : la marge de chacun, indiscutable
+  document.getElementById("e-edition").textContent = "− " + fmt(cost);
+  // barre de partage : la marge, pas le brut. Le coût de fabrication est en clair au-dessus.
   const dz = document.getElementById("split-dazy");
   const yu = document.getElementById("split-you");
   if (dz && yu) {
-    const pct = Math.min(100, Math.max(0, (ed / state.prix) * 100));
-    dz.style.width = pct + "%";
-    yu.style.width = (100 - pct) + "%";
-    yu.classList.toggle("neg", part < 0);
-    document.getElementById("sd-v").textContent = fmt(ed);
-    document.getElementById("sy-v").textContent = part < 0 ? fmt(part) : fmt(part);
+    dz.style.width = (100 - you) + "%";
+    yu.style.width = you + "%";
+    yu.classList.remove("neg");
+    document.getElementById("sd-v").textContent = fmt(dazyM);
+    document.getElementById("sy-v").textContent = fmt(part);
     document.getElementById("split-chips").innerHTML =
-      `<span>materials, construction &amp; print included</span><span>page, shooting &amp; selling included</span>`;
+      `<span>margin after production: ${fmt(margin)}</span><span>your share: ${you}% of margin · ${reason}</span>`;
   }
   const ep = document.getElementById("e-part");
   ep.textContent = fmt(part);
-  ep.classList.toggle("neg", part < 0);
+  ep.classList.remove("neg");
   const ptr = document.getElementById("pt-run");
   if (ptr) ptr.textContent = state.tirage;
   document.getElementById("mini-earn").textContent =
@@ -2197,14 +2352,13 @@ function dazyAvatar(holdLeft) {
   g[S0 + 7][7] = "."; g[S0 + 7][19] = ".";
   // BRAS TENDUS vers l'avant, ouverts, paumes offertes (accueil)
   // manche courte puis bras qui descend en s'écartant, main ouverte au bout
-  // BRAS CROISÉS : manches courtes descendantes puis avant-bras repliés sur le torse
+  // MAINS DANS LES POCHES : bras le long du corps, avant-bras rentrés vers les hanches
   fill(5, 6, S0 + 1, S0 + 3, "t");        // manche gauche
   fill(20, 21, S0 + 1, S0 + 3, "t");      // manche droite
-  // avant-bras qui se croisent devant la poitrine (peau)
-  fill(8, 14, S0 + 4, S0 + 5, "s");       // avant-bras gauche vers la droite
-  fill(12, 18, S0 + 5, S0 + 6, "s");      // avant-bras droit vers la gauche (par-dessus)
-  fill(7, 8, S0 + 4, S0 + 4, "s");        // coude gauche
-  fill(18, 19, S0 + 5, S0 + 6, "s");      // coude droit
+  fill(5, 6, S0 + 4, S0 + 6, "s");        // bras gauche
+  fill(20, 21, S0 + 4, S0 + 6, "s");      // bras droit
+  fill(6, 8, S0 + 7, S0 + 8, "s");        // main gauche rentrée
+  fill(18, 20, S0 + 7, S0 + 8, "s");      // main droite rentrée
   // jambes + chaussures noires
   const hemY = S0 + 7;
   fill(9, 12, hemY + 1, hemY + 6, "p");
@@ -2245,8 +2399,8 @@ function dazyAvatar(holdLeft) {
   s += `<rect x="${cx - 22}" y="${ey + 12}" width="10" height="5" rx="1" fill="${blush}" opacity=".75"/>`;
   s += `<rect x="${cx + 12}" y="${ey + 12}" width="10" height="5" rx="1" fill="${blush}" opacity=".75"/>`;
   s += `<path d="M${cx - 8} ${ey + 15} Q${cx} ${ey + 20} ${cx + 8} ${ey + 15}" stroke="${eye}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-  // DAZY discret en poitrine
-  s += `<text x="${cx}" y="${(S0 + 4.4) * PXG}" text-anchor="middle" font-family="ui-monospace, monospace" font-weight="700" letter-spacing="1" font-size="7.5" fill="${ink}">DAZY</text>`;
+  // DAZY plein poitrine, au-dessus de la ligne des bras : jamais ton-sur-ton
+  s += `<text x="${cx}" y="${(S0 + 4.6) * PXG}" text-anchor="middle" font-family="ui-monospace, monospace" font-weight="700" letter-spacing="2" font-size="15" fill="${ink}">DAZY</text>`;
   return `<svg viewBox="-6 0 ${GW * PXG + 12} ${GH * PXG - 6}" width="150" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
 }
 function dancerSVG(grid, colors, flip, px) {
@@ -2993,10 +3147,14 @@ function endSet() {
     exitTimer = setInterval(() => {
       step++;
       kids.forEach((el, i) => {
+        // #floor peut contenir des gabbers en plus de la crowd : pas d'index pour eux
+        const ri = ctx.crowd[i];
+        const frames = ri === undefined ? null : ctx.backPerRaver[ri];
+        if (!frames) return;
         const sv = el.querySelector("svg");
         if (sv)
           sv.outerHTML = dancerSVG(
-            ctx.backPerRaver[ctx.crowd[i]][step % 2],
+            frames[step % 2],
             ctx.crowdColors[i],
             i % 2 === 1,   // les sortants gauche courent en miroir
             5);
@@ -3016,10 +3174,10 @@ function endSet() {
        <div class="duo-daz">${dazyAvatar(false)}</div>
        <div class="duo-raver">${guruFigure(0, RAVERS[chosenRaver], col2, false)}</div>
      </div>`;
-  const edP = prixEdition();
-  const earnP = state.prix - edP;
+  const youP = marginSplit().you;
+  const earnP = Math.round((state.prix - prodCost()) * youP) / 100;
   const intro = document.getElementById("dazy-intro");
-  if (intro) intro.innerHTML = `Hey ${nm}, meet <b>DAZ</b>. Your new partner.`;
+  if (intro) intro.innerHTML = `Hey ${nm}, meet <b><i>DAZ</i></b>. Your new partner.`;
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span>
      <span class="pfw">Let's bring the rave to Paris Fashion Week 2027</span>`;
@@ -3037,7 +3195,9 @@ function endSet() {
        <span>never reprinted</span>
      </div>`;
   setTimeout(() => {
-    victoryFanfare();
+    startEndMusic();
+    const seBtn = document.getElementById("snd-end");
+    if (seBtn) seBtn.textContent = soundOn ? "♪ on" : "♪ off";
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
     document.getElementById("set-end").classList.remove("hidden");
@@ -3116,6 +3276,7 @@ document.getElementById("onemore").onclick = () => {
   setFader(1, true);
   document.getElementById("set-end").classList.add("hidden");
   document.getElementById("fader-block").classList.remove("hidden");
+  stopEndMusic();
   coin();
   renderStage();
   startMusic();
