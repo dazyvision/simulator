@@ -124,7 +124,7 @@
   .split-chips span { font-size: 8.5px; letter-spacing: .5px; color: var(--grey); }
   .opt-ic { display: block; margin: 0 auto 7px; width: 34px; height: 30px; color: currentColor; }
   .opt-ic.sq { width: 26px; height: 26px; }
-  button.card { min-width: 78px; padding: 11px 10px 10px; }
+  button.card { min-width: 0; padding: 11px 10px 10px; }
   /* payout terminal */
   .pay { position: relative; border: 1px solid var(--line); background: #0E0D0B; padding: 4px 16px 16px; }
   .pay::before {
@@ -258,6 +258,12 @@
   .field { margin-bottom: 21px; }
   .field:last-child { margin-bottom: 0; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  /* dans les champs : colonnes égales, pleine largeur, bords alignés d'une rangée à l'autre */
+  .field .row {
+    display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px;
+  }
+  .field .row > button { min-width: 0; width: 100%; padding-left: 6px; padding-right: 6px; }
+  .field .row > button.card { padding-left: 4px; padding-right: 4px; }
   .names { display: flex; gap: 10px; flex-wrap: wrap; }
   .names .field { flex: 1 1 170px; margin-bottom: 0; }
   input[type=text] {
@@ -790,7 +796,7 @@
     .raver-btn .dancer { transform: scale(.85); }
   .picker-fig { position: relative; display: inline-block; }
   .tee-T { position: absolute; left: 50%; top: 0; transform: translateX(-50%); pointer-events: none; }
-    .raver-def { font-size: 10px; max-width: 130px; }
+    .raver-def { font-size: 12px; max-width: 148px; }
   }
   .hidden { display: none !important; }
   .gate.hidden { display: none; }
@@ -800,8 +806,11 @@
   }
   .gate-sub {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
-    font-weight: 550; font-size: 16px; color: var(--grey); max-width: 420px; line-height: 1.5;
+    font-weight: 700; font-size: 21px; color: #A8A398; max-width: 440px; line-height: 1.35;
+    letter-spacing: -.2px;
   }
+  .gate-sub em { font-style: normal; color: #3AE12B; }
+  @media (max-width: 700px) { .gate-sub { font-size: 18px; } }
   .gate-btn {
     position: relative; padding: 17px 34px; background: transparent; color: var(--ink);
     border: 1px solid #3A4A9E; font-weight: 700; letter-spacing: 4px; font-size: 12px;
@@ -890,14 +899,13 @@
     .raver-btn.chosen { transform: none; }
     #gate2-pact.show { animation: none; }
   }
-  .raver-name { font-size: 11px; letter-spacing: 3px; font-weight: 700; }
+  .raver-name { font-size: 17px; letter-spacing: 2.5px; font-weight: 700; order: -1; }
   .raver-arch { font-size: 8.5px; letter-spacing: 2px; color: var(--blue); font-weight: 700; }
   .raver-def {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
-    font-size: 11px; color: var(--grey); max-width: 150px; line-height: 1.5;
+    font-size: 13px; color: #A8A398; max-width: 170px; line-height: 1.55;
     letter-spacing: .2px; text-transform: none;
   }
-  .raver-tag { font-size: 8px; letter-spacing: 1px; color: #6B675C; }
   .raver-btn .dancer { image-rendering: pixelated; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1148,7 +1156,7 @@
 
 <div class="gate hidden" id="gate2">
   <div class="gate-title">SAVE A RAVER</div>
-  <div class="gate-sub">They've been stuck in Tiësto tour merch since 2009. Choose who you save: they'll wear your piece and lead your crowd.</div>
+  <div class="gate-sub">They've been stuck in <em>Afrojack</em> tour merch since <em>2019</em>. Choose who you save:</div>
   <div id="raver-row"></div>
   <div id="gate2-pact"></div>
 </div>
@@ -2436,13 +2444,13 @@ function dancerSVG(grid, colors, flip, px) {
 // ============ RAVERS : trois personnages, features appliquées sur les frames ============
 const RAVERS = [
   { name: "TYON", hair: "#3A2E22", skirt: null, feat: "buzz",
-    arch: "THE LOST GYMBRO", def: "Followed the kick drum from the gym next door. The pill? Swears it was fake. Took a second one.", tag: "TIËSTO TOUR '09 · still shirtless" },
+    arch: "THE LOST GYMBRO", def: "Followed the kick drum from the gym next door. The pill? Swears it was fake. Took a second one." },
   { name: "ALIX", hair: "#F5A3C7", skirt: "#3D63FF", feat: "longhair",
-    arch: "THE OPENING-SET DEFENDER", def: "At doors open. Swears the warm-up was the best set of the night. She's right.", tag: "TIËSTO TOUR '09 · front row" },
+    arch: "THE OPENING-SET DEFENDER", def: "At doors open. Swears the warm-up was the best set of the night. She's right." },
   { name: "NOA", hair: "#3D63FF", skirt: null, feat: "mohawk",
-    arch: "THE LEFT-STACK RESIDENT", def: "Same two square meters by the left speaker, every night. Politely non-negotiable.", tag: "TIËSTO TOUR '09 · never moved" },
+    arch: "THE LEFT-STACK RESIDENT", def: "Same two square meters by the left speaker, every night. Politely non-negotiable." },
   { name: "SASHA", hair: "#E8C15A", skirt: "#B04AA0", feat: "bob",
-    arch: "THE SMOKING-AREA CRITIC", def: "Hears every set from the smoking area. Reviews them all anyway.", tag: "TIËSTO TOUR '09 · outside" },
+    arch: "THE SMOKING-AREA CRITIC", def: "Hears every set from the smoking area. Reviews them all anyway." },
 ];
 let chosenRaver = 0;
 
@@ -2480,7 +2488,7 @@ function applyRaver(frames, rv) {
   });
 }
 
-// sprites de sélection : tee Tiësto (blanc, gros T vert), sauf Tyon torse nu
+// sprites de sélection : tee Afrojack (blanc, gros A vert), sauf Tyon torse nu
 function afroFrames(rv) {
   const base = [FRAME_A, FRAME_B].map(f => f.map(r =>
     r.replace(/i/g, "j")));
@@ -2503,15 +2511,14 @@ function renderGate2() {
     btn.className = "raver-btn";
     const teeT = rv.feat === "buzz" ? "" :
       `<svg class="tee-T" viewBox="0 0 90 108" width="90" height="108" aria-hidden="true">
-        <rect x="40" y="46" width="14" height="4" fill="#3AE12B"/>
-        <rect x="45" y="46" width="4" height="14" fill="#3AE12B"/>
+        <text x="47" y="60" text-anchor="middle" font-size="19" font-weight="700"
+          font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#3AE12B">A</text>
       </svg>`;
     btn.innerHTML = `
       <span class="picker-fig">${dancerSVG(frames[f], { h: rv.hair, t: "#F2EFE8", k: rv.skirt || "#26261F" }, false, 9)}${teeT}</span>
       <span class="raver-name">${rv.name}</span>
       <span class="raver-arch">${rv.arch}</span>
-      <span class="raver-def">${rv.def}</span>
-      <span class="raver-tag">${rv.tag || "TIËSTO TOUR '09"}</span>`;
+      <span class="raver-def">${rv.def}</span>`;
     btn.onclick = () => {
       if (btn.classList.contains("chosen")) return;
       chosenRaver = i;
