@@ -25,7 +25,7 @@
   }
   
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { background: var(--bg) !important; overflow-x: hidden; }
+  html, body { background: var(--bg) !important; overflow-x: hidden; overflow-x: clip; }
   body {
     min-height: 100vh; color: var(--ink);
     font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -63,7 +63,7 @@
     background: radial-gradient(circle at 50% 26%, #17150F 0%, var(--bg) 74%);
     border: 1px solid #2A2925; padding: 26px 14px 18px;
   }
-  #tee-box svg { width: 100%; max-width: 310px; display: block; margin: 0 auto; }
+  #tee-box svg { width: 100%; max-width: 360px; display: block; margin: 0 auto; }
   .under-tee { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 9px; margin-top: 12px; }
   .motto {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
@@ -392,7 +392,8 @@
   }
   #guru { display: flex; justify-content: center; margin-bottom: 26px; }
   #event-banner {
-    position: absolute; left: 14px; right: 14px; top: 270px; z-index: 6;
+    position: fixed; left: 14px; right: 14px; bottom: 14px; z-index: 90;
+    max-width: 540px; margin: 0 auto;
     background: var(--bg); border: 2px solid #EF3340;
     padding: 13px 15px; text-align: left;
     font-family: "Press Start 2P", ui-monospace, monospace;
@@ -902,7 +903,7 @@
     .preview-panel {
       border: 1px solid var(--hair); background: #100F0C; padding: 8px 10px 8px;
     }
-    #tee-box svg { max-width: 116px; }
+    #tee-box svg { max-width: 172px; }
     .preview-note { display: none; }
     .hype { margin-top: 5px; }
     .under-tee { margin-top: 6px; }
@@ -1083,7 +1084,6 @@
     <div id="floor"></div>
     <div id="red-flash" class="hidden"></div>
     <div id="vs-burst" class="hidden">THEY&#39;RE IN</div>
-    <div id="event-banner" class="hidden"></div>
     <div id="fader-block" class="hidden">
       <div class="fader-kicker">MASTER OUT</div>
       <div class="fader-label">PULL DOWN · CLOSE LIKE A HEADLINER <span class="fader-arrow">↓</span></div>
@@ -1110,6 +1110,7 @@
 </div>
 
 <button id="peek-tee" class="hidden" aria-label="see your tee">SEE YOUR TEE</button>
+<div id="event-banner" class="hidden"></div>
 <div id="blackout"></div>
 <div class="gate" id="gate1">
   <div id="gate-logo"></div>
@@ -1373,11 +1374,13 @@ function fireBros(withSound) {
     if (flash) { flash.classList.remove("pulsing"); flash.classList.add("hidden"); }
     const bn = document.getElementById("event-banner");
     if (bn) {
-      bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Only your DAZY piece stands between you and the sweat!</b>';
-      bn.classList.remove("hidden");
-      bn.style.cursor = "pointer";
-      bn.onclick = () => bn.classList.add("hidden");
-      setTimeout(() => bn.classList.add("hidden"), 9500);
+      setTimeout(() => {
+        bn.innerHTML = '<span class="ev-k">⚠ CROWD EVENT</span>Oh no, the pills kicked in! Tyon\'s sweaty gymbro friends just found him. <b>Only your DAZY piece stands between you and the sweat!</b>';
+        bn.classList.remove("hidden");
+        bn.style.cursor = "pointer";
+        bn.onclick = () => bn.classList.add("hidden");
+        setTimeout(() => bn.classList.add("hidden"), 9500);
+      }, 1600);
     }
     const fb = document.getElementById("fader-block");
     if (fb) fb.classList.remove("hidden");
