@@ -637,6 +637,7 @@
   .dazy-intro {
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
     font-size: 14px; color: var(--ink); margin: 2px auto 12px;
+    max-width: 380px; line-height: 1.45; text-wrap: balance;
     animation: rise .6s .7s backwards;
   }
   .dazy-intro b { color: var(--blue); }
@@ -3226,7 +3227,9 @@ function endSet() {
   const youP = marginSplit().you;
   const earnP = Math.round((state.prix - prodCost()) * youP) / 100;
   const intro = document.getElementById("dazy-intro");
-  if (intro) intro.innerHTML = `Hey ${nm}, meet <b><i>DAZ</i></b>. Your new partner.`;
+  if (intro) intro.innerHTML =
+    `Hey ${nm}. Useless, harmless, dressed like a priest who kept the collar and lost the faith.<br>
+     Meet <b><i>DAZ</i></b>. Sole owner of the world's only two-eye monocle.`;
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span>
      <span class="pfw">Let's bring the rave to Paris Fashion Week 2027</span>`;
@@ -3444,5 +3447,9 @@ if (roomOpen) {
 }
 render();
 </script>
+<!-- Cloudflare Web Analytics -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+  data-cf-beacon='{"token": "b618cded15914bfebcde77baf5145114"}'></script>
+<!-- End Cloudflare Web Analytics -->
 </body>
 </html>
