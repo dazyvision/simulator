@@ -1345,20 +1345,44 @@ function syncURL() {
 let actx = null;
 // iOS : forcer la session audio en "playback" pour sonner même en mode silencieux
 let iosUnlocked = false;
+// Déverrouillage audio, tenace : les WebView (Instagram, Messenger, TikTok)
+// refusent souvent la première tentative. On réessaie à chaque geste tant que
+// ça n'a pas réellement abouti, et on ne marque "débloqué" qu'après succès.
+let silentEl = null;
 function unlockIOSAudio() {
   if (iosUnlocked) return;
-  iosUnlocked = true;
   try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+  // 1. un vrai élément audio doit jouer pour basculer la session iOS en "playback",
+  //    sinon Web Audio reste muet quand le switch silencieux est activé.
   try {
-    const el = document.createElement("audio");
-    el.setAttribute("playsinline", "");
-    el.loop = true;
-    el.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-    el.play().catch(function () {});
+    if (!silentEl) {
+      silentEl = document.createElement("audio");
+      silentEl.setAttribute("playsinline", "");
+      silentEl.setAttribute("webkit-playsinline", "");
+      silentEl.loop = true;
+      silentEl.volume = 0.01;
+      silentEl.src = "data:audio/wav;base64,UklGRoQJAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YWAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    }
+    const p = silentEl.play();
+    if (p && p.then) p.then(() => { iosUnlocked = true; }).catch(() => {});
+  } catch (e) {}
+  // 2. le contexte doit naître ou reprendre dans le geste lui-même
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state !== "running") actx.resume().catch(() => {});
+    if (actx.state === "running") iosUnlocked = true;
   } catch (e) {}
 }
-document.addEventListener("touchend", unlockIOSAudio, { once: true });
-document.addEventListener("click", unlockIOSAudio, { once: true });
+// pas de { once: true } : tant que le son n'est pas passé, chaque geste retente
+["touchend", "click", "pointerdown"].forEach(ev =>
+  document.addEventListener(ev, unlockIOSAudio, { passive: true }));
+// retour d'arrière-plan : le contexte est souvent suspendu par le système
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible" || !soundOn) return;
+  try {
+    if (actx && actx.state !== "running") actx.resume().catch(() => {});
+  } catch (e) {}
+});
 function alarmSound(t) {
   try {
     for (let i = 0; i < 3; i++) {
@@ -1882,6 +1906,7 @@ const EARPS = [
 ];
 function ensureEndChain() {
   actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state !== "running") actx.resume().catch(() => {});
   if (!endGainNode) {
     endGainNode = actx.createGain(); endGainNode.gain.value = 0.55;
     endLP = actx.createBiquadFilter(); endLP.type = "lowpass";
@@ -3150,6 +3175,7 @@ document.getElementById("btn-back").onclick = () => { state.side = "back"; rende
 function endSet() {
   if (setEnded) return;
   setEnded = true;
+  ping("finished");
   stopMusic();
   applause();
   document.getElementById("stage").classList.remove("lit");
@@ -3306,6 +3332,7 @@ document.getElementById("onemore").onclick = () => {
 };
 
 document.getElementById("done").onclick = () => {
+  ping("config");
   roomOpen = true;
   brosAt = beatCount + 20;
   brosFired = false; brosIn = false; brosBurst = false;
@@ -3356,6 +3383,39 @@ window.addEventListener("error", e => {
 window.addEventListener("unhandledrejection", e => {
   if (e.reason && e.reason.message) console.warn("[dazy]", e.reason.message);
 });
+// ============ SIGNAL ============
+// Renseigne PING_URL pour recevoir un signal quand un artiste passe par ici.
+// Vide = aucun appel réseau, rien n'est envoyé.
+const PING_URL = "";
+const pingSent = {};
+function ping(event) {
+  if (!PING_URL || pingSent[event]) return;
+  pingSent[event] = true;
+  try {
+    const payload = JSON.stringify({
+      event: event,
+      name: state.stage.trim(),
+      nick: state.nick.trim(),
+      back: state.backLine.trim(),
+      build: [state.coton, state.coupe, state.sleeves, state.couleur,
+              state.technique, state.ink, state.placements.join("+")].join(" · "),
+      price: state.prix,
+      run: state.tirage,
+      link: location.href,
+      at: new Date().toISOString(),
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(PING_URL, new Blob([payload], { type: "text/plain" }));
+    } else {
+      fetch(PING_URL, { method: "POST", body: payload, mode: "no-cors", keepalive: true })
+        .catch(() => {});
+    }
+  } catch (e) {}
+}
+
+const dl = document.getElementById("drop-link");
+if (dl) dl.addEventListener("click", () => ping("dm"));
+
 console.log("DAZY simulator · " + document.lastModified);
 if (typeof IntersectionObserver !== "undefined") {
   const io = new IntersectionObserver(es => es.forEach(x => {
