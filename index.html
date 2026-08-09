@@ -1322,6 +1322,7 @@ let lastTotal = null;
   const ti = parseInt(q.get("n")); if (TIRAGES.includes(ti)) state.tirage = ti;
   const pl = (q.get("p") || "").split(",").filter(id => PLACEMENTS.some(x => x.id === id));
   if (pl.length >= 1 && pl.length <= 3) state.placements = pl;
+  window.__isTest = q.get("dev") === "1";
   state.stage = (q.get("a") || "").slice(0, 18);
   state.nick = (q.get("s") || "").slice(0, 8);
   if (q.get("go") === "1" && state.stage) roomOpen = true;
@@ -1333,6 +1334,7 @@ function params() {
     c: state.coton, k: state.coupe, sl: state.sleeves, col: state.couleur, l: state.logo,
     t: state.technique, p: state.placements.join(","),
     x: state.prix, n: state.tirage, bl: state.backLine, go: roomOpen ? "1" : "0",
+    ...(window.__isTest ? { dev: "1" } : {}),
   });
 }
 function syncURL() {
@@ -3397,6 +3399,8 @@ function ping(event) {
   try {
     const payload = JSON.stringify({
       event: event,
+      // ?dev=1 a l'ouverture marque le passage comme un essai
+      test: window.__isTest === true,
       name: state.stage.trim(),
       nick: state.nick.trim(),
       back: state.backLine.trim(),
