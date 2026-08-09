@@ -730,6 +730,9 @@
     box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--blue);
   }
   #faq-fab:hover { background: var(--bg); color: var(--blue); }
+  /* l'alerte occupe le bas de l'ecran : le FAQ s'efface le temps du message */
+  body.event-on #faq-fab { opacity: 0; pointer-events: none; transform: translateY(8px); }
+  #faq-fab { transition: opacity .2s ease, transform .2s ease; }
 
   #deal {
     position: fixed; inset: 0; z-index: 100; display: none;
@@ -1233,7 +1236,7 @@ const FAQ = [
   ["What do I pay?",
    "The production, at cost, before launch. Nothing else. No fee, no retainer, no markup on the blanks or the print: you see the real number in the simulator. That's why we run a revenue share — DAZY is paid on the margin once pieces sell, so your upfront stays as low as it can be. Buying a finished run from a merch supplier costs you far more per piece, before a single sale."],
   ["Where does it sell?",
-   "On dazyvision.com only. One channel, one page, your own room on the site. The page stays online after the run sells out. Forever. That's the archive."],
+   "On dazy.vision only. One channel, one page, your own room on the site. The page stays online after the run sells out. Forever. That's the archive."],
   ["How do I get paid?",
    "Weekly. Sales report and payout, every single week. Your upfront comes back first, from the first sales. On every piece, production comes off, then the margin is split: you keep 65% as the standard case; design workload, iterations and product complexity move your share between 60 and 70. Set together at kickoff, from the brief. It changes later only by mutual agreement, for extra asks: additional assets, new directions. DAZY sells, DAZY transfers."],
   ["What if it blows up?",
@@ -1344,6 +1347,23 @@ function syncURL() {
   } catch (e) {}
 }
 
+// La scene se reduit pour tenir dans l'ecran : on voit toute la piste,
+// personne n'est coupe sur les bords.
+function fitStage() {
+  const st = document.getElementById("stage");
+  if (!st) return;
+  st.style.zoom = "";                      // on repart de l'echelle naturelle
+  const natH = st.offsetHeight;
+  if (!natH) return;
+  const availH = window.innerHeight - 120; // place laissee au bandeau du bas
+  const k = Math.min(1, availH / natH);
+  // zoom plutot que transform : n'entre pas en conflit avec la secousse du quake
+  // et la mise en page se recalcule d'elle-meme, sans hauteur a corriger.
+  st.style.zoom = k < 0.999 ? Math.max(0.55, k).toFixed(3) : "";
+}
+window.addEventListener("resize", () => { if (roomOpen) fitStage(); });
+window.addEventListener("orientationchange", () => setTimeout(() => { if (roomOpen) fitStage(); }, 250));
+
 // ============ SOUND: coin ============
 let actx = null;
 // iOS : forcer la session audio en "playback" pour sonner même en mode silencieux
@@ -1431,12 +1451,14 @@ function fireBros(withSound) {
       const flash2 = (msg, ms, next) => {
         bn.innerHTML = msg;
         bn.classList.remove("hidden");
+        document.body.classList.add("event-on");
         bn.style.cursor = "pointer";
         let done = false;
         const adv = () => {
           if (done) return; done = true;
           bn.classList.add("hidden");
           if (next) setTimeout(next, 260);
+          else document.body.classList.remove("event-on");
         };
         bn.onclick = adv;
         setTimeout(adv, ms);
@@ -3230,8 +3252,8 @@ function endSet() {
   const earnP = Math.round((state.prix - prodCost()) * youP) / 100;
   const intro = document.getElementById("dazy-intro");
   if (intro) intro.innerHTML =
-    `Hey ${nm}. Useless, harmless, dressed like a priest who kept the collar and lost the faith.<br>
-     Meet <b><i>DAZ</i></b>. Sole owner of the world's only two-eye monocle.`;
+    `Hey ${nm}. Meet <b><i>DAZ</i></b> — useless, harmless, and the world's only<br>
+     owner of a two-eye monocle.`;
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span>
      <span class="pfw">Let's bring the rave to Paris Fashion Week 2027</span>`;
@@ -3372,6 +3394,7 @@ document.getElementById("done").onclick = () => {
     setTimeout(() => { if (headEl) headEl.classList.add("show"); if (cntEl) cntEl.classList.add("show"); }, 1900);
   }
   syncURL();
+  fitStage();
   document.getElementById("stage").scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
