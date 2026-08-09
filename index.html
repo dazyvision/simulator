@@ -886,6 +886,43 @@
   /* le survolé s'anime plus vite, les autres reculent quand un est visé */
   #raver-row:hover .raver-btn:not(:hover) { opacity: .5; }
   #raver-row.locking .raver-btn:not(.chosen) { opacity: .18; transform: scale(.96); }
+  /* celui qui passe au centre de l'ecran s'allume */
+  .raver-btn.in-view { border-color: #3E4A8A; }
+  .raver-btn.in-view::before { opacity: .55; }
+  .raver-btn.in-view .raver-name { color: var(--blue); }
+  @media (hover: hover) and (pointer: fine) { .raver-btn.in-view::before { opacity: 0; } }
+
+  /* carte ouverte : presque plein ecran, on referme en touchant a cote */
+  /* dans #gate2 (z-index 200) : valeurs relatives a ce contexte */
+  #raver-veil {
+    position: fixed; inset: 0; z-index: 5; background: rgba(8,8,6,.88);
+    opacity: 0; pointer-events: none; transition: opacity .25s ease;
+  }
+  #raver-veil.on { opacity: 1; pointer-events: auto; }
+  .raver-btn.open {
+    position: fixed; z-index: 10; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(420px, 88vw); max-height: 82vh; overflow-y: auto;
+    border-color: var(--blue); padding: 26px 20px 20px;
+    box-shadow: 0 0 40px rgba(61,99,255,.35);
+  }
+  .raver-btn.open::before { opacity: 1; }
+  .raver-btn.open .dancer { transform: scale(1.5); margin: 12px 0 16px; }
+  .raver-btn.open .raver-name { font-size: 24px; }
+  .raver-btn.open .raver-def { font-size: 15px; max-width: 300px; }
+  .raver-pick {
+    display: none; margin-top: 18px; padding: 13px 26px;
+    font-family: inherit; font-size: 11px; letter-spacing: 3px; font-weight: 700;
+    background: var(--blue); color: var(--ink); border: 1px solid var(--blue);
+    cursor: pointer;
+  }
+  .raver-btn.open .raver-pick { display: block; }
+  .raver-hint {
+    display: none; margin-top: 12px; font-size: 9px;
+    letter-spacing: 2px; color: #4A473F;
+  }
+  .raver-btn.open .raver-hint { display: block; }
+
   .raver-btn.chosen {
     border-color: var(--blue); transform: scale(1.08) translateY(-4px);
     box-shadow: 0 0 30px rgba(61,99,255,.4);
@@ -1159,6 +1196,7 @@
 </div>
 
 <div class="gate hidden" id="gate2">
+  <div id="raver-veil"></div>
   <div class="gate-title">SAVE A RAVER</div>
   <div class="gate-sub">They've been stuck in <em>Afrojack</em> tour merch since <em>2019</em>. Choose who you save:</div>
   <div id="raver-row"></div>
@@ -1363,6 +1401,56 @@ function fitStage() {
 }
 window.addEventListener("resize", () => { if (roomOpen) fitStage(); });
 window.addEventListener("orientationchange", () => setTimeout(() => { if (roomOpen) fitStage(); }, 250));
+
+// ============ CARTES PERSONNAGE ============
+let openCard = null;
+function openRaverCard(btn) {
+  closeRaverCard();
+  // sans cette pause, le redessin de la danse detruirait la carte ouverte
+  if (gateTimer) { clearInterval(gateTimer); gateTimer = null; }
+  openCard = btn;
+  btn.classList.add("open");
+  document.getElementById("raver-veil").classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function closeRaverCard() {
+  if (!openCard) return;
+  openCard.classList.remove("open");
+  openCard = null;
+  document.getElementById("raver-veil").classList.remove("on");
+  document.body.style.overflow = "";
+  // la danse reprend, sauf si un personnage vient d'etre choisi
+  const g2 = document.getElementById("gate2");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const locked = document.querySelector(".raver-btn.chosen");
+  if (!gateTimer && !reduced && !locked && g2 && !g2.classList.contains("hidden"))
+    gateTimer = setInterval(() => { gateBeat++; renderGate2(); }, 480);
+}
+(function () {
+  const veil = document.getElementById("raver-veil");
+  if (veil) veil.addEventListener("click", closeRaverCard);
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeRaverCard();
+  });
+  // filet : un appui hors de la carte referme, meme si le voile est mal empile
+  document.addEventListener("click", e => {
+    if (!openCard) return;
+    if (!openCard.contains(e.target)) closeRaverCard();
+  }, true);
+})();
+
+// le personnage qui passe au centre de l'ecran s'allume
+function watchRavers() {
+  const row = document.getElementById("raver-row");
+  if (!row || !("IntersectionObserver" in window)) return;
+  if (window.__raverObs) window.__raverObs.disconnect();
+  // bande etroite au milieu de l'ecran : une seule carte y entre a la fois
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => en.target.classList.toggle("in-view", en.isIntersecting));
+  }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+  row.querySelectorAll(".raver-btn").forEach(b => obs.observe(b));
+  window.__raverObs = obs;
+}
 
 // ============ SOUND: coin ============
 let actx = null;
@@ -2550,6 +2638,8 @@ let gateBeat = 0, gateTimer = null;
 function renderGate2() {
   const row = document.getElementById("raver-row");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // la liste se redessine pour la danse : on garde qui etait au centre
+  const lit = Array.from(row.children).map(b => b.classList.contains("in-view"));
   row.innerHTML = "";
   RAVERS.forEach((rv, i) => {
     let frames = afroFrames(rv);
@@ -2568,9 +2658,22 @@ function renderGate2() {
       <span class="picker-fig">${dancerSVG(frames[f], { h: rv.hair, t: "#F2EFE8", k: rv.skirt || "#26261F" }, false, 9)}${teeT}</span>
       <span class="raver-name">${rv.name}</span>
       <span class="raver-arch">${rv.arch}</span>
-      <span class="raver-def">${rv.def}</span>`;
+      <span class="raver-def">${rv.def}</span>
+      <button class="raver-pick" type="button">SAVE ${rv.name}</button>
+      <span class="raver-hint">tap outside to go back</span>`;
+    btn.querySelector(".raver-pick").addEventListener("click", e => {
+      e.stopPropagation();
+      choose();
+    });
     btn.onclick = () => {
       if (btn.classList.contains("chosen")) return;
+      if (btn.classList.contains("open")) return;   // deja ouverte : le bouton decide
+      openRaverCard(btn);
+    };
+    // 1er appui : la carte s'ouvre. Le choix se fait ensuite par le bouton.
+    const choose = () => {
+      if (btn.classList.contains("chosen")) return;
+      closeRaverCard();
       chosenRaver = i;
       coin();
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2596,12 +2699,15 @@ function renderGate2() {
         if (pact) pact.classList.remove("show");
       }, 900);
     };
+    if (lit[i]) btn.classList.add("in-view");
     row.appendChild(btn);
   });
+  watchRavers();
 }
 function startGate2() {
   document.getElementById("gate2").classList.remove("hidden");
   renderGate2();
+  watchRavers();
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!reduced && !gateTimer)
     gateTimer = setInterval(() => { gateBeat++; renderGate2(); }, 480);
