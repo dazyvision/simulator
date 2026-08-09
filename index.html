@@ -106,22 +106,7 @@
     font-family: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
     font-size: 12.5px; color: var(--ink); opacity: .88; margin-top: 12px;
   }
-  .split { margin: 2px 0 14px; }
-  .split-bar { display: flex; height: 34px; border: 1px solid var(--line); }
-  .split-dazy, .split-you {
-    display: flex; align-items: center; overflow: hidden;
-    transition: width .25s ease; min-width: 0;
-  }
-  .split-dazy { background: #23211C; justify-content: flex-start; }
-  .split-you { background: var(--blue); justify-content: flex-end; }
-  .split-you.neg { background: #C4573F; }
-  .split-tag {
-    font-size: 8.5px; letter-spacing: 1px; color: var(--ink);
-    padding: 0 9px; white-space: nowrap;
-  }
-  .split-tag b { font-size: 11px; margin-left: 5px; font-variant-numeric: tabular-nums; }
-  .split-chips { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; }
-  .split-chips span { font-size: 8.5px; letter-spacing: .5px; color: var(--grey); }
+  .split-note { margin-top: 12px; max-width: 330px; }
   .opt-ic { display: block; margin: 0 auto 7px; width: 34px; height: 30px; color: currentColor; }
   .opt-ic.sq { width: 26px; height: 26px; }
   button.card { min-width: 0; padding: 11px 10px 10px; }
@@ -1092,13 +1077,6 @@
         <div class="field">
           <div class="label" id="prix-label">Public price · what fans pay</div>
           <div class="price-big" id="prix-big">€45</div>
-          <div class="split">
-            <div class="split-bar">
-              <div class="split-dazy" id="split-dazy"><span class="split-tag">DAZY <b id="sd-v"></b></span></div>
-              <div class="split-you" id="split-you"><span class="split-tag">YOU KEEP <b id="sy-v"></b></span></div>
-            </div>
-            <div class="split-chips" id="split-chips"></div>
-          </div>
           <div class="price-wrap" id="price-wrap">
             <input type="range" id="prix" min="30" max="75" step="1" value="35">
           </div>
@@ -1126,22 +1104,26 @@
             <div class="pay-v dim" id="e-edition"></div>
           </div>
           <div class="pay-row">
-            <div class="pay-l">= YOU EARN / PIECE<span class="pay-cap" id="earn-pct"></span></div>
+            <div class="pay-l">× RUN<span class="pay-cap">numbered, never reprinted</span></div>
             <div class="leader"></div>
-            <div class="pay-v" id="e-part"></div>
+            <div class="pay-v dim" id="e-run"></div>
           </div>
           <div class="pay-total">
-            <div class="pay-l">YOU EARN / EDITION</div>
+            <div class="pay-l">EDITION PROFIT</div>
             <div class="coin-wrap">
               <div class="pay-big" id="e-total">€0</div>
               <div class="coin-pop" id="coin-pop">+ ¤</div>
               <div class="earn-say" id="earn-say"></div>
             </div>
+            <div class="pay-cap split-note">
+              Profit on a full sell-out, before the split. How it splits is set on the
+              first call, from the brief. Same rules for everyone.
+            </div>
           </div>
         </div>
         <div class="note">
           DAZY does the design, production, digital assets, selling &amp; fulfilment.
-          DAZY is paid on the margin only, once pieces sell. You receive your sales
+          DAZY is paid on the profit only, once pieces sell. You receive your sales
           payout every week.
           <a id="deal-link">Read the FAQ →</a>
         </div>
@@ -1276,7 +1258,7 @@ const FAQ = [
   ["Where does it sell?",
    "On dazy.vision only. One channel, one page, your own room on the site. The page stays online after the run sells out. Forever. That's the archive."],
   ["How do I get paid?",
-   "Weekly. Sales report and payout, every single week. Your upfront comes back first, from the first sales. On every piece, production comes off, then the margin is split: you keep 65% as the standard case; design workload, iterations and product complexity move your share between 60 and 70. Set together at kickoff, from the brief. It changes later only by mutual agreement, for extra asks: additional assets, new directions. DAZY sells, DAZY transfers."],
+   "Weekly. Sales report and payout, every single week. Your upfront comes back first, from the first sales. Production comes off each piece, the rest is profit, and the profit is split. Your share is set on the first call, from the brief: workload, iterations and product complexity decide it, along the same rules for everyone. It changes later only by mutual agreement, for extra asks. DAZY sells, DAZY transfers."],
   ["What if it blows up?",
    "No reprint. Ever. A sold-out run stays sold out, that's what your first buyers own. If demand explodes, we cut a second edition: new form, new numbers, new run."],
   ["Who shoots the campaign?",
@@ -2296,10 +2278,6 @@ function prodCost() {
   return Math.round(p * 2) / 2;
 }
 
-// partage de la marge, fixe dans le simulateur : DAZY 35, artiste 65.
-// Le taux réel se cale au brief. La FAQ le dit, pas la simu.
-function marginSplit() { return { dazy: 35, you: 65 }; }
-
 let animFrame = null;
 const EARN_TIERS = [
   { at: 1000, say: "nice." },
@@ -2351,32 +2329,15 @@ function animateTotal(from, to) {
 }
 
 function renderEco() {
-  const { you } = marginSplit();
+  // profit de l'edition, avant partage. Aucun taux n'est affiche : il se fixe au premier call.
   const cost = prodCost();
   const margin = Math.round((state.prix - cost) * 100) / 100;
-  const part = Math.round(margin * you) / 100;
-  const dazyM = Math.round((margin - part) * 100) / 100;
-  const total = part * state.tirage;
+  const total = Math.round(margin * state.tirage);
   const pub = document.getElementById("e-pub");
   if (pub) pub.textContent = fmt(state.prix);
   document.getElementById("e-edition").textContent = "− " + fmt(cost);
-  // barre de partage : la marge, pas le brut. Le coût de fabrication est en clair au-dessus.
-  const dz = document.getElementById("split-dazy");
-  const yu = document.getElementById("split-you");
-  if (dz && yu) {
-    dz.style.width = (100 - you) + "%";
-    yu.style.width = you + "%";
-    yu.classList.remove("neg");
-    document.getElementById("sd-v").textContent = fmt(dazyM);
-    document.getElementById("sy-v").textContent = fmt(part);
-    document.getElementById("split-chips").innerHTML =
-      `<span>margin ${fmt(margin)}</span><span>you keep ${you}%, we take ${100 - you}% · average split, set per project</span>`;
-  }
-  const epc = document.getElementById("earn-pct");
-  if (epc) epc.textContent = you + "% of the profit";
-  const ep = document.getElementById("e-part");
-  ep.textContent = fmt(part);
-  ep.classList.remove("neg");
+  const rn = document.getElementById("e-run");
+  if (rn) rn.textContent = "× " + state.tirage;
   animateTotal(lastTotal, total);
   lastTotal = total;
   document.getElementById("prix-big").textContent = fmt(state.prix);
@@ -3354,8 +3315,7 @@ function endSet() {
        <div class="duo-daz">${dazyAvatar(false)}</div>
        <div class="duo-raver">${guruFigure(0, RAVERS[chosenRaver], col2, false)}</div>
      </div>`;
-  const youP = marginSplit().you;
-  const earnP = Math.round((state.prix - prodCost()) * youP) / 100;
+  const marginP = Math.round((state.prix - prodCost()) * 100) / 100;
   const intro = document.getElementById("dazy-intro");
   if (intro) intro.innerHTML =
     `Hey ${nm}. Meet <b><i>DAZ</i></b> — useless, harmless, and the world's only<br>
@@ -3363,10 +3323,10 @@ function endSet() {
   document.getElementById("end-line").innerHTML =
     `<span class="who">${nm} <span class="x">×</span> DAZY</span>
      <span class="pfw">Let's bring the rave to Paris Fashion Week 2027</span>`;
-  const endEarnTotal = earnP * state.tirage;
+  const endEarnTotal = Math.round(marginP * state.tirage);
   document.getElementById("end-deal").innerHTML =
     `<div class="deal-earn">
-       <span class="deal-earn-k">YOU EARN</span>
+       <span class="deal-earn-k">EDITION PROFIT</span>
        <span class="deal-earn-v" id="end-earn-v" data-target="${endEarnTotal}">€0</span>
      </div>
      <div class="deal-meta">
