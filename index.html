@@ -3389,7 +3389,7 @@ window.addEventListener("unhandledrejection", e => {
 // ============ SIGNAL ============
 // Renseigne PING_URL pour recevoir un signal quand un artiste passe par ici.
 // Vide = aucun appel réseau, rien n'est envoyé.
-const PING_URL = "";
+const PING_URL = "https://dazy-ping.alexis-9f2.workers.dev/";
 const pingSent = {};
 function ping(event) {
   if (!PING_URL || pingSent[event]) return;
